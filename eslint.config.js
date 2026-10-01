@@ -1,3 +1,4 @@
+// Configure project ESLint rules and React 19 plugins
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
