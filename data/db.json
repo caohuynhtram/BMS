@@ -1,0 +1,802 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Admin System",
+      "email": "admin@infinia.com",
+      "password": "123456",
+      "role": "admin",
+      "phone": "0900000000",
+      "address": "Ho Chi Minh City",
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "123456",
+      "role": "customer",
+      "phone": "0911111111",
+      "address": "Hanoi Capital",
+      "status": "active"
+    },
+    {
+      "id": "3",
+      "name": "Test Nhan",
+      "email": "test2@gmail.com",
+      "password": "123456",
+      "role": "customer",
+      "phone": "0348808114",
+      "address": "Can Tho City",
+      "status": "active"
+    },
+    {
+      "name": "Le Hoang Nhan",
+      "email": "nhanlh.3905@gmail.com",
+      "password": "HOANGnhan@395",
+      "role": "customer",
+      "phone": "0348808113",
+      "address": "Hanoii, quoc thai an phu an giang",
+      "status": "active",
+      "id": "ZflRIiDShbY"
+    },
+    {
+      "name": "le hoang nhan",
+      "email": "wtskane@gmail.com",
+      "password": "HOANGnhan@395",
+      "role": "customer",
+      "phone": "0348808113",
+      "address": "can tho, ninh kieu",
+      "status": "active",
+      "id": "rHo4FVeAUxY"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "Programming",
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "2",
+      "name": "Technology",
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "3",
+      "name": "Business",
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "4",
+      "name": "Self Development",
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "5",
+      "name": "Science",
+      "status": "Active",
+      "isDeleted": false
+    }
+  ],
+  "books": [
+    {
+      "id": "1",
+      "title": "Clean Code",
+      "author": "Robert C. Martin",
+      "categoryId": "1",
+      "price": 25,
+      "description": "A handbook of agile software craftsmanship.",
+      "stock": 20,
+      "image": "https://m.media-amazon.com/images/I/41xShlnTZTL.jpg",
+      "rating": 0,
+      "reviewCount": 0,
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "2",
+      "title": "The Pragmatic Programmer",
+      "author": "Andrew Hunt",
+      "categoryId": "1",
+      "price": 30,
+      "description": "Journey to mastery for modern software developers.",
+      "stock": 0,
+      "image": "https://image.slidesharecdn.com/0135957052-thepragmaticprogrammerbydavidthomas-190920211554/95/2019-the-pragmatic-programmer-pdf-your-journey-to-mastery-20th-anniversary-edition-2nd-edition-by-david-thomas-addisonwesley-professional-1-638.jpg?cb=1569014320",
+      "rating": 0,
+      "reviewCount": 0,
+      "status": "Out of Stock",
+      "isDeleted": false
+    },
+    {
+      "id": "3",
+      "title": "Atomic Habits",
+      "author": "James Clear",
+      "categoryId": "4",
+      "price": 18,
+      "description": "An easy and proven way to build good habits.",
+      "stock": 0,
+      "image": "https://m.media-amazon.com/images/I/513Y5o-DYtL.jpg",
+      "rating": 5,
+      "reviewCount": 1,
+      "status": "Out of Stock",
+      "isDeleted": false
+    },
+    {
+      "id": "4",
+      "title": "Thinking Fast and Slow",
+      "author": "Daniel Kahneman",
+      "categoryId": "5",
+      "price": 22,
+      "description": "A groundbreaking tour of the mind.",
+      "stock": 8,
+      "image": "https://m.media-amazon.com/images/I/61fdrEuPJwL._SL1500_.jpg",
+      "rating": 0,
+      "reviewCount": 0,
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "5",
+      "title": "Zero to One",
+      "author": "Peter Thiel",
+      "categoryId": "3",
+      "price": 20,
+      "description": "Notes on startups and how to build the future.",
+      "stock": 18,
+      "image": "https://m.media-amazon.com/images/I/51zGCdRQXOL.jpg",
+      "rating": 3.33,
+      "reviewCount": 3,
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "c160",
+      "title": "Design Patterns",
+      "author": "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides",
+      "categoryId": "1",
+      "price": 20,
+      "description": "Elements of reusable object-oriented software and classic design solutions.",
+      "stock": 10,
+      "image": "https://m.media-amazon.com/images/I/71sjeQGh7VL._SL1500_.jpg",
+      "rating": 0,
+      "reviewCount": 0,
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "01c8",
+      "title": "Refactoring",
+      "author": "Martin Fowler",
+      "categoryId": "1",
+      "price": 25,
+      "description": "Improving the design of existing code through small, safe transformations.",
+      "stock": 100,
+      "image": "https://dynamic.thoughtworks.com/landing_pages/book_cover_image-1e10d5912d81ba44076053cf81758956.jpeg",
+      "rating": 0,
+      "reviewCount": 0,
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "05b6",
+      "title": "You Don’t Know JS Yet",
+      "author": "Kyle Simpson",
+      "categoryId": "2",
+      "price": 25,
+      "description": "A deep dive into the core mechanisms of the JavaScript language.",
+      "stock": 15,
+      "image": "https://tse3.mm.bing.net/th/id/OIP.pd7jdIyHeIJNoKzoKOeUswAAAA?rs=1&pid=ImgDetMain&o=7&rm=3",
+      "rating": 0,
+      "reviewCount": 0,
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "jUYK5NBxjxA",
+      "title": "Sách Kiểm Thử Hoàn Đơn",
+      "price": 25,
+      "stock": 10,
+      "rating": 0,
+      "reviewCount": 0,
+      "status": "Active",
+      "image": "https://product.hstatic.net/200000481913/product/11c26896-4fcd-4176-bbd6-b050f7696bf3_020313bf87d942568e5524db9d2554e5_master.jpg",
+      "author": "LE HOANG NHAN",
+      "categoryId": "3",
+      "description": "",
+      "isDeleted": false
+    }
+  ],
+  "reviews": [
+    {
+      "id": "1",
+      "bookId": "1",
+      "userId": "2",
+      "userName": "John Doe",
+      "rating": 5,
+      "comment": "Amazing book for developers!",
+      "createdAt": "2026-03-01"
+    },
+    {
+      "id": "0731",
+      "bookId": "3",
+      "userId": "2",
+      "userName": "John Doe",
+      "rating": 5,
+      "comment": "Amazing!",
+      "createdAt": "2026-03-10"
+    },
+    {
+      "id": "b490",
+      "bookId": "4",
+      "userId": "2",
+      "userName": "John Doe",
+      "rating": 2,
+      "comment": "It so good",
+      "createdAt": "2026-03-24",
+      "updatedAt": "2026-11-03"
+    },
+    {
+      "id": "3a59",
+      "bookId": "2",
+      "userId": "2",
+      "userName": "John Doe",
+      "rating": 5,
+      "comment": "This is an amazing one. Recommend to buy",
+      "createdAt": "2026-03-24"
+    },
+    {
+      "bookId": "4",
+      "userId": "3",
+      "userName": "Test Nhan",
+      "rating": 1,
+      "comment": "ko",
+      "createdAt": "2026-11-03",
+      "id": "cFaUz4xoWHw"
+    },
+    {
+      "bookId": "5",
+      "userId": "user-a",
+      "userName": "Người Dùng A",
+      "rating": 2,
+      "comment": "Sách tạm ổn",
+      "id": "tj9h6cpgi4U"
+    },
+    {
+      "bookId": "5",
+      "userId": "user-b",
+      "userName": "Người Dùng B",
+      "rating": 3,
+      "comment": "Nội dung bình thường",
+      "id": "0EKiW--xXUo"
+    },
+    {
+      "bookId": "5",
+      "userId": "3",
+      "userName": "Test Nhan",
+      "rating": 5,
+      "comment": "Sau khi đọc lại thấy rất tuyệt vời, đổi lên 5 sao!",
+      "id": "lY2VBeSaGeM",
+      "updatedAt": "2026-11-03"
+    }
+  ],
+  "wishlists": [
+    {
+      "userId": "3",
+      "bookId": "2",
+      "id": "zKpKiSaf8qk"
+    },
+    {
+      "userId": "3",
+      "bookId": "1",
+      "id": "4fLqAiuoUPA"
+    },
+    {
+      "userId": "2",
+      "bookId": "2",
+      "id": "1Xdl0upyNvc"
+    }
+  ],
+  "carts": [
+    {
+      "userId": "3",
+      "items": [],
+      "id": "sWJ7add3DF0"
+    },
+    {
+      "userId": "2",
+      "items": [],
+      "id": "b0CBL3AhdfE"
+    },
+    {
+      "userId": "ZflRIiDShbY",
+      "items": [
+        {
+          "bookId": "4",
+          "quantity": 1
+        }
+      ],
+      "id": "1f6944a7850"
+    },
+    {
+      "userId": "rHo4FVeAUxY",
+      "items": [],
+      "id": "ErFKmbmeI5Y"
+    }
+  ],
+  "orders": [
+    {
+      "id": "1",
+      "userId": "2",
+      "status": "Returned",
+      "subtotal": 68,
+      "discountAmount": 0,
+      "totalPrice": 68,
+      "voucherId": null,
+      "createdAt": "2026-03-04",
+      "recipientName": "John Doe",
+      "phone": "0911111111",
+      "shippingAddress": "Hanoi Capital"
+    },
+    {
+      "id": "a084",
+      "userId": "2",
+      "status": "Cancelled",
+      "subtotal": 55,
+      "discountAmount": 5,
+      "totalPrice": 50,
+      "voucherId": "2",
+      "createdAt": "2026-03-24",
+      "recipientName": "John Doe",
+      "phone": "0911111111",
+      "shippingAddress": "Hanoi Capital"
+    },
+    {
+      "id": "aa2f",
+      "userId": "2",
+      "status": "Returned",
+      "subtotal": 43,
+      "discountAmount": 5,
+      "totalPrice": 38,
+      "voucherId": "2",
+      "createdAt": "2026-03-24",
+      "recipientName": "John Doe",
+      "phone": "0911111111",
+      "shippingAddress": "Hanoi Capital"
+    },
+    {
+      "id": "90fe",
+      "userId": "2",
+      "status": "Delivered",
+      "subtotal": 40,
+      "discountAmount": 5,
+      "totalPrice": 35,
+      "voucherId": "2",
+      "createdAt": "2026-03-24",
+      "recipientName": "John Doe",
+      "phone": "0911111111",
+      "shippingAddress": "Hanoi Capital"
+    },
+    {
+      "id": "9d1f",
+      "userId": "2",
+      "status": "Delivered",
+      "subtotal": 85,
+      "discountAmount": 5,
+      "totalPrice": 80,
+      "voucherId": "2",
+      "createdAt": "2026-03-24",
+      "recipientName": "John Doe",
+      "phone": "0911111111",
+      "shippingAddress": "Hanoi Capital"
+    },
+    {
+      "id": "BC4xonWQyxc",
+      "userId": "2",
+      "status": "Shipping",
+      "subtotal": 25,
+      "discountAmount": 0,
+      "totalPrice": 25,
+      "voucherId": null,
+      "createdAt": "2026-10-07",
+      "recipientName": "John Doe",
+      "phone": "0911111111",
+      "shippingAddress": "Hanoi Capital"
+    },
+    {
+      "id": "QwwV9AagDgY",
+      "userId": "3",
+      "status": "Shipping",
+      "subtotal": 78,
+      "discountAmount": 5,
+      "totalPrice": 73,
+      "voucherId": "2",
+      "createdAt": "2026-10-20",
+      "recipientName": "Test Nhan",
+      "phone": "0348808114",
+      "shippingAddress": "Can Tho City"
+    },
+    {
+      "id": "3n0ATdz52U0",
+      "userId": "2",
+      "status": "Cancelled",
+      "subtotal": 25,
+      "discountAmount": 5,
+      "totalPrice": 20,
+      "voucherId": "2",
+      "createdAt": "2026-10-20",
+      "recipientName": "John Doe",
+      "phone": "0911111111",
+      "shippingAddress": "Hanoi Capital"
+    },
+    {
+      "id": "ZVt1zAl8mUM",
+      "userId": "3",
+      "status": "Pending",
+      "subtotal": 450,
+      "discountAmount": 0,
+      "totalPrice": 450,
+      "voucherId": null,
+      "createdAt": "2026-10-26",
+      "recipientName": "Test Nhan",
+      "phone": "0348808114",
+      "shippingAddress": "Can Tho City"
+    },
+    {
+      "id": "GauCEgNLRRk",
+      "userId": "3",
+      "status": "Shipping",
+      "subtotal": 630,
+      "discountAmount": 0,
+      "totalPrice": 630,
+      "voucherId": null,
+      "createdAt": "2026-11-02",
+      "recipientName": "Test Nhan",
+      "phone": "0348808113",
+      "shippingAddress": "Can Tho City"
+    },
+    {
+      "userId": "2",
+      "status": "Delivered",
+      "totalPrice": 22,
+      "subtotal": 22,
+      "discountAmount": 0,
+      "voucherId": null,
+      "recipientName": "John Doe",
+      "phone": "0911111111",
+      "shippingAddress": "Hanoi Capital",
+      "createdAt": "2026-11-02",
+      "id": "KJ6cIddgXIA"
+    },
+    {
+      "userId": "3",
+      "status": "Shipping",
+      "totalPrice": 22,
+      "subtotal": 22,
+      "discountAmount": 0,
+      "voucherId": null,
+      "recipientName": "Test Nhan",
+      "phone": "0348808114",
+      "shippingAddress": "Can Tho City",
+      "createdAt": "2026-11-02",
+      "id": "kVtgWu_ZI94"
+    },
+    {
+      "userId": "3",
+      "status": "Pending",
+      "totalPrice": 22,
+      "subtotal": 22,
+      "discountAmount": 0,
+      "voucherId": null,
+      "recipientName": "Test Nhan",
+      "phone": "0348808114",
+      "shippingAddress": "Can Tho City",
+      "createdAt": "2026-11-02",
+      "id": "3Qa8ob0dnqw"
+    },
+    {
+      "userId": "3",
+      "status": "Delivered",
+      "totalPrice": 22,
+      "subtotal": 22,
+      "discountAmount": 0,
+      "voucherId": null,
+      "recipientName": "Test Nhan",
+      "phone": "0348808114",
+      "shippingAddress": "Can Tho City",
+      "createdAt": "2026-11-03",
+      "id": "iK7eYlD9afI"
+    },
+    {
+      "id": "sNn4CLX64O4",
+      "userId": "2",
+      "status": "Delivered",
+      "totalPrice": 20
+    },
+    {
+      "userId": "3",
+      "status": "Pending",
+      "totalPrice": 405,
+      "subtotal": 450,
+      "discountAmount": 45,
+      "voucherId": "1",
+      "recipientName": "Test Nhan",
+      "phone": "0348808114",
+      "shippingAddress": "Can Tho City",
+      "createdAt": "2026-11-03",
+      "id": "_yQedN86qYo"
+    },
+    {
+      "userId": "ZflRIiDShbY",
+      "status": "Cancelled",
+      "totalPrice": 176,
+      "subtotal": 176,
+      "discountAmount": 0,
+      "voucherId": null,
+      "recipientName": "Le Hoang Nhan",
+      "phone": "0348808113",
+      "shippingAddress": "Hanoii, quoc thai an phu an giang",
+      "createdAt": "2026-11-03",
+      "id": "BwC9oyQfcbc"
+    }
+  ],
+  "orderItems": [
+    {
+      "id": "1",
+      "orderId": "1",
+      "bookId": "1",
+      "title": "Clean Code",
+      "image": "https://m.media-amazon.com/images/I/41xShlnTZTL.jpg",
+      "quantity": 2,
+      "price": 25
+    },
+    {
+      "id": "2",
+      "orderId": "1",
+      "bookId": "3",
+      "title": "Atomic Habits",
+      "image": "https://m.media-amazon.com/images/I/513Y5o-DYtL.jpg",
+      "quantity": 1,
+      "price": 18
+    },
+    {
+      "id": "29f6",
+      "orderId": "a084",
+      "bookId": "2",
+      "title": "The Pragmatic Programmer",
+      "image": "https://image.slidesharecdn.com/0135957052-thepragmaticprogrammerbydavidthomas-190920211554/95/2019-the-pragmatic-programmer-pdf-your-journey-to-mastery-20th-anniversary-edition-2nd-edition-by-david-thomas-addisonwesley-professional-1-638.jpg?cb=1569014320",
+      "quantity": 1,
+      "price": 30
+    },
+    {
+      "id": "9c0a",
+      "orderId": "a084",
+      "bookId": "1",
+      "title": "Clean Code",
+      "image": "https://m.media-amazon.com/images/I/41xShlnTZTL.jpg",
+      "quantity": 1,
+      "price": 25
+    },
+    {
+      "id": "5d51",
+      "orderId": "aa2f",
+      "bookId": "3",
+      "title": "Atomic Habits",
+      "image": "https://m.media-amazon.com/images/I/513Y5o-DYtL.jpg",
+      "quantity": 1,
+      "price": 18
+    },
+    {
+      "id": "7a97",
+      "orderId": "aa2f",
+      "bookId": "05b6",
+      "title": "You Don’t Know JS Yet",
+      "image": "https://tse3.mm.bing.net/th/id/OIP.pd7jdIyHeIJNoKzoKOeUswAAAA?rs=1&pid=ImgDetMain&o=7&rm=3",
+      "quantity": 1,
+      "price": 25
+    },
+    {
+      "id": "d40f",
+      "orderId": "90fe",
+      "bookId": "4",
+      "title": "Thinking Fast and Slow",
+      "image": "https://m.media-amazon.com/images/I/61fdrEuPJwL._SL1500_.jpg",
+      "quantity": 1,
+      "price": 22
+    },
+    {
+      "id": "7c60",
+      "orderId": "90fe",
+      "bookId": "3",
+      "title": "Atomic Habits",
+      "image": "https://m.media-amazon.com/images/I/513Y5o-DYtL.jpg",
+      "quantity": 1,
+      "price": 18
+    },
+    {
+      "id": "4cd8",
+      "orderId": "9d1f",
+      "bookId": "1",
+      "title": "Clean Code",
+      "image": "https://m.media-amazon.com/images/I/41xShlnTZTL.jpg",
+      "quantity": 1,
+      "price": 25
+    },
+    {
+      "id": "bfe8",
+      "orderId": "9d1f",
+      "bookId": "2",
+      "title": "The Pragmatic Programmer",
+      "image": "https://image.slidesharecdn.com/0135957052-thepragmaticprogrammerbydavidthomas-190920211554/95/2019-the-pragmatic-programmer-pdf-your-journey-to-mastery-20th-anniversary-edition-2nd-edition-by-david-thomas-addisonwesley-professional-1-638.jpg?cb=1569014320",
+      "quantity": 2,
+      "price": 30
+    },
+    {
+      "id": "coNUwwRkUtk",
+      "orderId": "BC4xonWQyxc",
+      "bookId": "1",
+      "title": "Clean Code",
+      "image": "https://m.media-amazon.com/images/I/41xShlnTZTL.jpg",
+      "quantity": 1,
+      "price": 25
+    },
+    {
+      "id": "w7E4CyZhKmA",
+      "orderId": "QwwV9AagDgY",
+      "bookId": "3",
+      "title": "Atomic Habits",
+      "image": "https://m.media-amazon.com/images/I/513Y5o-DYtL.jpg",
+      "quantity": 1,
+      "price": 18
+    },
+    {
+      "id": "kl2obKmfPdc",
+      "orderId": "QwwV9AagDgY",
+      "bookId": "2",
+      "title": "The Pragmatic Programmer",
+      "image": "https://image.slidesharecdn.com/0135957052-thepragmaticprogrammerbydavidthomas-190920211554/95/2019-the-pragmatic-programmer-pdf-your-journey-to-mastery-20th-anniversary-edition-2nd-edition-by-david-thomas-addisonwesley-professional-1-638.jpg?cb=1569014320",
+      "quantity": 2,
+      "price": 30
+    },
+    {
+      "id": "i0fQElPygMo",
+      "orderId": "3n0ATdz52U0",
+      "bookId": "1",
+      "title": "Clean Code",
+      "image": "https://m.media-amazon.com/images/I/41xShlnTZTL.jpg",
+      "quantity": 1,
+      "price": 25
+    },
+    {
+      "id": "pH1p_HLBTe8",
+      "orderId": "ZVt1zAl8mUM",
+      "bookId": "2",
+      "title": "The Pragmatic Programmer",
+      "image": "https://image.slidesharecdn.com/0135957052-thepragmaticprogrammerbydavidthomas-190920211554/95/2019-the-pragmatic-programmer-pdf-your-journey-to-mastery-20th-anniversary-edition-2nd-edition-by-david-thomas-addisonwesley-professional-1-638.jpg?cb=1569014320",
+      "quantity": 15,
+      "price": 30
+    },
+    {
+      "id": "ZrILDVvAZe0",
+      "orderId": "GauCEgNLRRk",
+      "bookId": "3",
+      "title": "Atomic Habits",
+      "image": "https://m.media-amazon.com/images/I/513Y5o-DYtL.jpg",
+      "quantity": 35,
+      "price": 18
+    },
+    {
+      "orderId": "KJ6cIddgXIA",
+      "bookId": "4",
+      "title": "Thinking Fast and Slow",
+      "image": "https://m.media-amazon.com/images/I/61fdrEuPJwL._SL1500_.jpg",
+      "quantity": 1,
+      "price": 22,
+      "id": "xnyuMjOe4GY"
+    },
+    {
+      "orderId": "kVtgWu_ZI94",
+      "bookId": "4",
+      "title": "Thinking Fast and Slow",
+      "image": "https://m.media-amazon.com/images/I/61fdrEuPJwL._SL1500_.jpg",
+      "quantity": 1,
+      "price": 22,
+      "id": "sZg0IZe30aY"
+    },
+    {
+      "orderId": "3Qa8ob0dnqw",
+      "bookId": "4",
+      "title": "Thinking Fast and Slow",
+      "image": "https://m.media-amazon.com/images/I/61fdrEuPJwL._SL1500_.jpg",
+      "quantity": 1,
+      "price": 22,
+      "id": "VQQ7ZTJpduo"
+    },
+    {
+      "orderId": "iK7eYlD9afI",
+      "bookId": "4",
+      "title": "Thinking Fast and Slow",
+      "image": "https://m.media-amazon.com/images/I/61fdrEuPJwL._SL1500_.jpg",
+      "quantity": 1,
+      "price": 22,
+      "id": "_a0T23DMha4"
+    },
+    {
+      "orderId": "_yQedN86qYo",
+      "bookId": "2",
+      "title": "The Pragmatic Programmer",
+      "image": "https://image.slidesharecdn.com/0135957052-thepragmaticprogrammerbydavidthomas-190920211554/95/2019-the-pragmatic-programmer-pdf-your-journey-to-mastery-20th-anniversary-edition-2nd-edition-by-david-thomas-addisonwesley-professional-1-638.jpg?cb=1569014320",
+      "quantity": 15,
+      "price": 30,
+      "id": "gT4puacxOaY"
+    },
+    {
+      "orderId": "BwC9oyQfcbc",
+      "bookId": "4",
+      "title": "Thinking Fast and Slow",
+      "image": "https://m.media-amazon.com/images/I/61fdrEuPJwL._SL1500_.jpg",
+      "quantity": 8,
+      "price": 22,
+      "id": "gAX3JZQ-SqU"
+    }
+  ],
+  "vouchers": [
+    {
+      "id": "1",
+      "title": "Ưu đãi mùa hè 10%",
+      "code": "SALE10",
+      "type": "percentage",
+      "value": 10,
+      "minOrderValue": 30,
+      "expirationDate": "2026-12-31",
+      "usageLimit": 100,
+      "used": 2,
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "2",
+      "title": "Giảm ngay $5 cho bạn mới",
+      "code": "NEWUSER5",
+      "type": "fixed",
+      "value": 5,
+      "minOrderValue": 20,
+      "expirationDate": "2026-12-31",
+      "usageLimit": 200,
+      "used": 6,
+      "status": "Active",
+      "isDeleted": false
+    },
+    {
+      "id": "3",
+      "title": "Mã ưu đãi đã hết hạn",
+      "code": "HETHAN",
+      "type": "percentage",
+      "value": 20,
+      "minOrderValue": 50,
+      "expirationDate": "2025-12-31",
+      "usageLimit": 50,
+      "used": 10,
+      "status": "Expired",
+      "isDeleted": false
+    },
+    {
+      "id": "4",
+      "title": "Mã tạm khóa hệ thống",
+      "code": "TAMKHOA",
+      "type": "percentage",
+      "value": 50,
+      "minOrderValue": 100,
+      "expirationDate": "2026-12-31",
+      "usageLimit": 10,
+      "used": 0,
+      "status": "Inactive",
+      "isDeleted": false
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
