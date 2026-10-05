@@ -1,0 +1,743 @@
+:root {
+  --text: #334155;
+  --text-h: #1e293b;
+  --bg: #f8fafc;
+  --border: #e2e8f0;
+  --code-bg: #f1f5f9;
+  --accent: #2563eb;
+  --accent-bg: rgba(37, 99, 235, 0.1);
+  --accent-border: rgba(37, 99, 235, 0.5);
+  --social-bg: rgba(241, 245, 249, 0.7);
+  --shadow: rgba(0, 0, 0, 0.08) 0 10px 15px -3px, rgba(0, 0, 0, 0.04) 0 4px 6px -2px;
+
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --heading: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+
+  font: 16px/150% var(--sans);
+  letter-spacing: 0.15px;
+  color: var(--text);
+  background-color: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background-color: var(--bg);
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tắt icon con mắt và nút xóa mặc định của trình duyệt (Microsoft Edge, IE) để tránh trùng lặp 2 nút con mắt */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Căn giữa chuẩn xác tất cả các nút bấm, liên kết và icon trong toàn bộ ứng dụng (DF38) */
+.btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+}
+
+.btn svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+}
+
+/* Căn giữa chuẩn cho Header Navbar */
+.navbar-nav .nav-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  vertical-align: middle !important;
+}
+
+.navbar-nav .nav-link svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+}
+
+.navbar-nav .dropdown-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  vertical-align: middle !important;
+}
+
+.navbar-nav .dropdown-toggle::after {
+  vertical-align: middle !important;
+  margin-top: 0 !important;
+  margin-left: 0.45rem !important;
+}
+
+/* Badge số lượng thông báo gắn góc icon trên Header (Chuẩn E-commerce hiện đại) */
+.header-nav-icon-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.header-icon-badge {
+  position: absolute;
+  top: -8px;
+  right: -9px;
+  background-color: #ef4444;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #212529; /* Viền tiệp màu nền thanh navbar dark để badge nổi bật sắc nét */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+/* Nút bấm thao tác vuông vắn chuẩn tỉ lệ trong bảng Admin */
+.btn-action-icon {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  border-radius: 6px !important;
+  line-height: 1 !important;
+}
+
+.btn-action-icon svg {
+  display: block !important;
+  margin: 0 !important;
+  font-size: 0.875rem !important;
+}
+
+.table .btn-sm {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+  line-height: 1.25 !important;
+  border-radius: 6px !important;
+}
+
+.table .btn-sm:not(.btn-action-icon) {
+  padding: 0.3rem 0.6rem !important;
+  font-size: 0.8125rem !important;
+}
+
+.table .btn-sm:not(.btn-action-icon) svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  margin-right: 0.35rem !important;
+  flex-shrink: 0 !important;
+}
+
+/* Cột Thao tác trong bảng Admin luôn ôm khít nội dung nút bấm, không bị hở thừa khoảng trống */
+.table th.col-actions,
+.table td.col-actions {
+  width: 1% !important;
+  white-space: nowrap !important;
+}
+
+/* Đảm bảo tiêu đề luôn rõ nét */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.card-title,
+.modal-title {
+  font-family: var(--heading);
+  color: #1e293b !important;
+  font-weight: 700;
+}
+
+h1, .h1 {
+  font-size: 2rem;
+  letter-spacing: -0.5px;
+  margin-bottom: 1rem;
+}
+
+h2, .h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.3px;
+  margin-bottom: 0.75rem;
+}
+
+h3, .h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+.book-card .card-title {
+  color: #1e293b !important;
+  font-weight: 700;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 135%;
+  padding: 3px 6px;
+  background: var(--code-bg);
+  color: #e11d48;
+  border-radius: 4px;
+}
+
+/* Custom Toastify Notification Styles */
+:root {
+  --toastify-toast-width: max-content;
+}
+
+.Toastify__toast-container {
+  width: auto !important;
+  max-width: calc(100vw - 32px) !important;
+  z-index: 99999 !important;
+}
+
+.Toastify__toast-container--top-right {
+  top: 75px !important;
+  right: 20px !important;
+}
+
+.Toastify__toast {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: max-content !important;
+  min-width: 340px !important;
+  max-width: min(560px, calc(100vw - 40px)) !important;
+  min-height: 48px !important;
+  padding: 12px 16px 12px 16px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
+  font-family: inherit !important;
+  position: relative !important;
+}
+
+.Toastify__toast-icon {
+  width: 22px !important;
+  flex-shrink: 0 !important;
+  margin-inline-end: 12px !important;
+}
+
+.Toastify__toast-body {
+  margin: 0 !important;
+  padding: 0 8px 0 0 !important;
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+  flex: 1 1 auto !important;
+}
+
+/* Hiển thị 1 hàng mặc định; nếu dài tự xuống hàng và tối đa 2 hàng */
+.Toastify__toast-body,
+.Toastify__toast-body > div:last-child {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  word-break: normal !important;
+}
+
+/* Nút X đóng thông báo: Chuyển sang relative flex item, luôn cách chữ tối thiểu 20px, căn giữa tuyệt đối */
+.Toastify__close-button {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  align-self: center !important;
+  opacity: 0.6 !important;
+  transition: opacity 0.15s ease, transform 0.15s ease !important;
+  margin-left: 20px !important;
+  margin-right: 0 !important;
+  padding: 4px !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+}
+
+.Toastify__close-button > svg {
+  display: block !important;
+  margin: auto !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1 !important;
+  transform: scale(1.15) !important;
+}
+
+/* Personal Dashboard Utilities */
+.hover-bg-white-10:hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+
+.shadow-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.shadow-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 119, 182, 0.08) !important;
+  border-color: #0077b6 !important;
+}
+
+/* Hero Carousel Styles */
+.hero-carousel {
+  border-radius: 0;
+  overflow: hidden;
+  background-color: #0b132b;
+}
+
+.hero-carousel .carousel-inner {
+  height: 480px;
+}
+
+.hero-carousel .carousel-item {
+  height: 480px;
+  min-height: 480px;
+}
+
+.hero-carousel .carousel-item > .container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.hero-carousel .carousel-item > .container > .row {
+  width: 100%;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-carousel h1,
+.hero-carousel h2,
+.hero-carousel h3,
+.hero-carousel p,
+.hero-carousel .lead,
+.hero-carousel .display-5,
+.hero-carousel .carousel-caption {
+  color: #ffffff !important;
+}
+
+.hero-carousel .carousel-indicators [data-bs-target] {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.hero-carousel .carousel-indicators .active {
+  width: 26px;
+  border-radius: 6px;
+  background-color: #ffffff;
+}
+
+/* Tùy chỉnh nút điều hướng Carousel để không đè lên chữ */
+.hero-carousel .carousel-control-prev,
+.hero-carousel .carousel-control-next {
+  width: 44px !important;
+  height: 44px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  border-radius: 50% !important;
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(4px);
+  opacity: 0.8 !important;
+  transition: all 0.2s ease-in-out;
+  z-index: 10;
+}
+
+.hero-carousel .carousel-control-prev {
+  left: 20px !important;
+}
+
+.hero-carousel .carousel-control-next {
+  right: 20px !important;
+}
+
+.hero-carousel .carousel-control-prev:hover,
+.hero-carousel .carousel-control-next:hover {
+  background-color: rgba(15, 23, 42, 0.8) !important;
+  opacity: 1 !important;
+}
+
+.hero-carousel .carousel-control-prev-icon,
+.hero-carousel .carousel-control-next-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Khoảng đệm an toàn 2 bên để chữ và nội dung không bao giờ chạm vào nút mũi tên */
+.hero-carousel .carousel-item .container {
+  padding-left: 80px !important;
+  padding-right: 80px !important;
+}
+
+@media (max-width: 768px) {
+  .hero-carousel,
+  .hero-carousel .carousel-inner {
+    height: auto;
+  }
+  .hero-carousel .carousel-item {
+    height: auto;
+    min-height: 420px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  .hero-carousel .carousel-control-prev {
+    left: 10px !important;
+    width: 38px !important;
+    height: 38px !important;
+  }
+  .hero-carousel .carousel-control-next {
+    right: 10px !important;
+    width: 38px !important;
+    height: 38px !important;
+  }
+  .hero-carousel .carousel-item .container {
+    padding-left: 58px !important;
+    padding-right: 58px !important;
+  }
+}
+
+.hero-slide-1 {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #2563eb 100%);
+}
+
+.hero-slide-2 {
+  background: linear-gradient(135deg, #092c3e 0%, #0369a1 55%, #0284c7 100%);
+}
+
+.hero-slide-3 {
+  background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 55%, #6366f1 100%);
+}
+
+.hero-book-shadow {
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.hero-book-shadow:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* Professional Human-Centric UI Styles (Anti-AI Aesthetic) */
+.settings-container {
+  max-width: 1040px;
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-nav-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.settings-nav-link:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.settings-nav-link.active {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.settings-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+}
+
+/* Khung nội dung Profile: chỉ riêng khung này cuộn lên xuống trên desktop, ẩn thanh cuộn */
+@media (min-width: 768px) {
+  .profile-content-scroll {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE, Edge */
+  }
+}
+
+.profile-content-scroll::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.user-avatar-initials {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #334151;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.form-control-clean {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #111827;
+  background-color: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control-clean:focus {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 1px #0f172a;
+  outline: none;
+}
+
+.form-control-clean:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  border-color: #e5e7eb;
+}
+
+.btn-clean {
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.15s ease;
+}
+
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.category-tag:hover {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+/* Reusable Standard Back Button */
+.btn-back {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0.35rem 0.75rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  color: #334151 !important;
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease-in-out !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.btn-back:hover {
+  background-color: #f8fafc !important;
+  border-color: #64748b !important;
+  color: #0f172a !important;
+}
+
+.btn-back svg {
+  margin-right: 0.5rem !important;
+  flex-shrink: 0 !important;
+}
+
+/* Ẩn mũi tên spinner tăng giảm trên ô input type=number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Phân biệt màu sắc cho các trạng thái đơn hàng trong dropdown select */
+option.status-option-Pending,
+.status-option-Pending {
+  color: #b45309 !important;
+  font-weight: 600;
+}
+
+option.status-option-Confirmed,
+.status-option-Confirmed {
+  color: #0369a1 !important;
+  font-weight: 600;
+}
+
+option.status-option-Shipping,
+.status-option-Shipping {
+  color: #1d4ed8 !important;
+  font-weight: 600;
+}
+
+option.status-option-Delivered,
+.status-option-Delivered {
+  color: #15803d !important;
+  font-weight: 600;
+}
+
+option.status-option-Cancelled,
+.status-option-Cancelled {
+  color: #dc2626 !important;
+  font-weight: 600;
+}
+
+option.status-option-Returned,
+.status-option-Returned {
+  color: #475569 !important;
+  font-weight: 600;
+}
+
+/* Slim scrollbar cho Admin Sidebar */
+.admin-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.admin-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Đảm bảo thanh điều hướng Header và menu Dropdown luôn hiển thị trên cùng mọi phần tử */
+.header-navbar,
+.navbar.sticky-top {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1060 !important;
+}
+
+.navbar .dropdown-menu {
+  z-index: 1070 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Sửa triệt để lỗi icon dấu X bị lệch trong toàn bộ Alert dismissible */
+.alert-dismissible {
+  position: relative !important;
+  padding-right: 3rem !important;
+}
+
+.alert-dismissible .btn-close {
+  position: absolute !important;
+  top: 50% !important;
+  bottom: auto !important;
+  right: 0.75rem !important;
+  transform: translateY(-50%) !important;
+  width: 0.85rem !important;
+  height: 0.85rem !important;
+  padding: 0.35rem !important;
+  margin: 0 !important;
+  box-sizing: content-box !important;
+  background-size: 0.75rem !important;
+  background-position: center !important;
+  opacity: 0.65 !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out !important;
+}
+
+.alert-dismissible .btn-close:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.alert-dismissible .btn-close:hover {
+  opacity: 1 !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+
+
+
