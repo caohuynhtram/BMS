@@ -1,5 +1,5 @@
 {
-  "name": "bms",
+  "name": "infinia",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,10 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.13.0",
+    "axios": "^1.20.0",
     "bootstrap": "^5.3.8",
     "react": "^19.2.8",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.4"
+    "react-icons": "^5.7.0",
+    "react-redux": "^9.3.0",
+    "react-router-dom": "^7.18.4",
+    "react-toastify": "^11.1.0",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
