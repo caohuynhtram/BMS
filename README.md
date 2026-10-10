@@ -14,3 +14,19 @@ Dự án đồ án kết thúc môn FER202 - Xây dựng ứng dụng web quản
 3. Cao Huỳnh Trâm
 4. Trang Tiến Đạt
 5. Phạm Tuấn Kiệt
+
+## 🚀 Hướng dẫn cài đặt & Chạy dự án
+
+```bash
+# 1. Cài đặt các thư viện phụ thuộc
+npm install
+
+# 2. Khởi động Mock REST API Server (port 5000)
+npm run server
+
+# 3. Khởi động ứng dụng React Vite Client (port 5173)
+npm run dev
+
+# 4. Chạy đồng thời cả Client và Server
+npm run dev:all
+```
