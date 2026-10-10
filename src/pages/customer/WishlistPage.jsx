@@ -34,6 +34,40 @@ const WishlistPage = () => {
     toast.info("Đã xóa khỏi danh sách yêu thích", { toastId: `wishlist-${targetBookId}` });
   };
 
+  const handleAddToCart = (item) => {
+    const targetBookId = String(item.bookId || item.id);
+    if (
+      item.stock <= 0 ||
+      item.isDeleted ||
+      item.status === "Inactive" ||
+      item.status === "Out of Stock"
+    ) {
+      toast.error("Sách này hiện đã tạm hết hàng.", { toastId: `stock-${targetBookId}` });
+      return;
+    }
+
+    const currentCartItem = cart.items.find((i) => String(i.bookId) === targetBookId);
+    if (currentCartItem && currentCartItem.quantity >= item.stock) {
+      toast.warning(`Bạn đã chọn tối đa số lượng có sẵn trong kho (${item.stock} cuốn).`, {
+        toastId: `max-${targetBookId}`,
+      });
+      return;
+    }
+
+    dispatch(
+      addToCart({
+        ...item,
+        id: targetBookId,
+        bookId: targetBookId,
+      })
+    );
+    toast.success(`Đã thêm "${item.title}" vào giỏ hàng`, { toastId: `cart-${targetBookId}` });
+
+    if (user?.id) {
+      const updatedItems = cart.items.map((i) => ({
+        bookId: String(i.bookId),
+        quantity: String(i.bookId) === targetBookId ? i.quantity + 1 : i.quantity,
+      }));
       if (!updatedItems.find((i) => String(i.bookId) === targetBookId)) {
         updatedItems.push({ bookId: targetBookId, quantity: 1 });
       }
