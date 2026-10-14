@@ -302,6 +302,18 @@ const CartPage = () => {
         </div>
       </div>
 
+      {combinedWarnings.length > 0 && (
+        <Alert variant="warning" className="mb-4">
+          <FaExclamationTriangle className="me-2" />
+          <strong>Thông báo giỏ hàng:</strong>
+          <ul className="mb-0 mt-1 ps-3">
+            {combinedWarnings.map((msg, idx) => (
+              <li key={`${idx}-${msg}`}>{msg}</li>
+            ))}
+          </ul>
+        </Alert>
+      )}
+
       <Row className="g-4">
         <Col lg={8}>
           <Row className="text-muted small fw-bold pb-2 border-bottom d-none d-md-flex">
@@ -333,6 +345,15 @@ const CartPage = () => {
         </Col>
       </Row>
 
+      <ConfirmModal
+        show={showClearModal}
+        onClose={() => setShowClearModal(false)}
+        onConfirm={handleConfirmClearCart}
+        title="Làm trống giỏ hàng"
+        message="Bạn có chắc chắn muốn xóa toàn bộ sản phẩm đang có trong giỏ hàng không?"
+        confirmText="Xóa tất cả"
+        cancelText="Giữ lại"
+      />
     </Container>
   );
 };
