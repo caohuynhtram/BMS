@@ -178,6 +178,116 @@ export const confirmReceipt = createAsyncThunk(
       });
       return res.data;
     } catch (err) {
+      return rejectWithValue(err.response?.data || "Xác nhận nhận hàng chưa thành công.");
+    }
+  }
+);
+
+// Yêu cầu trả hàng (khách hàng gửi yêu cầu xét duyệt)
+export const returnOrder = createAsyncThunk(
+  "order/returnOrder",
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const currentOrderRes = await axiosClient.get(`/orders/${orderId}`);
+      if (currentOrderRes.data?.status !== "Delivered") {
+        return rejectWithValue("Chỉ đơn hàng đã giao thành công mới có thể gửi yêu cầu trả hàng.");
+      }
+
+      const res = await axiosClient.patch(`/orders/${orderId}`, {
+        status: "Return Requested",
+      });
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Gửi yêu cầu trả hàng chưa thành công.");
+    }
+  }
+);
+
+// Admin cập nhật trạng thái đơn hàng (ràng buộc không thể chuyển Delivered trực tiếp sang Returned)
+export const updateOrderStatus = createAsyncThunk(
+  "order/updateOrderStatus",
+  async ({ orderId, status }, { rejectWithValue }) => {
+    try {
+      const currentOrderRes = await axiosClient.get(`/orders/${orderId}`);
+      const prevStatus = currentOrderRes.data?.status;
+
+      if (prevStatus === "Delivered" && status === "Returned") {
+        return rejectWithValue("Không thể chuyển sang trạng thái Đã trả hàng trực tiếp. Khách hàng cần gửi yêu cầu trước.");
+      }
+
+      const res = await axiosClient.patch(`/orders/${orderId}`, { status });
+
+      if (
+        (status === "Cancelled" || status === "Returned") &&
+        prevStatus !== "Cancelled" &&
+        prevStatus !== "Returned"
+      ) {
+        const itemsRes = await orderApi.getOrderItems(orderId);
+        for (const item of itemsRes.data) {
+          const bookRes = await axiosClient.get(`/books/${item.bookId}`);
+          if (bookRes.data) {
+            const currentStock = Number(bookRes.data.stock) || 0;
+            const newStock = currentStock + Number(item.quantity);
+            const updatePayload = { stock: newStock };
+            if (bookRes.data.status === "Out of Stock" || (currentStock === 0 && newStock > 0)) {
+              updatePayload.status = "Active";
+            }
+            await axiosClient.patch(`/books/${item.bookId}`, updatePayload);
+          }
+        }
+
+        if (status === "Cancelled" && currentOrderRes.data?.voucherId) {
+          try {
+            const vRes = await axiosClient.get(`/vouchers/${currentOrderRes.data.voucherId}`);
+            if (vRes.data) {
+              const currentUsed = Number(vRes.data.used || 0);
+              const newUsed = Math.max(0, currentUsed - 1);
+              const patchPayload = { used: newUsed };
+              if (
+                vRes.data.status === "Expired" &&
+                !isVoucherExpired(vRes.data.expirationDate) &&
+                newUsed < Number(vRes.data.usageLimit || 9999)
+              ) {
+                patchPayload.status = "Active";
+              }
+              await axiosClient.patch(`/vouchers/${currentOrderRes.data.voucherId}`, patchPayload);
+            }
+          } catch (vErr) {
+            console.error("Failed to restore voucher on admin cancel:", vErr);
+          }
+        }
+      } else if (
+        (prevStatus === "Cancelled" || prevStatus === "Returned") &&
+        status !== "Cancelled" &&
+        status !== "Returned"
+      ) {
+        const itemsRes = await orderApi.getOrderItems(orderId);
+        for (const item of itemsRes.data) {
+          const bookRes = await axiosClient.get(`/books/${item.bookId}`);
+          if (bookRes.data) {
+            const currentStock = Number(bookRes.data.stock) || 0;
+            await axiosClient.patch(`/books/${item.bookId}`, {
+              stock: Math.max(0, currentStock - Number(item.quantity)),
+            });
+          }
+        }
+      }
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data || "Cập nhật trạng thái đơn hàng chưa thành công."
+      );
+    }
+  }
+);
+
+const initialState = {
+  orders: [],
+  currentOrder: null,
+  loading: false,
+  error: null,
 };
 
 const updateOrderInState = (state, updatedOrder) => {
