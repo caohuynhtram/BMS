@@ -289,10 +289,45 @@ const OrderDetailPage = () => {
             </div>
           </div>
 
+          {/* Action buttons */}
+          {(currentOrder.status === "Pending" || currentOrder.status === "Shipping" || currentOrder.status === "Delivered") && (
+            <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+              {currentOrder.status === "Pending" && (
+                <Button variant="outline-danger" size="sm" onClick={handleConfirmCancel} className="d-inline-flex align-items-center">
+                  <FaTimesCircle className="me-2 flex-shrink-0" />
+                  <span>Hủy đơn hàng</span>
+                </Button>
+              )}
+              {currentOrder.status === "Shipping" && (
+                <Button variant="success" size="sm" onClick={handleConfirmReceipt} className="d-inline-flex align-items-center">
+                  <FaCheckCircle className="me-2 flex-shrink-0" />
+                  <span>Đã nhận được hàng</span>
+                </Button>
+              )}
+              {currentOrder.status === "Delivered" && (
+                <Button variant="outline-secondary" size="sm" onClick={handleReturn} className="d-inline-flex align-items-center">
+                  <FaUndo className="me-2 flex-shrink-0" />
+                  <span>Yêu cầu trả hàng</span>
+                </Button>
+              )}
+            </div>
+          )}
         </Card.Body>
       </Card>
+
+      <ConfirmModal
+        show={confirmModal.show}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, show: false }))}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        confirmVariant={confirmModal.confirmVariant}
+      />
     </Container>
   );
 };
 
 export default OrderDetailPage;
+
