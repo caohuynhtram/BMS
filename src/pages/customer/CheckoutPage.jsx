@@ -97,6 +97,72 @@ const CheckoutPage = () => {
     }
   };
 
+  const validateAndApplyVoucher = (voucher) => {
+    setVoucherError("");
+
+    if (!voucher || voucher.isDeleted || voucher.status === "Inactive") {
+      const msg = "Mã giảm giá này hiện không còn áp dụng.";
+      setVoucherError(msg);
+      return false;
+    }
+
+    if (usedVoucherIds.has(String(voucher.id))) {
+      const msg = "Bạn đã sử dụng mã giảm giá này ở đơn hàng trước rồi.";
+      setVoucherError(msg);
+      return false;
+    }
+
+    if (voucher.status === "Expired" || (voucher.expirationDate && isVoucherExpired(voucher.expirationDate))) {
+      const msg = "Mã giảm giá này đã hết hạn sử dụng.";
+      setVoucherError(msg);
+      return false;
+    }
+
+    if (voucher.usageLimit && Number(voucher.used || 0) >= Number(voucher.usageLimit)) {
+      const msg = "Mã giảm giá này đã hết lượt sử dụng.";
+      setVoucherError(msg);
+      return false;
+    }
+
+    if (!isVoucherValid(voucher)) {
+      const msg = "Mã giảm giá không hợp lệ hoặc không còn áp dụng được.";
+      setVoucherError(msg);
+      return false;
+    }
+
+    if (totalPrice < Number(voucher.minOrderValue || 0)) {
+      const msg = `Đơn hàng tối thiểu để áp dụng mã này là ${formatCurrency(voucher.minOrderValue)}. Giá trị giỏ hàng hiện tại: ${formatCurrency(totalPrice)}.`;
+      setVoucherError(msg);
+      return false;
+    }
+
+    const calculatedDiscount = calculateDiscount(totalPrice, voucher);
+    setDiscount(calculatedDiscount);
+    setAppliedVoucher(voucher);
+    toast.success(`Đã áp dụng mã giảm giá "${voucher.code}" thành công!`);
+    return true;
+  };
+
+  const handleApplyVoucher = () => {
+    const trimmed = voucherCode.trim().toUpperCase();
+    if (!trimmed) {
+      setVoucherError("Vui lòng nhập mã giảm giá trước khi nhấn áp dụng.");
+      return;
+    }
+
+    const matched = allVouchers.find(
+      (v) => (v.code || "").toUpperCase() === trimmed
+    );
+
+    if (!matched) {
+      setVoucherError(`Mã giảm giá "${trimmed}" không tồn tại trên hệ thống.`);
+      return;
+    }
+
+    validateAndApplyVoucher(matched);
+  };
+
+  const handleSelectVoucher = (voucher) => {
     setVoucherCode(voucher.code);
     validateAndApplyVoucher(voucher);
   };
@@ -152,66 +218,6 @@ const CheckoutPage = () => {
       setShippingError("Số điện thoại nhận hàng không hợp lệ (cần 10 chữ số).");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
-    }
-    if (!isValidAddress(shippingInfo.address)) {
-      newFieldErrors.address = "Địa chỉ nhận hàng phải có ít nhất 2 từ chi tiết.";
-      setFieldErrors(newFieldErrors);
-      setShippingError("Địa chỉ nhận hàng chưa hợp lệ (phải có ít nhất 2 từ).");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-    setFieldErrors({});
-
-    setLoading(true);
-
-    try {
-      const booksRes = await bookApi.getAll();
-      const currentBooks = booksRes.data || [];
-
-      for (const item of items) {
-        const bookOnServer = currentBooks.find((b) => String(b.id) === String(item.bookId));
-        if (!bookOnServer || bookOnServer.isDeleted || bookOnServer.status === "Inactive") {
-          const msg = `Cuốn sách "${item.title}" hiện đã ngừng kinh doanh. Vui lòng quay lại giỏ hàng để cập nhật.`;
-          setError(msg);
-          window.scrollTo({ top: 0, behavior: "smooth" });
-          setLoading(false);
-          return;
-        }
-        if (bookOnServer.stock <= 0 || bookOnServer.status === "Out of Stock") {
-          const msg = `Cuốn sách "${item.title}" hiện đã hết hàng. Vui lòng quay lại giỏ hàng để bỏ sản phẩm này trước khi thanh toán.`;
-          setError(msg);
-          window.scrollTo({ top: 0, behavior: "smooth" });
-          setLoading(false);
-          return;
-        }
-        if (Number(bookOnServer.price) !== Number(item.price)) {
-          const msg = `Giá cuốn "${item.title}" vừa cập nhật từ ${formatCurrency(item.price)} sang ${formatCurrency(bookOnServer.price)}. Vui lòng xem lại giỏ hàng.`;
-          setError(msg);
-          window.scrollTo({ top: 0, behavior: "smooth" });
-          setLoading(false);
-          return;
-        }
-        if (item.quantity > bookOnServer.stock) {
-          const msg = `Sách "${item.title}" chỉ còn ${bookOnServer.stock} cuốn trong kho. Vui lòng giảm số lượng đặt mua trong giỏ.`;
-          setError(msg);
-          window.scrollTo({ top: 0, behavior: "smooth" });
-          setLoading(false);
-          return;
-        }
-      }
-
-      if (appliedVoucher) {
-        try {
-          const vFreshRes = await voucherApi.getAll();
-          const vFresh = (vFreshRes.data || []).find((v) => String(v.id) === String(appliedVoucher.id));
-          if (!vFresh || !isVoucherValid(vFresh)) {
-            const msg = `Mã giảm giá "${appliedVoucher.code}" vừa hết hạn hoặc không còn hiệu lực. Vui lòng kiểm tra lại.`;
-            setError(msg);
-            setAppliedVoucher(null);
-            setDiscount(0);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            setLoading(false);
-            return;
           }
         } catch (vErr) {
           console.error("Voucher re-verification failed:", vErr);
@@ -277,6 +283,181 @@ const CheckoutPage = () => {
           <FaArrowLeft className="me-2 flex-shrink-0" />
           <span>Quay lại giỏ hàng</span>
         </Button>
+      </div>
+
+      {error && (
+        <Alert variant="danger" className="mb-4" dismissible onClose={() => setError("")}>
+          <div className="d-flex align-items-center pe-3">
+            <FaExclamationCircle className="me-2 flex-shrink-0" />
+            <div>{error}</div>
+          </div>
+        </Alert>
+      )}
+
+      <Row className="g-4 mb-4 align-items-start">
+        {/* CỘT TRÁI (50%): THÔNG TIN GIAO HÀNG & MÃ GIẢM GIÁ */}
+        <Col lg={6}>
+          {/* KHỐI 1: THÔNG TIN NGƯỜI NHẬN HÀNG */}
+          <Card className="shadow-sm border-0 bg-white mb-4">
+            <Card.Body className="p-4">
+              <div className="d-flex align-items-center mb-3">
+                <FaTruck className="text-primary me-2 fs-5" />
+                <h5 className="fw-bold mb-0 text-dark">Thông tin người nhận hàng</h5>
+              </div>
+
+              {shippingError && (
+                <Alert
+                  variant="danger"
+                  className="mb-3"
+                  dismissible
+                  onClose={() => setShippingError("")}
+                >
+                  <div className="d-flex align-items-center pe-3">
+                    <FaExclamationCircle className="me-2 flex-shrink-0" />
+                    <div>{shippingError}</div>
+                  </div>
+                </Alert>
+              )}
+
+              <Form noValidate>
+                <Row className="g-3 mb-3">
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold text-dark">
+                        Họ và tên người nhận <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="name"
+                        value={shippingInfo.name}
+                        onChange={handleShippingChange}
+                        placeholder="Nguyễn Văn A"
+                        isInvalid={Boolean(fieldErrors.name)}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {fieldErrors.name}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold text-dark">
+                        Số điện thoại <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="tel"
+                        name="phone"
+                        value={shippingInfo.phone}
+                        onChange={handleShippingChange}
+                        placeholder="0912345678"
+                        isInvalid={Boolean(fieldErrors.phone)}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {fieldErrors.phone}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Form.Group className="mb-0">
+                  <Form.Label className="fw-semibold text-dark">
+                    Địa chỉ giao hàng <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    name="address"
+                    value={shippingInfo.address}
+                    onChange={handleShippingChange}
+                    placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành..."
+                    isInvalid={Boolean(fieldErrors.address)}
+                    required
+                    style={{ resize: "vertical" }}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {fieldErrors.address}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Form>
+            </Card.Body>
+          </Card>
+
+          {/* KHỐI 2: MÃ GIẢM GIÁ */}
+          <Card className="shadow-sm border-0 bg-white">
+            <Card.Body className="p-4">
+              <div className="d-flex align-items-center mb-3">
+                <FaTag className="text-primary me-2 fs-5" />
+                <h5 className="fw-bold mb-0 text-dark">Mã giảm giá</h5>
+              </div>
+
+              {voucherError && (
+                <Alert
+                  variant="danger"
+                  className="py-2 mb-3"
+                  dismissible
+                  onClose={() => setVoucherError("")}
+                >
+                  <div className="d-flex align-items-center pe-3">
+                    <FaExclamationCircle className="me-2 flex-shrink-0" />
+                    <div>{voucherError}</div>
+                  </div>
+                </Alert>
+              )}
+
+              <div className="d-flex gap-2 mb-3 align-items-center w-100">
+                <Form.Control
+                  type="text"
+                  placeholder="Nhập mã giảm giá"
+                  value={voucherCode}
+                  onChange={(e) => {
+                    setVoucherCode(e.target.value.toUpperCase());
+                    if (voucherError) setVoucherError("");
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleApplyVoucher();
+                    }
+                  }}
+                  disabled={Boolean(appliedVoucher)}
+                  className="flex-grow-1 text-uppercase"
+                />
+                {appliedVoucher ? (
+                  <Button
+                    type="button"
+                    variant="outline-danger"
+                    onClick={handleRemoveVoucher}
+                    className="text-nowrap px-4"
+                  >
+                    Gỡ mã
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="primary"
+                    onClick={handleApplyVoucher}
+                    className="text-nowrap px-4"
+                  >
+                    Áp dụng
+                  </Button>
+                )}
+              </div>
+
+              {appliedVoucher && (
+                <Alert variant="success" className="py-2 d-flex align-items-center mb-3">
+                  <FaCheckCircle className="me-2 text-success flex-shrink-0" />
+                  <strong className="text-dark">Đã áp dụng mã: {appliedVoucher.code}</strong>
+                  <span className="ms-2 text-success fw-bold">(-{formatCurrency(discount)})</span>
+                </Alert>
+              )}
+
+              {!appliedVoucher && availableVouchers.length > 0 && (
+                <>
+                  <h6 className="fw-bold mt-3 mb-2 text-dark">Mã giảm giá khả dụng</h6>
+                  <ListGroup>
+                    {availableVouchers.map((voucher) => {
+                      const meetsMinOrder = totalPrice >= Number(voucher.minOrderValue || 0);
     </Container>
   );
 };
