@@ -39,3 +39,14 @@ npm run dev:all
 - `cartSlice`: Quản lý giỏ hàng, số lượng và đồng bộ `localStorage`.
 - `orderSlice`: Quản lý lịch sử đặt hàng và trạng thái đơn mua.
 - `wishlistSlice`: Quản lý danh sách sách yêu thích.
+
+## 🔌 Danh sách API Endpoints (JSON-Server)
+
+| Phương thức | Endpoint | Mô tả |
+| :--- | :--- | :--- |
+| `GET/POST` | `/books` | Danh sách và thêm mới sách |
+| `GET/PUT/DELETE` | `/books/:id` | Chi tiết, cập nhật và xóa sách |
+| `GET/POST` | `/categories` | Danh mục thể loại sách |
+| `GET/POST` | `/vouchers` | Quản lý mã giảm giá |
+| `GET/POST` | `/orders` | Quản lý đơn đặt hàng |
+| `GET/POST` | `/users` | Quản lý tài khoản người dùng |
