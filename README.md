@@ -30,3 +30,12 @@ npm run dev
 # 4. Chạy đồng thời cả Client và Server
 npm run dev:all
 ```
+
+## 📐 Kiến trúc & Công nghệ
+
+### Redux State Management
+- `authSlice`: Quản lý thông tin đăng nhập, token và phân quyền người dùng.
+- `bookSlice`: Quản lý danh mục sách, bộ lọc tìm kiếm và chi tiết sách.
+- `cartSlice`: Quản lý giỏ hàng, số lượng và đồng bộ `localStorage`.
+- `orderSlice`: Quản lý lịch sử đặt hàng và trạng thái đơn mua.
+- `wishlistSlice`: Quản lý danh sách sách yêu thích.
