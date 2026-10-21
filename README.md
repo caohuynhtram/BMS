@@ -57,3 +57,7 @@ npm run dev:all
 3. Điền thông tin giao hàng và chọn phương thức thanh toán.
 4. Đơn hàng được tạo với trạng thái ban đầu là `Pending`.
 5. Quản trị viên cập nhật trạng thái đơn sang `Processing`, `Shipped` hoặc `Delivered`.
+
+## ⭐ Đánh giá & Phản hồi
+- Khách hàng đã đăng nhập có thể gửi đánh giá từ 1 đến 5 sao kèm bình luận.
+- Điểm đánh giá trung bình được tính toán tự động và hiển thị trên thẻ sách và trang chi tiết sách.
