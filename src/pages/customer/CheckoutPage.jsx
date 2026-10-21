@@ -218,6 +218,66 @@ const CheckoutPage = () => {
       setShippingError("Số điện thoại nhận hàng không hợp lệ (cần 10 chữ số).");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
+    }
+    if (!isValidAddress(shippingInfo.address)) {
+      newFieldErrors.address = "Địa chỉ nhận hàng phải có ít nhất 2 từ chi tiết.";
+      setFieldErrors(newFieldErrors);
+      setShippingError("Địa chỉ nhận hàng chưa hợp lệ (phải có ít nhất 2 từ).");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    setFieldErrors({});
+
+    setLoading(true);
+
+    try {
+      const booksRes = await bookApi.getAll();
+      const currentBooks = booksRes.data || [];
+
+      for (const item of items) {
+        const bookOnServer = currentBooks.find((b) => String(b.id) === String(item.bookId));
+        if (!bookOnServer || bookOnServer.isDeleted || bookOnServer.status === "Inactive") {
+          const msg = `Cuốn sách "${item.title}" hiện đã ngừng kinh doanh. Vui lòng quay lại giỏ hàng để cập nhật.`;
+          setError(msg);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          setLoading(false);
+          return;
+        }
+        if (bookOnServer.stock <= 0 || bookOnServer.status === "Out of Stock") {
+          const msg = `Cuốn sách "${item.title}" hiện đã hết hàng. Vui lòng quay lại giỏ hàng để bỏ sản phẩm này trước khi thanh toán.`;
+          setError(msg);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          setLoading(false);
+          return;
+        }
+        if (Number(bookOnServer.price) !== Number(item.price)) {
+          const msg = `Giá cuốn "${item.title}" vừa cập nhật từ ${formatCurrency(item.price)} sang ${formatCurrency(bookOnServer.price)}. Vui lòng xem lại giỏ hàng.`;
+          setError(msg);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          setLoading(false);
+          return;
+        }
+        if (item.quantity > bookOnServer.stock) {
+          const msg = `Sách "${item.title}" chỉ còn ${bookOnServer.stock} cuốn trong kho. Vui lòng giảm số lượng đặt mua trong giỏ.`;
+          setError(msg);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (appliedVoucher) {
+        try {
+          const vFreshRes = await voucherApi.getAll();
+          const vFresh = (vFreshRes.data || []).find((v) => String(v.id) === String(appliedVoucher.id));
+          if (!vFresh || !isVoucherValid(vFresh)) {
+            const msg = `Mã giảm giá "${appliedVoucher.code}" vừa hết hạn hoặc không còn hiệu lực. Vui lòng kiểm tra lại.`;
+            setError(msg);
+            setAppliedVoucher(null);
+            setDiscount(0);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            setLoading(false);
+            return;
           }
         } catch (vErr) {
           console.error("Voucher re-verification failed:", vErr);
@@ -458,6 +518,110 @@ const CheckoutPage = () => {
                   <ListGroup>
                     {availableVouchers.map((voucher) => {
                       const meetsMinOrder = totalPrice >= Number(voucher.minOrderValue || 0);
+                      return (
+                        <ListGroup.Item
+                          key={voucher.id}
+                          className={`d-flex justify-content-between align-items-center ${
+                            meetsMinOrder ? "list-group-item-action cursor-pointer" : "opacity-75"
+                          }`}
+                          onClick={() => meetsMinOrder && handleSelectVoucher(voucher)}
+                        >
+                          <div>
+                            <div className="fw-bold text-dark">
+                              <Badge bg="primary" className="me-2">
+                                {voucher.code}
+                              </Badge>
+                              {voucher.title}
+                            </div>
+                            <small className="text-muted">
+                              {voucher.type === "percentage"
+                                ? `Giảm ${voucher.value}%`
+                                : `Giảm ${formatCurrency(voucher.value)}`}
+                              {" · "}Đơn tối thiểu: {formatCurrency(voucher.minOrderValue || 0)}
+                              {voucher.expirationDate ? ` · Hạn dùng: ${voucher.expirationDate}` : " · Vô thời hạn"}
+                            </small>
+                          </div>
+                          <div>
+                            {meetsMinOrder ? (
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline-success"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleSelectVoucher(voucher);
+                                }}
+                              >
+                                Áp dụng
+                              </Button>
+                            ) : (
+                              <Badge bg="secondary">
+                                Tối thiểu {formatCurrency(voucher.minOrderValue)}
+                              </Badge>
+                            )}
+                          </div>
+                        </ListGroup.Item>
+                      );
+                    })}
+                  </ListGroup>
+                </>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+
+        {/* CỘT PHẢI (50%): TÓM TẮT ĐƠN HÀNG */}
+        <Col lg={6}>
+          <div className="sticky-top" style={{ top: "85px", zIndex: 10 }}>
+            <Card className="shadow-sm border-0 bg-white">
+              <Card.Body className="p-4">
+                <h5 className="fw-bold mb-3 text-dark">Tóm tắt đơn hàng</h5>
+                <div className="mb-3" style={{ maxHeight: "280px", overflowY: "auto" }}>
+                  {items.map((item) => (
+                    <div key={item.bookId} className="d-flex justify-content-between mb-2">
+                      <span className="text-truncate text-secondary" style={{ maxWidth: "70%" }}>
+                        {item.title} x{item.quantity}
+                      </span>
+                      <span className="fw-semibold text-dark">
+                        {formatCurrency(item.price * item.quantity)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <hr className="my-2" />
+                  <div className="d-flex justify-content-between mb-2">
+                    <span className="text-muted">Tạm tính</span>
+                    <span className="fw-semibold text-dark">{formatCurrency(totalPrice)}</span>
+                  </div>
+                  {discount > 0 && (
+                    <div className="d-flex justify-content-between mb-2 text-success">
+                      <span>Mã giảm giá ({appliedVoucher?.code})</span>
+                      <span>-{formatCurrency(discount)}</span>
+                    </div>
+                  )}
+                  <hr className="my-2" />
+                  <div className="d-flex justify-content-between mb-3">
+                    <strong className="fs-5 text-dark">Tổng thanh toán</strong>
+                    <strong className="text-primary fs-5">
+                      {formatCurrency(finalPrice)}
+                    </strong>
+                  </div>
+                  <Button
+                    variant="primary"
+                    className="w-100 py-3 fw-bold"
+                    size="lg"
+                    onClick={handlePlaceOrder}
+                    disabled={loading}
+                  >
+                    {loading ? "Đang xử lý đặt hàng..." : "Xác nhận đặt hàng"}
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </div>
+        </Col>
+      </Row>
     </Container>
   );
 };
