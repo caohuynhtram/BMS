@@ -50,3 +50,10 @@ npm run dev:all
 | `GET/POST` | `/vouchers` | Quản lý mã giảm giá |
 | `GET/POST` | `/orders` | Quản lý đơn đặt hàng |
 | `GET/POST` | `/users` | Quản lý tài khoản người dùng |
+
+## 💳 Quy trình Đặt hàng & Thanh toán
+1. Người dùng chọn sách và thêm vào giỏ hàng.
+2. Kiểm tra danh sách giỏ hàng và nhập mã voucher giảm giá (nếu có).
+3. Điền thông tin giao hàng và chọn phương thức thanh toán.
+4. Đơn hàng được tạo với trạng thái ban đầu là `Pending`.
+5. Quản trị viên cập nhật trạng thái đơn sang `Processing`, `Shipped` hoặc `Delivered`.
