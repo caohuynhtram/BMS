@@ -61,3 +61,16 @@ npm run dev:all
 ## ⭐ Đánh giá & Phản hồi
 - Khách hàng đã đăng nhập có thể gửi đánh giá từ 1 đến 5 sao kèm bình luận.
 - Điểm đánh giá trung bình được tính toán tự động và hiển thị trên thẻ sách và trang chi tiết sách.
+
+## 🛠️ Build & Kiểm thử
+
+```bash
+# Kiểm tra định dạng mã nguồn và lỗi cú pháp
+npm run lint
+
+# Tạo bản build tối ưu hóa cho môi trường Production
+npm run build
+
+# Chạy thử bản build production trên máy cục bộ
+npm run preview
+```
