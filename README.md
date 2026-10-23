@@ -74,3 +74,11 @@ npm run build
 # Chạy thử bản build production trên máy cục bộ
 npm run preview
 ```
+
+## 🗄️ Cấu trúc Cơ sở Dữ liệu (db.json)
+- `books`: Chứa thông tin sách, tác giả, giá tiền, số lượng tồn kho, danh mục và xếp hạng.
+- `categories`: Danh sách thể loại sách.
+- `vouchers`: Mã giảm giá, loại giảm giá (phần trăm / cố định) và hạn mức.
+- `users`: Tài khoản người dùng và vai trò (`customer` / `admin`).
+- `orders`: Thông tin đơn mua, sản phẩm mua, giá trị tổng và trạng thái giao hàng.
+- `reviews`: Đánh giá phản hồi của độc giả về từng cuốn sách.
