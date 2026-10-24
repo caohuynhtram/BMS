@@ -93,3 +93,7 @@ npm run preview
 - [x] Đặt hàng, theo dõi lịch sử đơn hàng và chi tiết hóa đơn.
 - [x] Trang quản trị: CRUD sách, danh mục thể loại, mã voucher và danh sách người dùng.
 - [x] Dashboard thống kê doanh thu, số lượng đơn hàng và số sách bán chạy.
+
+## 📦 Phiên bản 1.0.0
+- Hoàn thành đầy đủ tất cả các yêu cầu chức năng của đề tài.
+- Sẵn sàng nộp báo cáo đồ án môn FER202.
