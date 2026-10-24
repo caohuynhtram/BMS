@@ -82,3 +82,14 @@ npm run preview
 - `users`: Tài khoản người dùng và vai trò (`customer` / `admin`).
 - `orders`: Thông tin đơn mua, sản phẩm mua, giá trị tổng và trạng thái giao hàng.
 - `reviews`: Đánh giá phản hồi của độc giả về từng cuốn sách.
+
+## ✅ Bảng kiểm thử Tính năng (QA Checklist)
+- [x] Đăng ký / Đăng nhập / Đăng xuất tài khoản người dùng và quản trị viên.
+- [x] Bảo vệ định tuyến (ProtectedRoute & AdminRoute).
+- [x] Danh mục sách với tìm kiếm realtime, phân trang và lọc theo thể loại.
+- [x] Trang chi tiết sách với hình ảnh, mô tả, đánh giá sao.
+- [x] Thêm vào giỏ hàng, cập nhật số lượng, xóa sản phẩm và lưu `localStorage`.
+- [x] Áp dụng mã giảm giá voucher hợp lệ và tính toán tổng tiền thanh toán.
+- [x] Đặt hàng, theo dõi lịch sử đơn hàng và chi tiết hóa đơn.
+- [x] Trang quản trị: CRUD sách, danh mục thể loại, mã voucher và danh sách người dùng.
+- [x] Dashboard thống kê doanh thu, số lượng đơn hàng và số sách bán chạy.
