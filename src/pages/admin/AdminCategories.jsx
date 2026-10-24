@@ -218,8 +218,47 @@ const AdminCategories = () => {
 
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 
-      </div>
-    );
-  };
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title className="fw-bold text-dark">{editing ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSubmit} noValidate>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-semibold">
+                Tên danh mục <span className="text-danger">*</span>
+              </Form.Label>
+              <Form.Control value={name} onChange={(e) => setName(e.target.value)} placeholder="Nhập tên danh mục..." required />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-semibold">Trạng thái</Form.Label>
+              <Form.Select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value={CATEGORY_STATUS.ACTIVE}>Hoạt động</option>
+                <option value={CATEGORY_STATUS.INACTIVE}>Vô hiệu hóa (Ngừng hiển thị)</option>
+              </Form.Select>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>Hủy bỏ</Button>
+            <Button type="submit" variant="primary">{editing ? "Cập nhật" : "Thêm mới"}</Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
 
-  export default AdminCategories;
+      <ConfirmModal
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        title="Xác nhận vô hiệu hóa danh mục"
+        message="Bạn có chắc chắn muốn vô hiệu hóa danh mục này không? Danh mục sẽ được ẩn khỏi cửa hàng nhưng các cuốn sách thuộc danh mục vẫn được lưu trữ dữ liệu an toàn."
+        confirmText="Xác nhận vô hiệu hóa"
+        cancelText="Hủy bỏ"
+      />
+    </div>
+  );
+};
+
+export default AdminCategories;
