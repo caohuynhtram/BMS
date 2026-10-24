@@ -361,6 +361,149 @@ const AdminVouchers = () => {
 
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title className="fw-bold text-dark">
+            {editing ? "Chỉnh sửa mã giảm giá" : "Thêm mã giảm giá mới"}
+          </Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSubmit} noValidate>
+          <Modal.Body>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">
+                    Mã voucher <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    name="code"
+                    value={formData.code}
+                    onChange={handleChange}
+                    placeholder="VD: GIAM20"
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">
+                    Tên chương trình <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    placeholder="VD: Giảm 20% cho mọi đơn hàng"
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">Loại giảm giá</Form.Label>
+                  <Form.Select name="type" value={formData.type} onChange={handleChange}>
+                    <option value="percentage">Phần trăm (%)</option>
+                    <option value="fixed">Số tiền cố định ($)</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">
+                    Mức giảm giá <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="value"
+                    value={formData.value}
+                    onChange={handleChange}
+                    min={1}
+                    max={formData.type === "percentage" ? 100 : undefined}
+                    placeholder={formData.type === "percentage" ? "VD: 20" : "VD: 50"}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">Đơn hàng tối thiểu ($)</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="minOrderValue"
+                    value={formData.minOrderValue}
+                    onChange={handleChange}
+                    min={0}
+                    placeholder="VD: 100"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">
+                    Ngày hết hạn <small className="text-muted fw-normal">(để trống nếu vô hạn)</small>
+                  </Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="expirationDate"
+                    value={formData.expirationDate}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">
+                    Lượt sử dụng tối đa <small className="text-muted fw-normal">(để trống nếu vô hạn)</small>
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="usageLimit"
+                    value={formData.usageLimit}
+                    onChange={handleChange}
+                    min={1}
+                    placeholder="VD: 50 (hoặc để trống)"
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">Trạng thái</Form.Label>
+                  <Form.Select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    disabled={Boolean(editing?.isDeleted)}
+                  >
+                    <option value={VOUCHER_STATUS.ACTIVE}>Đang áp dụng</option>
+                    <option value={VOUCHER_STATUS.EXPIRED}>Hết hạn</option>
+                    <option value={VOUCHER_STATUS.INACTIVE}>Ngừng áp dụng</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>Hủy bỏ</Button>
+            <Button type="submit" variant="primary">{editing ? "Cập nhật" : "Tạo mới"}</Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+
+      <ConfirmModal
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        title="Xác nhận dừng áp dụng mã giảm giá"
+        message="Bạn có chắc chắn muốn xóa mã giảm giá này không? Mã sẽ không thể áp dụng cho các đơn hàng mới."
+        confirmText="Xác nhận xóa"
+        cancelText="Hủy bỏ"
+      />
     </div>
   );
 };
