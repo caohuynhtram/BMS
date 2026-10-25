@@ -1,99 +1,425 @@
-# 📚 Bookstore Management System (BMS) - FER202
+# 📚 Bookstore Web Application
 
-Dự án đồ án kết thúc môn FER202 - Xây dựng ứng dụng web quản lý và mua bán sách trực tuyến.
+Ứng dụng web **Bookstore Web Application** được phát triển trong khuôn khổ bài tập FER ReactJS.
 
-## 🎯 Mục tiêu dự án
-- Ứng dụng Single Page Application xây dựng trên nền tảng React 19 và Vite.
-- Quản lý trạng thái toàn cục (State Management) với Redux Toolkit.
-- Tương tác Mock RESTful API backend bằng JSON-Server.
-- Giao diện thân thiện người dùng tối ưu trên đa thiết bị với Bootstrap 5.
+Dự án này minh họa kiến trúc **frontend** hiện đại, bao gồm:
 
-## 👥 Thành viên nhóm thực hiện
-1. Lê Hoàng Nhẩn (Nhóm trưởng)
-2. Nguyễn Thị Hồng Kiều
-3. Cao Huỳnh Trâm
-4. Trang Tiến Đạt
-5. Phạm Tuấn Kiệt
+- Kiến trúc React component
+- Quản lý global state sử dụng Redux Toolkit
+- Tích hợp API với Axios
+- Phát triển UI với Bootstrap / React Bootstrap
+- Mock backend sử dụng json-server
 
-## 🚀 Hướng dẫn cài đặt & Chạy dự án
+---
+
+# 🚀 Tech Stack
+
+## Frontend
+
+- React
+- Redux Toolkit
+- React Redux
+- Redux Persist
+- React Router
+- Axios
+- Bootstrap
+- React Bootstrap
+- React Toastify
+
+## Backend (Mock)
+
+- json-server
+
+## Development Tools
+
+- Vite / Create React App
+- ESLint
+- Prettier
+
+---
+
+# 👥 System Roles
+
+Hệ thống hỗ trợ hai vai trò chính:
+
+### Customer (User)
+
+Người dùng có thể:
+
+- Xem danh sách sách
+- Tìm kiếm sách
+- Thêm sách vào cart
+- Áp dụng voucher
+- Đặt hàng (place order)
+- Theo dõi lịch sử đơn hàng (order history)
+- Quản lý wishlist
+- Cập nhật profile
+
+### Administrator (Admin)
+
+Admin có thể quản lý hệ thống bookstore:
+
+- Quản lý user
+- Quản lý book
+- Quản lý category
+- Quản lý order
+- Quản lý voucher
+- Xem thống kê doanh thu
+
+---
+
+# 🏗 System Architecture
+
+Ứng dụng tuân theo kiến trúc **React SPA architecture** điển hình.
+
+User Interface (React Bootstrap)
+↓
+Pages
+↓
+Reusable Components
+↓
+Redux Store
+↓
+Axios API Layer
+↓
+json-server (Mock Backend)
+
+Các layer chính:
+- UI Layer
+- Page Layer
+- Component Layer
+- Redux State Management
+- API Layer (Axios)
+- Mock Backend (json-server)
+
+---
+
+# 📄 Main Features
+
+## Authentication
+
+- Register
+- Login
+- Logout
+- Phân quyền theo role (User / Admin)
+
+Authentication state được lưu trữ trong **Redux** và tùy chọn trong **localStorage**.
+
+---
+
+## Book Catalog
+
+Người dùng có thể:
+
+- Xem danh sách sách
+- Tìm kiếm sách
+- Lọc sách theo category
+- Sắp xếp sách theo giá
+- Xem chi tiết sách (book detail)
+- Pagination
+
+---
+
+## Book Detail
+
+Hiển thị:
+
+- Book image
+- Title
+- Author
+- Category
+- Price
+- Description
+- Stock availability
+- Ratings
+- Reviews
+
+Hành động:
+
+- Add to cart
+- Add to wishlist
+- Write review
+
+---
+
+## Wishlist
+
+Người dùng có thể:
+
+- Thêm sách vào wishlist
+- Xóa sách khỏi wishlist
+- Xem trang wishlist
+
+---
+
+## Shopping Cart
+
+Người dùng có thể:
+
+- Thêm sách vào cart
+- Cập nhật số lượng
+- Xóa item
+- Clear cart
+
+Các tính năng của cart:
+
+- Tính tổng tiền (total price calculation)
+- Hỗ trợ voucher
+- Kiểm tra tồn kho (stock validation)
+
+---
+
+## Voucher System
+
+Người dùng có thể áp dụng voucher trong quá trình checkout.
+
+Thuộc tính của voucher:
+
+- code
+- title
+- type (percentage / fixed)
+- value
+- minimum order value
+- expiration date
+- usage limit
+
+---
+
+## Orders
+
+Người dùng có thể:
+
+- Place order
+- Cancel order
+- Confirm received order
+- Request return
+
+Luồng trạng thái đơn hàng (Order status flow):
+Pending
+Confirmed
+Shipping
+Delivered
+Cancelled
+Returned
+
+---
+
+## Order History
+
+Người dùng có thể:
+
+- Xem order history
+- Xem order details
+- Theo dõi order status
+
+---
+
+## User Profile
+
+Người dùng có thể quản lý:
+
+- Name
+- Email
+- Address
+- Phone
+- Password
+
+---
+
+# 🛠 Admin Dashboard
+
+Admin có thể quản lý các thành phần sau:
+
+### User Management
+
+- Xem danh sách user
+- Tìm kiếm user
+- Block / activate account
+
+### Book Management
+
+- Create book
+- Edit book
+- Delete book
+- Search book
+
+### Category Management
+
+- Create category
+- Edit category
+- Delete category
+
+### Order Management
+
+- Xem danh sách order
+- Update order status
+
+### Voucher Management
+
+- Create voucher
+- Edit voucher
+- Delete voucher
+
+### Statistics
+
+Tổng quan dashboard bao gồm:
+
+- Total revenue
+- Total orders
+- Best selling books
+
+---
+
+# 📁 Project Structure
+
+```
+fer202-assignment/
+├── public/                     # Tài nguyên tĩnh
+│   ├── favicon.ico
+│   └── logo.png
+│
+├── src/                        # Mã nguồn ứng dụng React
+│   ├── api/                    # Cấu hình & gọi API (Axios Services)
+│   │   ├── axiosClient.js      # Base Axios instance (Interceptors token/lỗi)
+│   │   ├── authApi.js          # API Đăng nhập, Đăng ký, Profile
+│   │   ├── bookApi.js          # API Lấy danh sách sách, Chi tiết & Bộ lọc
+│   │   ├── cartApi.js          # API Giỏ hàng & Áp dụng Voucher
+│   │   └── orderApi.js         # API Tạo & Quản lý đơn hàng
+│   │
+│   ├── assets/                 # Images & Stylesheet
+│   │   ├── images/             # Banner, Logo, Ảnh mặc định
+│   │   └── styles/             # Stylesheet custom (CSS/SCSS)
+│   │
+│   ├── components/             # Các Component tái sử dụng
+│   │   ├── common/             # Component dùng chung toàn ứng dụng
+│   │   │   ├── Header.jsx      # Thanh header & ô tìm kiếm
+│   │   │   ├── Footer.jsx      # Chân trang
+│   │   │   ├── Navbar.jsx      # Menu điều hướng danh mục
+│   │   │   ├── Loading.jsx     # Hiệu ứng tải trang (Spinner/Skeleton)
+│   │   │   ├── Pagination.jsx  # Bộ phân trang
+│   │   │   └── PrivateRoute.jsx# Bảo vệ Route (Auth Guard / Admin Guard)
+│   │   │
+│   │   ├── book/               # Component hiển thị Sách
+│   │   │   ├── BookCard.jsx    # Thẻ hiển thị 1 quyển sách
+│   │   │   ├── BookList.jsx    # Danh sách hiển thị BookCard
+│   │   │   ├── BookFilter.jsx  # Bộ lọc theo danh mục & khoảng giá
+│   │   │   ├── BookSort.jsx    # Dropdown sắp xếp (Giá / Phổ biến)
+│   │   │   └── ReviewList.jsx  # Danh sách đánh giá & bình luận
+│   │   │
+│   │   ├── cart/               # Component Giỏ hàng
+│   │   │   ├── CartItem.jsx    # Sản phẩm trong giỏ (nút tăng/giảm số lượng)
+│   │   │   ├── CartSummary.jsx # Bảng tổng tiền & nút Thanh toán
+│   │   │   └── VoucherInput.jsx# Ô nhập & áp dụng mã giảm giá
+│   │   │
+│   │   └── admin/              # Component giao diện Admin
+│   │       ├── Sidebar.jsx     # Menu điều hướng trang Admin
+│   │       ├── StatsCard.jsx   # Thẻ thống kê doanh thu & đơn hàng
+│   │       ├── UserTable.jsx   # Bảng quản lý người dùng
+│   │       ├── BookFormModal.jsx# Form popup thêm / sửa sách
+│   │       └── OrderTable.jsx  # Bảng quản lý đơn hàng
+│   │
+│   ├── pages/                  # Các trang giao diện chính (Views)
+│   │   ├── Home/               # Thư mục chứa Trang chủ & các trang chính
+│   │   │   ├── HomePage.js     # Trang chủ (Hero Banner, Sách nổi bật)
+│   │   │   ├── BookListPage.js # Trang danh sách sách & tìm kiếm
+│   │   │   ├── LoginPage.js    # Trang đăng nhập
+│   │   │   ├── RegisterPage.js # Trang đăng ký tài khoản
+│   │   │   └── WishlistPage.js # Trang danh sách sách yêu thích
+│   │   ├── BookDetail/         # Thư mục trang Chi tiết sách
+│   │   │   └── BookDetailPage.js
+│   │   ├── Cart/               # Thư mục trang Giỏ hàng
+│   │   │   └── CartPage.js
+│   │   ├── Checkout/           # Thư mục trang Thanh toán
+│   │   │   └── CheckoutPage.js
+│   │   ├── Orders/             # Thư mục trang Đơn hàng
+│   │   │   └── OrdersPage.js
+│   │   ├── Profile/            # Thư mục trang Hồ sơ cá nhân
+│   │   │   └── ProfilePage.js
+│   │   └── Admin/              # Thư mục trang Quản trị viên
+│   │       ├── AdminDashboardPage.js
+│   │       ├── ManageBooksPage.js
+│   │       ├── ManageOrdersPage.js
+│   │       └── ManageUsersPage.js
+│   │
+│   ├── redux/                  # State Management (Redux Toolkit)
+│   │   ├── store.js            # Cấu hình Redux Store gốc
+│   │   └── slices/             # Redux Slices cho từng tính năng
+│   │       ├── authSlice.js    # State Đăng nhập, Token & Phân quyền
+│   │       ├── bookSlice.js    # State Sách, Tìm kiếm & Lọc
+│   │       ├── cartSlice.js    # State Giỏ hàng & Voucher
+│   │       └── orderSlice.js   # State Đơn hàng
+│   │
+│   ├── hooks/                  # React Custom Hooks
+│   │   ├── useAuth.js          # Hook kiểm tra trạng thái đăng nhập
+│   │   └── useCart.js          # Hook thao tác nhanh với giỏ hàng
+│   │
+│   ├── routes/                 # Cấu hình Routing
+│   │   └── AppRoutes.jsx       # Định nghĩa Public, Private & Admin Routes
+│   │
+│   ├── utils/                  # Hàm tiện ích & Hằng số
+│   │   ├── formatters.js       # Format tiền tệ VND, định dạng ngày tháng
+│   │   ├── validators.js       # Validate dữ liệu form
+│   │   └── constants.js        # Hằng số (API URL, Roles, Status)
+│   │
+│   ├── App.jsx                 # Component chính (Router Provider, Toast)
+│   └── main.jsx                # Entry point gắn ứng dụng vào DOM (Vite)
+│
+├── docs/                       # Thư mục tài liệu & hướng dẫn dự án
+│   ├── DB.md                   # Thiết kế Database giả lập và tài khoản mặc định
+│   ├── LUONG_VAN_HANH.md       # Sơ đồ và tài liệu quy trình vận hành luồng Admin - User
+│   ├── PhanCongNhiemVu.md      # Kế hoạch tiến độ WBS và phân chia nhiệm vụ 5 thành viên
+│   └── HUONG_DAN_PUSH_GIT.md   # Hướng dẫn chi tiết phân chia file và kịch bản push Git cho 5 người
+├── db.json                     # Cơ sở dữ liệu giả lập (json-server)
+├── package.json                # Quản lý dependencies & npm scripts
+├── vite.config.js              # Cấu hình Vite
+└── README.md                   # Tài liệu hướng dẫn dự án
+```
+
+---
+
+# ⚙️ Installation & Setup
+
+## 1. Cài đặt dependencies
 
 ```bash
-# 1. Cài đặt các thư viện phụ thuộc
 npm install
-
-# 2. Khởi động Mock REST API Server (port 5000)
-npm run server
-
-# 3. Khởi động ứng dụng React Vite Client (port 5173)
-npm run dev
-
-# 4. Chạy đồng thời cả Client và Server
-npm run dev:all
 ```
 
-## 📐 Kiến trúc & Công nghệ
+## 2. ⚡ Khởi động hệ thống (Chạy song song cả Frontend & Backend)
 
-### Redux State Management
-- `authSlice`: Quản lý thông tin đăng nhập, token và phân quyền người dùng.
-- `bookSlice`: Quản lý danh mục sách, bộ lọc tìm kiếm và chi tiết sách.
-- `cartSlice`: Quản lý giỏ hàng, số lượng và đồng bộ `localStorage`.
-- `orderSlice`: Quản lý lịch sử đặt hàng và trạng thái đơn mua.
-- `wishlistSlice`: Quản lý danh sách sách yêu thích.
-
-## 🔌 Danh sách API Endpoints (JSON-Server)
-
-| Phương thức | Endpoint | Mô tả |
-| :--- | :--- | :--- |
-| `GET/POST` | `/books` | Danh sách và thêm mới sách |
-| `GET/PUT/DELETE` | `/books/:id` | Chi tiết, cập nhật và xóa sách |
-| `GET/POST` | `/categories` | Danh mục thể loại sách |
-| `GET/POST` | `/vouchers` | Quản lý mã giảm giá |
-| `GET/POST` | `/orders` | Quản lý đơn đặt hàng |
-| `GET/POST` | `/users` | Quản lý tài khoản người dùng |
-
-## 💳 Quy trình Đặt hàng & Thanh toán
-1. Người dùng chọn sách và thêm vào giỏ hàng.
-2. Kiểm tra danh sách giỏ hàng và nhập mã voucher giảm giá (nếu có).
-3. Điền thông tin giao hàng và chọn phương thức thanh toán.
-4. Đơn hàng được tạo với trạng thái ban đầu là `Pending`.
-5. Quản trị viên cập nhật trạng thái đơn sang `Processing`, `Shipped` hoặc `Delivered`.
-
-## ⭐ Đánh giá & Phản hồi
-- Khách hàng đã đăng nhập có thể gửi đánh giá từ 1 đến 5 sao kèm bình luận.
-- Điểm đánh giá trung bình được tính toán tự động và hiển thị trên thẻ sách và trang chi tiết sách.
-
-## 🛠️ Build & Kiểm thử
+Chỉ cần chạy **1 lệnh duy nhất** trong cùng 1 terminal để khởi động đồng thời cả Client UI và Mock Database:
 
 ```bash
-# Kiểm tra định dạng mã nguồn và lỗi cú pháp
-npm run lint
-
-# Tạo bản build tối ưu hóa cho môi trường Production
-npm run build
-
-# Chạy thử bản build production trên máy cục bộ
-npm run preview
+npm run dev:all
+# hoặc: npm start
 ```
 
-## 🗄️ Cấu trúc Cơ sở Dữ liệu (db.json)
-- `books`: Chứa thông tin sách, tác giả, giá tiền, số lượng tồn kho, danh mục và xếp hạng.
-- `categories`: Danh sách thể loại sách.
-- `vouchers`: Mã giảm giá, loại giảm giá (phần trăm / cố định) và hạn mức.
-- `users`: Tài khoản người dùng và vai trò (`customer` / `admin`).
-- `orders`: Thông tin đơn mua, sản phẩm mua, giá trị tổng và trạng thái giao hàng.
-- `reviews`: Đánh giá phản hồi của độc giả về từng cuốn sách.
+> 💡 **Cơ chế hoạt động:** Lệnh sử dụng thư viện `concurrently` để chạy đồng thời:
+> - 🌐 **React Client (Vite):** [http://localhost:5173](http://localhost:5173)
+> - 🗄️ **Mock REST API (JSON-Server):** [http://localhost:5000](http://localhost:5000)
+> Bạn không cần phải mở và quản lý 2 cửa sổ terminal riêng biệt.
 
-## ✅ Bảng kiểm thử Tính năng (QA Checklist)
-- [x] Đăng ký / Đăng nhập / Đăng xuất tài khoản người dùng và quản trị viên.
-- [x] Bảo vệ định tuyến (ProtectedRoute & AdminRoute).
-- [x] Danh mục sách với tìm kiếm realtime, phân trang và lọc theo thể loại.
-- [x] Trang chi tiết sách với hình ảnh, mô tả, đánh giá sao.
-- [x] Thêm vào giỏ hàng, cập nhật số lượng, xóa sản phẩm và lưu `localStorage`.
-- [x] Áp dụng mã giảm giá voucher hợp lệ và tính toán tổng tiền thanh toán.
-- [x] Đặt hàng, theo dõi lịch sử đơn hàng và chi tiết hóa đơn.
-- [x] Trang quản trị: CRUD sách, danh mục thể loại, mã voucher và danh sách người dùng.
-- [x] Dashboard thống kê doanh thu, số lượng đơn hàng và số sách bán chạy.
+<details>
+<summary><b>Hoặc chạy riêng lẻ 2 terminal (Tùy chọn dành cho debug):</b></summary>
 
-## 📦 Phiên bản 1.0.0
-- Hoàn thành đầy đủ tất cả các yêu cầu chức năng của đề tài.
-- Sẵn sàng nộp báo cáo đồ án môn FER202.
+- **Terminal 1 (Frontend):**
+  ```bash
+  npm run dev
+  ```
+- **Terminal 2 (Backend JSON-Server):**
+  ```bash
+  npm run server
+  ```
+
+</details>
+
+---
+
+## ✅ Quality Assurance & Verification Checklist
+
+- [x] **Authentication:** Login, Register, Logout and Route Guards (User & Admin).
+- [x] **Product Catalog:** Category live filters, search bar debounce, pagination and book detail view.
+- [x] **Shopping & Cart:** Add/Remove items, dynamic quantity adjustment and local storage sync.
+- [x] **Order Workflow:** Checkout flow, discount voucher application, tracking history and status transitions.
+- [x] **Reviews & Ratings:** Interactive rating stars and review list submission.
+- [x] **Admin Management:** Inventory management (CRUD books), category maintenance, voucher control and user status toggling.
