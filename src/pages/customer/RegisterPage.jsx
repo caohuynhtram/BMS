@@ -101,8 +101,15 @@ const RegisterPage = () => {
         return;
       }
 
+      const allUsers = allUsersRes.data || [];
+      const numericIds = allUsers
+        .map((u) => Number(u.id))
+        .filter((n) => !isNaN(n) && Number.isInteger(n));
+      const nextId = numericIds.length > 0 ? Math.max(...numericIds) + 1 : allUsers.length + 1;
+
       // Tạo tài khoản người dùng mới
       const res = await authApi.register({
+        id: String(nextId),
         name: formData.name.trim(),
         email: normalizedEmail,
         password: formData.password,

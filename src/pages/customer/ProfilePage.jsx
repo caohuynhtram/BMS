@@ -48,7 +48,7 @@ const ProfilePage = () => {
   const initialTab = queryParams.get("tab") || "profile";
   const [activeTab, setActiveTab] = useState(initialTab);
 
-  const isStaffOrAdmin = user?.role === "admin" || user?.role === "staff";
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -225,13 +225,13 @@ const ProfilePage = () => {
         </div>
         <Button
           as={Link}
-          to={isStaffOrAdmin ? "/admin" : "/"}
+          to={isAdmin ? "/admin" : "/"}
           variant="outline-secondary"
           size="sm"
           className="btn-back d-inline-flex align-items-center"
         >
           <FaArrowLeft className="me-2 flex-shrink-0" />
-          <span>{isStaffOrAdmin ? "Quay lại trang quản trị" : "Quay lại trang chủ"}</span>
+          <span>{isAdmin ? "Quay lại trang quản trị" : "Quay lại trang chủ"}</span>
         </Button>
       </div>
 
@@ -253,7 +253,7 @@ const ProfilePage = () => {
                     Thông tin cá nhân
                   </button>
 
-                  {!isStaffOrAdmin && (
+                  {!isAdmin && (
                     <button
                       type="button"
                       className={`settings-nav-link justify-content-between ${activeTab === "orders" ? "active" : ""}`}
@@ -324,7 +324,7 @@ const ProfilePage = () => {
                       </div>
                     </div>
                     <span className="badge bg-light text-secondary border small">
-                      {user?.role === "admin" ? "Quản trị viên" : user?.role === "staff" ? "Nhân viên" : "Khách hàng"}
+                      {user?.role === "admin" ? "Quản trị viên" : "Khách hàng"}
                     </span>
                   </div>
 
@@ -426,17 +426,19 @@ const ProfilePage = () => {
                       <Table hover responsive className="mb-0 align-middle small">
                         <thead className="table-light">
                           <tr>
-                            <th>Mã đơn</th>
-                            <th>Ngày đặt</th>
-                            <th>Tổng tiền</th>
-                            <th>Trạng thái</th>
-                            <th className="text-end">Thao tác</th>
+                            <th style={{ width: "135px", whiteSpace: "nowrap" }} className="text-nowrap">Mã đơn</th>
+                            <th style={{ width: "120px", whiteSpace: "nowrap" }}>Ngày đặt</th>
+                            <th style={{ minWidth: "110px" }}>Tổng tiền</th>
+                            <th style={{ minWidth: "120px" }}>Trạng thái</th>
+                            <th className="text-end" style={{ width: "130px", whiteSpace: "nowrap" }}>Thao tác</th>
                           </tr>
                         </thead>
                         <tbody>
                           {pagedOrders.map((order) => (
                             <tr key={order.id}>
-                              <td className="fw-semibold text-dark">#{order.id}</td>
+                              <td className="fw-semibold text-dark text-nowrap" style={{ whiteSpace: "nowrap" }}>
+                                #{String(order.orderCode || order.id).replace(/^#/, "")}
+                              </td>
                               <td className="text-secondary">{formatDate(order.createdAt) || order.createdAt}</td>
                               <td className="fw-semibold text-dark">
                                 {formatCurrency(order.totalPrice)}

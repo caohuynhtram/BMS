@@ -65,6 +65,12 @@ const AdminCategories = () => {
         await bookApi.updateCategory(editing.id, payload);
         toast.success("Cập nhật danh mục thành công!");
       } else {
+        const numericIds = categories
+          .map((c) => Number(c.id))
+          .filter((n) => !isNaN(n) && Number.isInteger(n));
+        const nextId = numericIds.length > 0 ? Math.max(...numericIds) + 1 : categories.length + 1;
+        payload.id = String(nextId);
+
         await bookApi.createCategory(payload);
         toast.success("Thêm danh mục mới thành công!");
       }
@@ -153,18 +159,18 @@ const AdminCategories = () => {
       <Table striped bordered hover responsive className="bg-white shadow-sm align-middle">
         <thead className="table-dark">
           <tr>
-            <th style={{ width: "80px" }}>ID</th>
+            <th style={{ width: "70px" }}>STT</th>
             <th>Tên danh mục</th>
             <th style={{ width: "160px" }}>Trạng thái</th>
             <th className="col-actions text-nowrap">Thao tác</th>
           </tr>
         </thead>
         <tbody>
-          {paginated.map((cat) => {
+          {paginated.map((cat, index) => {
             const isInactive = cat.isDeleted || cat.status === CATEGORY_STATUS.INACTIVE;
             return (
               <tr key={cat.id} className={isInactive ? "table-danger" : ""}>
-                <td>{cat.id}</td>
+                <td><strong>{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</strong></td>
                 <td className="fw-semibold text-dark">{cat.name}</td>
                 <td>
                   <Badge bg={isInactive ? "danger" : "success"}>
@@ -218,7 +224,7 @@ const AdminCategories = () => {
 
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title className="fw-bold text-dark">{editing ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}</Modal.Title>
         </Modal.Header>

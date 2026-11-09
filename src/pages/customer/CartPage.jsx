@@ -55,6 +55,10 @@ const CartItemRow = ({ item, onUpdateQuantity, onRemove }) => {
           fluid
           rounded
           style={{ maxHeight: "80px", objectFit: "cover" }}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/images/books/book-1.jpg";
+          }}
         />
       </Col>
       <Col xs={4}>

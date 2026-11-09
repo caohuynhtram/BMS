@@ -16,8 +16,6 @@ const Header = () => {
   const navigate = useNavigate();
 
   const isAdmin = user?.role === "admin";
-  const isStaff = user?.role === "staff";
-  const isStaffOrAdmin = isAdmin || isStaff;
 
   const handleLogout = () => {
     dispatch(logout());
@@ -28,22 +26,21 @@ const Header = () => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" sticky="top" className="shadow-sm header-navbar" style={{ zIndex: 1060 }}>
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top" className="shadow-sm header-navbar" style={{ zIndex: 1020 }}>
       <Container fluid className="px-3 px-lg-4">
         <Navbar.Brand
           as={Link}
-          to={isStaffOrAdmin ? "/admin" : "/"}
+          to={isAdmin ? "/admin" : "/"}
           className="d-flex align-items-center fw-bold"
         >
           <FaBook className="me-2" />
           INFINIA STORE
           {isAdmin && <Badge bg="warning" text="dark" className="ms-2 fs-6">Admin</Badge>}
-          {isStaff && <Badge bg="info" text="dark" className="ms-2 fs-6">Nhân viên</Badge>}
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="main-nav" />
         <Navbar.Collapse id="main-nav">
           <Nav className="me-auto">
-            {!isStaffOrAdmin && (
+            {!isAdmin && (
               <>
                 <Nav.Link as={Link} to="/home">Trang chủ</Nav.Link>
                 <Nav.Link as={Link} to="/books">Tủ sách</Nav.Link>
@@ -53,7 +50,7 @@ const Header = () => {
           <Nav>
             {isAuthenticated ? (
               <>
-                {!isStaffOrAdmin && (
+                {!isAdmin && (
                   <>
                     <Nav.Link as={Link} to="/wishlist" className="d-inline-flex align-items-center me-2">
                       <span className="header-nav-icon-wrapper">
@@ -92,12 +89,12 @@ const Header = () => {
                   <NavDropdown.Item as={Link} to="/profile">
                     Tài khoản của tôi
                   </NavDropdown.Item>
-                  {!isStaffOrAdmin && (
+                  {!isAdmin && (
                     <NavDropdown.Item as={Link} to="/profile?tab=orders">
                       Đơn hàng của tôi
                     </NavDropdown.Item>
                   )}
-                  {isStaffOrAdmin && (
+                  {isAdmin && (
                     <NavDropdown.Item as={Link} to="/admin">
                       Bảng điều khiển
                     </NavDropdown.Item>

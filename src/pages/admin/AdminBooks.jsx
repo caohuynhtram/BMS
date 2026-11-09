@@ -133,6 +133,12 @@ const AdminBooks = () => {
         await bookApi.update(editingBook.id, payload);
         toast.success("Cập nhật thông tin sách thành công!");
       } else {
+        const numericIds = books
+          .map((b) => Number(b.id))
+          .filter((n) => !isNaN(n) && Number.isInteger(n));
+        const nextId = numericIds.length > 0 ? Math.max(...numericIds) + 1 : books.length + 1;
+        payload.id = String(nextId);
+
         await bookApi.create(payload);
         toast.success("Thêm sách mới thành công!");
       }
@@ -259,7 +265,7 @@ const AdminBooks = () => {
       <Table striped bordered hover responsive className="bg-white shadow-sm align-middle">
         <thead className="table-dark">
           <tr>
-            <th style={{ width: "60px" }}>ID</th>
+            <th style={{ width: "65px" }}>STT</th>
             <th style={{ minWidth: "220px" }}>Tên sách</th>
             <th style={{ minWidth: "240px" }}>Tác giả</th>
             <th style={{ width: "135px" }}>Danh mục</th>
@@ -270,12 +276,12 @@ const AdminBooks = () => {
           </tr>
         </thead>
         <tbody>
-          {paginated.map((book) => (
+          {paginated.map((book, index) => (
             <tr
               key={book.id}
               className={book.isDeleted || book.status === BOOK_STATUS.INACTIVE ? "table-danger" : ""}
             >
-              <td>{book.id}</td>
+              <td><strong>{(currentPage - 1) * BOOKS_PER_PAGE + index + 1}</strong></td>
               <td className="fw-semibold text-dark">{book.title}</td>
               <td>{book.author}</td>
               <td><Badge bg="secondary">{getCategoryName(book.categoryId)}</Badge></td>
@@ -336,7 +342,7 @@ const AdminBooks = () => {
         onPageChange={setCurrentPage}
       />
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title className="fw-bold text-dark">
             {editingBook ? "Chỉnh sửa thông tin sách" : "Thêm sách mới"}

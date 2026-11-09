@@ -165,7 +165,13 @@ const AdminVouchers = () => {
         });
         toast.success("Cập nhật mã giảm giá thành công!");
       } else {
+        const numericIds = vouchers
+          .map((v) => Number(v.id))
+          .filter((n) => !isNaN(n) && Number.isInteger(n));
+        const nextId = numericIds.length > 0 ? Math.max(...numericIds) + 1 : vouchers.length + 1;
+
         await voucherApi.create({
+          id: String(nextId),
           ...payload,
           used: 0,
           status: finalStatus,
@@ -361,7 +367,7 @@ const AdminVouchers = () => {
 
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title className="fw-bold text-dark">
             {editing ? "Chỉnh sửa mã giảm giá" : "Thêm mã giảm giá mới"}

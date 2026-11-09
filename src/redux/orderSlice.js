@@ -38,7 +38,25 @@ export const createOrder = createAsyncThunk(
   "order/createOrder",
   async (orderData, { rejectWithValue }) => {
     try {
+      // 1. Tự động sinh mã đơn hàng chuẩn đẹp dạng ORD-XXXX (VD: ORD-1010, ORD-1011...)
+      let nextOrderCode = "ORD-1001";
+      try {
+        const allOrdersRes = await axiosClient.get("/orders");
+        const existingCodes = (allOrdersRes.data || [])
+          .map((o) => o.orderCode || o.id)
+          .map((code) => {
+            const m = String(code).match(/ORD-(\d+)/i);
+            return m ? parseInt(m[1], 10) : null;
+          })
+          .filter((n) => n !== null);
+        const nextNum = existingCodes.length > 0 ? Math.max(...existingCodes) + 1 : 1001;
+        nextOrderCode = `ORD-${nextNum}`;
+      } catch (codeErr) {
+        console.error("Failed to generate sequential orderCode:", codeErr);
+      }
+
       const orderRes = await axiosClient.post("/orders", {
+        orderCode: nextOrderCode,
         userId: String(orderData.userId),
         status: "Pending",
         totalPrice: Number(orderData.totalPrice),

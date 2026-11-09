@@ -5,7 +5,7 @@ import { FaHome, FaExclamationTriangle } from "react-icons/fa";
 
 const NotFoundPage = () => {
   const { user } = useSelector((state) => state.auth);
-  const isStaffOrAdmin = user?.role === "admin" || user?.role === "staff";
+  const isAdmin = user?.role === "admin";
 
   return (
     <Container className="py-5 text-center my-auto">
@@ -17,13 +17,13 @@ const NotFoundPage = () => {
         </p>
         <Button
           as={Link}
-          to={isStaffOrAdmin ? "/admin" : "/"}
+          to={isAdmin ? "/admin" : "/"}
           variant="primary"
           size="lg"
           className="px-4 d-inline-flex align-items-center"
         >
           <FaHome className="me-2" />
-          <span>{isStaffOrAdmin ? "Quay về Trang quản trị" : "Quay về Trang chủ"}</span>
+          <span>{isAdmin ? "Quay về Trang quản trị" : "Quay về Trang chủ"}</span>
         </Button>
       </div>
     </Container>

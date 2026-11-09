@@ -127,8 +127,8 @@ const OrderDetailPage = () => {
     );
   }
 
-  const isStaffOrAdmin = user?.role === "admin" || user?.role === "staff";
-  const isAuthorized = isStaffOrAdmin || String(currentOrder.userId) === String(user?.id);
+  const isAdmin = user?.role === "admin";
+  const isAuthorized = isAdmin || String(currentOrder.userId) === String(user?.id);
   if (!isAuthorized) {
     return (
       <Container className="py-5 text-center">
@@ -162,7 +162,9 @@ const OrderDetailPage = () => {
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <div>
-              <h3 className="fw-bold text-dark mb-1">Đơn hàng #{currentOrder.id}</h3>
+              <h3 className="fw-bold text-dark mb-1">
+                Đơn hàng #{String(currentOrder.orderCode || currentOrder.id).replace(/^#/, "")}
+              </h3>
               <small className="text-muted">
                 Ngày đặt: {formatDate(currentOrder.createdAt) || currentOrder.createdAt}
               </small>
@@ -237,6 +239,10 @@ const OrderDetailPage = () => {
                           alt={displayTitle}
                           rounded
                           style={{ width: "50px", height: "65px", objectFit: "cover" }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "/images/books/book-1.jpg";
+                          }}
                         />
                       ) : (
                         <div

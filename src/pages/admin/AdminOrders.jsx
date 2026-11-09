@@ -180,7 +180,7 @@ const AdminOrders = () => {
   };
 
   let filteredOrders = orders.filter((o) => {
-    const idMatch = matchesSearch(String(o.id), searchTerm);
+    const idMatch = matchesSearch(String(o.orderCode || o.id), searchTerm) || matchesSearch(String(o.id), searchTerm);
     const userMatch = matchesSearch(getUserName(o.userId), searchTerm);
     const recipientMatch = matchesSearch(o.recipientName || "", searchTerm);
     return idMatch || userMatch || recipientMatch;
@@ -239,7 +239,7 @@ const AdminOrders = () => {
       <Table striped bordered hover responsive className="bg-white shadow-sm align-middle">
         <thead className="table-dark">
           <tr>
-            <th style={{ width: "85px" }}>Mã đơn</th>
+            <th style={{ width: "150px", minWidth: "140px", whiteSpace: "nowrap" }} className="text-nowrap">Mã đơn</th>
             <th style={{ minWidth: "160px" }}>Khách hàng</th>
             <th style={{ minWidth: "180px" }}>Người nhận</th>
             <th style={{ width: "135px" }}>Ngày đặt</th>
@@ -253,7 +253,11 @@ const AdminOrders = () => {
             const transitions = getAvailableTransitions(order.status);
             return (
               <tr key={order.id}>
-                <td><strong>#{order.id}</strong></td>
+                <td className="text-nowrap" style={{ whiteSpace: "nowrap" }}>
+                  <strong style={{ whiteSpace: "nowrap", wordBreak: "keep-all" }}>
+                    #{String(order.orderCode || order.id).replace(/^#/, "")}
+                  </strong>
+                </td>
                 <td>{getUserName(order.userId)}</td>
                 <td>
                   <div className="small fw-semibold">{order.recipientName || "N/A"}</div>
@@ -339,10 +343,10 @@ const AdminOrders = () => {
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 
       {/* Order Detail Modal */}
-      <Modal show={showDetail} onHide={() => setShowDetail(false)} size="lg">
+      <Modal show={showDetail} onHide={() => setShowDetail(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title className="fw-bold text-dark">
-            Chi tiết đơn hàng #{selectedOrder?.id}
+            Chi tiết đơn hàng #{String(selectedOrder?.orderCode || selectedOrder?.id || "").replace(/^#/, "")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -449,6 +453,10 @@ const AdminOrders = () => {
                               alt={displayTitle}
                               rounded
                               style={{ width: "45px", height: "60px", objectFit: "cover" }}
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "/images/books/book-1.jpg";
+                              }}
                             />
                           ) : (
                             <div style={{ width: "45px", height: "60px", background: "#eee" }} className="d-flex align-items-center justify-content-center rounded">

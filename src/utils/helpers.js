@@ -12,7 +12,6 @@ export const ORDER_STATUS = {
 
 export const USER_ROLES = {
   ADMIN: 'admin',
-  STAFF: 'staff',
   CUSTOMER: 'customer',
 };
 

@@ -120,6 +120,10 @@ const BookCard = ({ book, reviewCount }) => {
             className="w-100 h-100"
             style={{ objectFit: "cover" }}
             loading="lazy"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/images/books/book-1.jpg";
+            }}
           />
         </Link>
         <Button

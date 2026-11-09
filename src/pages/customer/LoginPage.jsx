@@ -58,15 +58,15 @@ const LoginPage = () => {
           return;
         }
         dispatch(login(user));
-        const isStaffOrAdmin = user.role === "admin" || user.role === "staff";
-        if (!isStaffOrAdmin) {
+        const isAdmin = user.role === "admin";
+        if (!isAdmin) {
           dispatch(fetchWishlist(user.id));
           dispatch(fetchCart(user.id));
         }
         toast.success(`Chào mừng ${user.name} đã quay trở lại!`);
         const redirectPath = location.state?.from
           ? location.state.from.pathname + (location.state.from.search || "")
-          : (isStaffOrAdmin ? "/admin" : "/");
+          : (isAdmin ? "/admin" : "/");
         navigate(redirectPath);
       } else {
         setError("Email hoặc mật khẩu không chính xác.");

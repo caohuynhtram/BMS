@@ -61,27 +61,20 @@ const BookDetailPage = () => {
 
         const freshReviews = reviewsRes.data || [];
         const freshReviewCount = freshReviews.length;
-        const freshRating =
-          freshReviewCount > 0 ? calculateAverageRating(freshReviews) : 0;
+        const currentRating =
+          freshReviewCount > 0
+            ? calculateAverageRating(freshReviews)
+            : Number(bookRes.data.rating) || 0;
+        const currentReviewCount =
+          freshReviewCount > 0
+            ? freshReviewCount
+            : Number(bookRes.data.reviewCount) || 0;
 
-        // Tự động đồng bộ lại điểm đánh giá và số lượng nếu có sai lệch
-        if (
-          Number(bookRes.data.rating) !== freshRating ||
-          Number(bookRes.data.reviewCount) !== freshReviewCount
-        ) {
-          try {
-            await bookApi.update(bookRes.data.id, {
-              rating: freshRating,
-              reviewCount: freshReviewCount,
-            });
-            bookRes.data.rating = freshRating;
-            bookRes.data.reviewCount = freshReviewCount;
-          } catch (syncErr) {
-            console.error("Auto-sync rating failed:", syncErr);
-          }
-        }
-
-        setBook(bookRes.data);
+        setBook({
+          ...bookRes.data,
+          rating: currentRating,
+          reviewCount: currentReviewCount,
+        });
         setReviews(freshReviews);
 
         // Fetch category name — hiển thị "Chưa phân loại" nếu category bị xóa hoặc không tìm thấy
@@ -335,7 +328,7 @@ const BookDetailPage = () => {
     );
   }
 
-  const actualReviewCount = reviews.length;
+  const actualReviewCount = reviews.length > 0 ? reviews.length : (book.reviewCount || 0);
   const isOutOfStock =
     book.stock <= 0 ||
     book.status === BOOK_STATUS.OUT_OF_STOCK ||
@@ -370,6 +363,10 @@ const BookDetailPage = () => {
             rounded
             className="shadow"
             style={{ maxHeight: "500px", objectFit: "cover", width: "100%" }}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/images/books/book-1.jpg";
+            }}
           />
         </Col>
         <Col md={8}>
