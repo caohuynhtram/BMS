@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Form, Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 
-const SearchBar = ({ onSearch, placeholder = "Tìm kiếm..." }) => {
+const SearchBar = ({ onSearch, placeholder = "Search..." }) => {
   const [query, setQuery] = useState("");
   const inputRef = useRef(null);
 
@@ -41,7 +41,7 @@ const SearchBar = ({ onSearch, placeholder = "Tìm kiếm..." }) => {
           variant="link"
           className="position-absolute end-0 top-50 translate-middle-y text-primary border-0 p-2 me-1 d-flex align-items-center"
           style={{ zIndex: 5, background: "transparent" }}
-          title="Tìm kiếm"
+          title="Search"
           onClick={() => inputRef.current?.focus()}
         >
           <FaSearch />

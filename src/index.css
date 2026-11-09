@@ -687,17 +687,25 @@ option.status-option-Returned,
   background-color: rgba(255, 255, 255, 0.35);
 }
 
-/* Đảm bảo thanh điều hướng Header và menu Dropdown luôn hiển thị trên cùng mọi phần tử */
+/* Đảm bảo thanh điều hướng Header nằm dưới Modal khi mở popup */
 .header-navbar,
 .navbar.sticky-top {
   position: sticky !important;
   top: 0 !important;
-  z-index: 1060 !important;
+  z-index: 1020 !important;
 }
 
 .navbar .dropdown-menu {
-  z-index: 1070 !important;
+  z-index: 1030 !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Modal và backdrop luôn nổi trên cùng mọi phần tử */
+.modal-backdrop {
+  z-index: 1050 !important;
+}
+.modal {
+  z-index: 1055 !important;
 }
 
 /* Sửa triệt để lỗi icon dấu X bị lệch trong toàn bộ Alert dismissible */

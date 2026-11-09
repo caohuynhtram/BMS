@@ -13,7 +13,7 @@ const CartSummary = ({
   discount = 0,
   showCheckoutButton = true,
   disableCheckout = false,
-  checkoutButtonText = "Tiến hành đặt hàng",
+  checkoutButtonText = "Proceed to Checkout",
   onCheckoutClick,
 }) => {
   const finalPrice = useMemo(() => {
@@ -23,7 +23,7 @@ const CartSummary = ({
   return (
     <Card className="shadow-sm border-0 bg-white">
       <Card.Body>
-        <h5 className="fw-bold mb-3 text-dark">Tóm tắt đơn hàng</h5>
+        <h5 className="fw-bold mb-3 text-dark">Order Summary</h5>
 
         {items && items.length > 0 && (
           <div className="mb-3">
@@ -42,18 +42,18 @@ const CartSummary = ({
         )}
 
         <div className="d-flex justify-content-between mb-2">
-          <span className="text-muted">Tạm tính ({totalQuantity} sản phẩm)</span>
+          <span className="text-muted">Subtotal ({totalQuantity} {totalQuantity === 1 ? "item" : "items"})</span>
           <span className="fw-semibold text-dark">{formatCurrency(totalPrice)}</span>
         </div>
         {discount > 0 && (
           <div className="d-flex justify-content-between mb-2 text-success">
-            <span>Giảm giá</span>
+            <span>Discount</span>
             <span>-{formatCurrency(discount)}</span>
           </div>
         )}
         <hr />
         <div className="d-flex justify-content-between mb-3">
-          <strong className="text-dark fs-5">Tổng thanh toán</strong>
+          <strong className="text-dark fs-5">Total</strong>
           <strong className="text-primary fs-5">
             {formatCurrency(finalPrice)}
           </strong>

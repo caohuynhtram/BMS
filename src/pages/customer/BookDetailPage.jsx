@@ -61,27 +61,20 @@ const BookDetailPage = () => {
 
         const freshReviews = reviewsRes.data || [];
         const freshReviewCount = freshReviews.length;
-        const freshRating =
-          freshReviewCount > 0 ? calculateAverageRating(freshReviews) : 0;
+        const currentRating =
+          freshReviewCount > 0
+            ? calculateAverageRating(freshReviews)
+            : Number(bookRes.data.rating) || 0;
+        const currentReviewCount =
+          freshReviewCount > 0
+            ? freshReviewCount
+            : Number(bookRes.data.reviewCount) || 0;
 
-        // Tự động đồng bộ lại điểm đánh giá và số lượng nếu có sai lệch
-        if (
-          Number(bookRes.data.rating) !== freshRating ||
-          Number(bookRes.data.reviewCount) !== freshReviewCount
-        ) {
-          try {
-            await bookApi.update(bookRes.data.id, {
-              rating: freshRating,
-              reviewCount: freshReviewCount,
-            });
-            bookRes.data.rating = freshRating;
-            bookRes.data.reviewCount = freshReviewCount;
-          } catch (syncErr) {
-            console.error("Auto-sync rating failed:", syncErr);
-          }
-        }
-
-        setBook(bookRes.data);
+        setBook({
+          ...bookRes.data,
+          rating: currentRating,
+          reviewCount: currentReviewCount,
+        });
         setReviews(freshReviews);
 
         // Fetch category name — hiển thị "Chưa phân loại" nếu category bị xóa hoặc không tìm thấy
@@ -94,13 +87,13 @@ const BookDetailPage = () => {
             if (cat && !cat.isDeleted && cat.status !== "Inactive") {
               setCategory(cat);
             } else {
-              setCategory({ name: "Chưa phân loại" });
+              setCategory({ name: "Uncategorized" });
             }
           } catch (_err) {
-            setCategory({ name: "Chưa phân loại" });
+            setCategory({ name: "Uncategorized" });
           }
         } else {
-          setCategory({ name: "Chưa phân loại" });
+          setCategory({ name: "Uncategorized" });
         }
 
         // Kiểm tra khách hàng đã từng mua sách này và đơn đã giao thành công chưa
@@ -141,7 +134,7 @@ const BookDetailPage = () => {
     if (isSubmitting) return;
 
     if (!isAuthenticated) {
-      toast.warning("Vui lòng đăng nhập để thêm sách vào giỏ hàng", { toastId: "auth-cart" });
+      toast.warning("Please log in to add books to your cart", { toastId: "auth-cart" });
       return;
     }
     const isOutOfStockNow =
@@ -151,13 +144,13 @@ const BookDetailPage = () => {
       book.isDeleted ||
       book.status === BOOK_STATUS.INACTIVE;
     if (isOutOfStockNow) {
-      toast.error("Sách này hiện đã tạm hết hàng.", { toastId: `stock-${book?.id}` });
+      toast.error("This book is currently out of stock.", { toastId: `stock-${book?.id}` });
       return;
     }
 
     const currentCartItem = cartItems.find((i) => String(i.bookId) === String(book.id));
     if (currentCartItem && currentCartItem.quantity >= book.stock) {
-      toast.warning(`Bạn đã chọn tối đa số lượng có sẵn trong kho (${book.stock} cuốn).`, {
+      toast.warning(`You have selected the maximum available quantity (${book.stock} books).`, {
         toastId: `max-${book?.id}`,
       });
       return;
@@ -166,7 +159,7 @@ const BookDetailPage = () => {
     setIsSubmitting(true);
     try {
       dispatch(addToCart(book));
-      toast.success(`Đã thêm "${book.title}" vào giỏ hàng`, { toastId: `cart-${book?.id}` });
+      toast.success(`Added "${book.title}" to cart`, { toastId: `cart-${book?.id}` });
 
       if (user?.id) {
         const updated = currentCartItem
@@ -198,7 +191,7 @@ const BookDetailPage = () => {
     if (isSubmitting) return;
 
     if (!isAuthenticated) {
-      toast.warning("Vui lòng đăng nhập để lưu vào danh sách yêu thích", {
+      toast.warning("Please log in to save to your wishlist", {
         toastId: "auth-wishlist",
       });
       return;
@@ -219,10 +212,10 @@ const BookDetailPage = () => {
             userId: user?.id,
           })
         );
-        toast.info("Đã xóa khỏi danh sách yêu thích", { toastId: `wishlist-${bookIdStr}` });
+        toast.info("Removed from wishlist", { toastId: `wishlist-${bookIdStr}` });
       } else {
         await dispatch(addWishlistItem({ userId: user.id, book }));
-        toast.success("Đã thêm vào danh sách yêu thích", { toastId: `wishlist-${bookIdStr}` });
+        toast.success("Added to wishlist", { toastId: `wishlist-${bookIdStr}` });
       }
     } finally {
       setTimeout(() => setIsSubmitting(false), 300);
@@ -235,7 +228,7 @@ const BookDetailPage = () => {
       const newReview = {
         bookId: String(id),
         userId: String(user.id),
-        userName: user.name || "Khách hàng",
+        userName: user.name || "Customer",
         rating: Number(reviewData.rating) || 5,
         comment: (reviewData.comment || "").trim(),
         createdAt: getLocalDateString(),
@@ -256,9 +249,9 @@ const BookDetailPage = () => {
       setBook((prev) => ({ ...prev, rating: newRating, reviewCount: newReviewCount }));
       setReviews(allReviews);
       setHasReviewed(true);
-      toast.success("Cảm ơn bạn đã gửi đánh giá cho cuốn sách này!");
+      toast.success("Thank you for reviewing this book!");
     } catch (err) {
-      toast.error("Không thể gửi đánh giá lúc này. Vui lòng thử lại sau.");
+      toast.error("Failed to submit review. Please try again later.");
     }
   };
 
@@ -281,9 +274,9 @@ const BookDetailPage = () => {
 
       setBook((prev) => ({ ...prev, rating: newRating }));
       setReviews(allReviews);
-      toast.success("Đã cập nhật đánh giá thành công!");
+      toast.success("Review updated successfully!");
     } catch (err) {
-      toast.error("Không thể cập nhật đánh giá lúc này. Vui lòng thử lại sau.");
+      toast.error("Failed to update review. Please try again later.");
     }
   };
 
@@ -312,9 +305,9 @@ const BookDetailPage = () => {
         setHasReviewed(stillReviewed);
       }
 
-      toast.success("Đã xóa đánh giá thành công!");
+      toast.success("Review deleted successfully!");
     } catch (err) {
-      toast.error("Không thể xóa đánh giá lúc này. Vui lòng thử lại sau.");
+      toast.error("Failed to delete review. Please try again later.");
     }
   };
 
@@ -323,19 +316,19 @@ const BookDetailPage = () => {
   if (notFound || !book) {
     return (
       <Container className="py-5 text-center">
-        <h2 className="fw-bold text-dark mb-3">Không tìm thấy sách</h2>
+        <h2 className="fw-bold text-dark mb-3">Book Not Found</h2>
         <p className="text-muted mb-4">
-          Cuốn sách bạn đang tìm kiếm không tồn tại hoặc đã ngừng kinh doanh.
+          The book you are looking for does not exist or is no longer available.
         </p>
         <Button as={Link} to="/books" variant="primary">
           <FaArrowLeft className="me-2" />
-          Quay lại danh mục sách
+          Back to Books
         </Button>
       </Container>
     );
   }
 
-  const actualReviewCount = reviews.length;
+  const actualReviewCount = reviews.length > 0 ? reviews.length : (book.reviewCount || 0);
   const isOutOfStock =
     book.stock <= 0 ||
     book.status === BOOK_STATUS.OUT_OF_STOCK ||
@@ -353,11 +346,11 @@ const BookDetailPage = () => {
           className="btn-back d-inline-flex align-items-center"
         >
           <FaArrowLeft className="me-2 flex-shrink-0" />
-          <span>Quay lại danh mục sách</span>
+          <span>Back to Books</span>
         </Button>
         {category && (
           <span className="text-muted small">
-            Danh mục: <strong className="text-dark">{category.name}</strong>
+            Category: <strong className="text-dark">{category.name}</strong>
           </span>
         )}
       </div>
@@ -370,11 +363,15 @@ const BookDetailPage = () => {
             rounded
             className="shadow"
             style={{ maxHeight: "500px", objectFit: "cover", width: "100%" }}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/images/books/book-1.jpg";
+            }}
           />
         </Col>
         <Col md={8}>
           <h1 className="fw-bold text-dark">{book.title}</h1>
-          <p className="text-muted fs-5">Tác giả: {book.author}</p>
+          <p className="text-muted fs-5">Author: {book.author}</p>
 
           {category && (
             <Badge bg="secondary" className="mb-3 px-3 py-2">
@@ -385,7 +382,7 @@ const BookDetailPage = () => {
           <div className="mb-3 d-flex align-items-center gap-2">
             <RatingStars rating={book.rating} size={20} />
             <span className="text-muted">
-              {book.rating} ({actualReviewCount} lượt đánh giá)
+              {book.rating} ({actualReviewCount} {actualReviewCount === 1 ? "review" : "reviews"})
             </span>
           </div>
 
@@ -393,11 +390,11 @@ const BookDetailPage = () => {
           <p className="lead text-secondary">{book.description}</p>
 
           <div className="mb-4">
-            <span className="fw-bold me-2">Kho hàng:</span>
+            <span className="fw-bold me-2">Availability:</span>
             {isOutOfStock ? (
-              <Badge bg="danger">Tạm hết hàng</Badge>
+              <Badge bg="danger">Out of Stock</Badge>
             ) : (
-              <Badge bg="success">Còn {book.stock} cuốn</Badge>
+              <Badge bg="success">{book.stock} in stock</Badge>
             )}
           </div>
 
@@ -410,7 +407,7 @@ const BookDetailPage = () => {
               className="d-inline-flex align-items-center justify-content-center"
             >
               <FaCartPlus className="me-2 flex-shrink-0" />
-              <span>{isOutOfStock ? "Tạm hết hàng" : "Thêm vào giỏ hàng"}</span>
+              <span>{isOutOfStock ? "Out of Stock" : "Add to Cart"}</span>
             </Button>
             <Button
               variant={isInWishlist ? "danger" : "outline-danger"}
@@ -424,7 +421,7 @@ const BookDetailPage = () => {
               ) : (
                 <FaRegHeart className="me-2 flex-shrink-0" />
               )}
-              <span>{isInWishlist ? "Đã lưu yêu thích" : "Lưu vào yêu thích"}</span>
+              <span>{isInWishlist ? "Saved to Wishlist" : "Add to Wishlist"}</span>
             </Button>
           </div>
         </Col>
@@ -432,7 +429,7 @@ const BookDetailPage = () => {
 
       {/* Reviews Section */}
       <div className="mt-5">
-        <h3 className="fw-bold text-dark mb-4">Đánh giá từ độc giả ({actualReviewCount})</h3>
+        <h3 className="fw-bold text-dark mb-4">Customer Reviews ({actualReviewCount})</h3>
         <ReviewList
           reviews={reviews}
           currentUser={user}
@@ -444,16 +441,16 @@ const BookDetailPage = () => {
           <div className="mt-4">
             {hasReviewed ? (
               <Alert variant="info">
-                Bạn đã gửi đánh giá cho cuốn sách này rồi. Bạn có thể chỉnh sửa hoặc xóa đánh giá của mình ở danh sách trên.
+                You have already reviewed this book. You can edit or delete your review above.
               </Alert>
             ) : hasPurchased ? (
               <>
-                <h4 className="fw-bold text-dark mb-3">Viết đánh giá của bạn</h4>
+                <h4 className="fw-bold text-dark mb-3">Write a Review</h4>
                 <ReviewForm onSubmit={handleReviewSubmit} />
               </>
             ) : (
               <Alert variant="warning">
-                Bạn cần mua và hoàn thành nhận cuốn sách này trước khi viết đánh giá.
+                You need to purchase and receive this book before writing a review.
               </Alert>
             )}
           </div>

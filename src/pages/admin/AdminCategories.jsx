@@ -39,7 +39,7 @@ const AdminCategories = () => {
     try {
       const trimmedName = name.trim();
       if (!trimmedName) {
-        toast.error("Tên danh mục không được để trống.");
+        toast.error("Category name cannot be empty.");
         return;
       }
       const isDuplicate = categories.some(
@@ -50,7 +50,7 @@ const AdminCategories = () => {
           c.name.trim().toLowerCase() === trimmedName.toLowerCase()
       );
       if (isDuplicate) {
-        toast.error(`Danh mục "${trimmedName}" đã tồn tại! Vui lòng chọn tên khác.`);
+        toast.error(`Category "${trimmedName}" already exists! Please choose another name.`);
         return;
       }
 
@@ -63,14 +63,20 @@ const AdminCategories = () => {
 
       if (editing) {
         await bookApi.updateCategory(editing.id, payload);
-        toast.success("Cập nhật danh mục thành công!");
+        toast.success("Category updated successfully!");
       } else {
+        const numericIds = categories
+          .map((c) => Number(c.id))
+          .filter((n) => !isNaN(n) && Number.isInteger(n));
+        const nextId = numericIds.length > 0 ? Math.max(...numericIds) + 1 : categories.length + 1;
+        payload.id = String(nextId);
+
         await bookApi.createCategory(payload);
-        toast.success("Thêm danh mục mới thành công!");
+        toast.success("New category added successfully!");
       }
       setShowModal(false);
       fetchCategories();
-    } catch (err) { toast.error("Thao tác không thành công. Vui lòng thử lại sau."); }
+    } catch (err) { toast.error("Action failed. Please try again later."); }
   };
 
   const handleEdit = (cat) => {
@@ -83,18 +89,18 @@ const AdminCategories = () => {
   const handleDelete = async () => {
     try {
       await bookApi.updateCategory(deleteId, { isDeleted: true, status: CATEGORY_STATUS.INACTIVE });
-      toast.success("Đã ẩn danh mục khỏi cửa hàng thành công!");
+      toast.success("Category deactivated successfully!");
       setShowDeleteModal(false);
       fetchCategories();
-    } catch (err) { toast.error("Xóa danh mục chưa thành công. Vui lòng thử lại sau."); }
+    } catch (err) { toast.error("Failed to delete category. Please try again later."); }
   };
 
   const handleRestore = async (catId) => {
     try {
       await bookApi.updateCategory(catId, { isDeleted: false, status: CATEGORY_STATUS.ACTIVE });
-      toast.success("Khôi phục danh mục thành công!");
+      toast.success("Category restored successfully!");
       fetchCategories();
-    } catch (err) { toast.error("Khôi phục danh mục chưa thành công. Vui lòng thử lại sau."); }
+    } catch (err) { toast.error("Failed to restore category. Please try again later."); }
   };
 
   const handleAdd = () => {
@@ -125,9 +131,9 @@ const AdminCategories = () => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold text-dark mb-0">Quản lý danh mục</h2>
+        <h2 className="fw-bold text-dark mb-0">Category Management</h2>
         <Button variant="primary" onClick={handleAdd} className="d-inline-flex align-items-center">
-          <FaPlus className="me-2 flex-shrink-0" /> Thêm danh mục
+          <FaPlus className="me-2 flex-shrink-0" /> Add Category
         </Button>
       </div>
 
@@ -135,7 +141,7 @@ const AdminCategories = () => {
         <Col md={5}>
           <SearchBar
             onSearch={(q) => { setSearchTerm(q); setCurrentPage(1); }}
-            placeholder="Tìm kiếm danh mục..."
+            placeholder="Search categories..."
           />
         </Col>
         <Col md={3}>
@@ -143,9 +149,9 @@ const AdminCategories = () => {
             value={filterStatus}
             onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
           >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="active">Hoạt động</option>
-            <option value="inactive">Vô hiệu hóa / Đã ẩn</option>
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive / Hidden</option>
           </Form.Select>
         </Col>
       </Row>
@@ -153,22 +159,22 @@ const AdminCategories = () => {
       <Table striped bordered hover responsive className="bg-white shadow-sm align-middle">
         <thead className="table-dark">
           <tr>
-            <th style={{ width: "80px" }}>ID</th>
-            <th>Tên danh mục</th>
-            <th style={{ width: "160px" }}>Trạng thái</th>
-            <th className="col-actions text-nowrap">Thao tác</th>
+            <th style={{ width: "70px" }}>#</th>
+            <th>Category Name</th>
+            <th style={{ width: "160px" }}>Status</th>
+            <th className="col-actions text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {paginated.map((cat) => {
+          {paginated.map((cat, index) => {
             const isInactive = cat.isDeleted || cat.status === CATEGORY_STATUS.INACTIVE;
             return (
               <tr key={cat.id} className={isInactive ? "table-danger" : ""}>
-                <td>{cat.id}</td>
+                <td><strong>{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</strong></td>
                 <td className="fw-semibold text-dark">{cat.name}</td>
                 <td>
                   <Badge bg={isInactive ? "danger" : "success"}>
-                    {isInactive ? "Vô hiệu hóa" : "Hoạt động"}
+                    {isInactive ? "Inactive" : "Active"}
                   </Badge>
                 </td>
                 <td className="col-actions text-nowrap">
@@ -178,7 +184,7 @@ const AdminCategories = () => {
                       variant="outline-primary"
                       className="btn-action-icon"
                       onClick={() => handleEdit(cat)}
-                      title="Chỉnh sửa"
+                      title="Edit"
                     >
                       <FaEdit />
                     </Button>
@@ -188,7 +194,7 @@ const AdminCategories = () => {
                         variant="outline-success"
                         className="btn-action-icon"
                         onClick={() => handleRestore(cat.id)}
-                        title="Khôi phục danh mục"
+                        title="Restore category"
                       >
                         <FaUndo />
                       </Button>
@@ -198,7 +204,7 @@ const AdminCategories = () => {
                         variant="outline-danger"
                         className="btn-action-icon"
                         onClick={() => { setDeleteId(cat.id); setShowDeleteModal(true); }}
-                        title="Ẩn / Vô hiệu hóa danh mục"
+                        title="Deactivate category"
                       >
                         <FaTrash />
                       </Button>
@@ -210,7 +216,7 @@ const AdminCategories = () => {
           })}
           {paginated.length === 0 && (
             <tr>
-              <td colSpan={4} className="text-center text-muted py-3">Không tìm thấy danh mục nào.</td>
+              <td colSpan={4} className="text-center text-muted py-3">No categories found.</td>
             </tr>
           )}
         </tbody>
@@ -218,32 +224,32 @@ const AdminCategories = () => {
 
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title className="fw-bold text-dark">{editing ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}</Modal.Title>
+          <Modal.Title className="fw-bold text-dark">{editing ? "Edit Category" : "Add New Category"}</Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleSubmit} noValidate>
           <Modal.Body>
             <Form.Group className="mb-3">
               <Form.Label className="fw-semibold">
-                Tên danh mục <span className="text-danger">*</span>
+                Category Name <span className="text-danger">*</span>
               </Form.Label>
-              <Form.Control value={name} onChange={(e) => setName(e.target.value)} placeholder="Nhập tên danh mục..." required />
+              <Form.Control value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter category name..." required />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold">Trạng thái</Form.Label>
+              <Form.Label className="fw-semibold">Status</Form.Label>
               <Form.Select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
               >
-                <option value={CATEGORY_STATUS.ACTIVE}>Hoạt động</option>
-                <option value={CATEGORY_STATUS.INACTIVE}>Vô hiệu hóa (Ngừng hiển thị)</option>
+                <option value={CATEGORY_STATUS.ACTIVE}>Active</option>
+                <option value={CATEGORY_STATUS.INACTIVE}>Inactive (Hidden)</option>
               </Form.Select>
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>Hủy bỏ</Button>
-            <Button type="submit" variant="primary">{editing ? "Cập nhật" : "Thêm mới"}</Button>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+            <Button type="submit" variant="primary">{editing ? "Update" : "Add"}</Button>
           </Modal.Footer>
         </Form>
       </Modal>
@@ -252,10 +258,10 @@ const AdminCategories = () => {
         show={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}
-        title="Xác nhận vô hiệu hóa danh mục"
-        message="Bạn có chắc chắn muốn vô hiệu hóa danh mục này không? Danh mục sẽ được ẩn khỏi cửa hàng nhưng các cuốn sách thuộc danh mục vẫn được lưu trữ dữ liệu an toàn."
-        confirmText="Xác nhận vô hiệu hóa"
-        cancelText="Hủy bỏ"
+        title="Confirm Deactivate Category"
+        message="Are you sure you want to deactivate this category? It will be hidden from the store, but books in this category will remain safe."
+        confirmText="Deactivate"
+        cancelText="Cancel"
       />
     </div>
   );

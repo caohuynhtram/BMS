@@ -13,12 +13,12 @@ import {
 } from "react-icons/fa";
 
 const adminLinks = [
-  { path: "/admin", label: "Tổng quan", icon: <FaTachometerAlt /> },
-  { path: "/admin/books", label: "Quản lý sách", icon: <FaBook /> },
-  { path: "/admin/categories", label: "Danh mục", icon: <FaListAlt /> },
-  { path: "/admin/users", label: "Người dùng", icon: <FaUsers /> },
-  { path: "/admin/orders", label: "Đơn hàng", icon: <FaShoppingBag /> },
-  { path: "/admin/vouchers", label: "Mã giảm giá", icon: <FaTicketAlt /> },
+  { path: "/admin", label: "Dashboard", icon: <FaTachometerAlt /> },
+  { path: "/admin/books", label: "Books", icon: <FaBook /> },
+  { path: "/admin/categories", label: "Categories", icon: <FaListAlt /> },
+  { path: "/admin/users", label: "Users", icon: <FaUsers /> },
+  { path: "/admin/orders", label: "Orders", icon: <FaShoppingBag /> },
+  { path: "/admin/vouchers", label: "Vouchers", icon: <FaTicketAlt /> },
 ];
 
 const AdminSidebar = () => {
@@ -43,14 +43,14 @@ const AdminSidebar = () => {
       >
         {!collapsed && (
           <h5 className="mb-0 text-warning fw-bold" style={{ whiteSpace: "nowrap" }}>
-            Trang quản trị
+            Admin Portal
           </h5>
         )}
         <Button
           variant="outline-secondary"
           size="sm"
           onClick={() => setCollapsed(!collapsed)}
-          title={collapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className="d-inline-flex align-items-center justify-content-center p-0"
           style={{
             width: collapsed ? "38px" : "32px",

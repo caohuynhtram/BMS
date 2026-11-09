@@ -10,10 +10,16 @@ const bookApi = {
   createCategory: (data) => axiosClient.post("/categories", data),
   updateCategory: (id, data) => axiosClient.patch(`/categories/${id}`, data),
   deleteCategory: (id) => axiosClient.delete(`/categories/${id}`),
-  getReviews: (bookId) =>
-    axiosClient.get("/reviews", {
-      params: bookId !== undefined && bookId !== null ? { bookId: String(bookId) } : {},
-    }),
+  getReviews: async (bookId) => {
+    const res = await axiosClient.get("/reviews");
+    if (bookId !== undefined && bookId !== null) {
+      const filtered = (res.data || []).filter(
+        (r) => String(r.bookId) === String(bookId)
+      );
+      return { ...res, data: filtered };
+    }
+    return res;
+  },
   createReview: (data) => axiosClient.post("/reviews", data),
   updateReview: (id, data) => axiosClient.patch(`/reviews/${id}`, data),
   deleteReview: (id) => axiosClient.delete(`/reviews/${id}`),

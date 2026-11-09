@@ -101,37 +101,37 @@ const CheckoutPage = () => {
     setVoucherError("");
 
     if (!voucher || voucher.isDeleted || voucher.status === "Inactive") {
-      const msg = "Mã giảm giá này hiện không còn áp dụng.";
+      const msg = "This voucher is no longer applicable.";
       setVoucherError(msg);
       return false;
     }
 
     if (usedVoucherIds.has(String(voucher.id))) {
-      const msg = "Bạn đã sử dụng mã giảm giá này ở đơn hàng trước rồi.";
+      const msg = "You have already used this voucher on a previous order.";
       setVoucherError(msg);
       return false;
     }
 
     if (voucher.status === "Expired" || (voucher.expirationDate && isVoucherExpired(voucher.expirationDate))) {
-      const msg = "Mã giảm giá này đã hết hạn sử dụng.";
+      const msg = "This voucher has expired.";
       setVoucherError(msg);
       return false;
     }
 
     if (voucher.usageLimit && Number(voucher.used || 0) >= Number(voucher.usageLimit)) {
-      const msg = "Mã giảm giá này đã hết lượt sử dụng.";
+      const msg = "This voucher has reached its usage limit.";
       setVoucherError(msg);
       return false;
     }
 
     if (!isVoucherValid(voucher)) {
-      const msg = "Mã giảm giá không hợp lệ hoặc không còn áp dụng được.";
+      const msg = "Invalid or inactive voucher code.";
       setVoucherError(msg);
       return false;
     }
 
     if (totalPrice < Number(voucher.minOrderValue || 0)) {
-      const msg = `Đơn hàng tối thiểu để áp dụng mã này là ${formatCurrency(voucher.minOrderValue)}. Giá trị giỏ hàng hiện tại: ${formatCurrency(totalPrice)}.`;
+      const msg = `Minimum order value to apply this voucher is ${formatCurrency(voucher.minOrderValue)}. Current cart total: ${formatCurrency(totalPrice)}.`;
       setVoucherError(msg);
       return false;
     }
@@ -139,14 +139,14 @@ const CheckoutPage = () => {
     const calculatedDiscount = calculateDiscount(totalPrice, voucher);
     setDiscount(calculatedDiscount);
     setAppliedVoucher(voucher);
-    toast.success(`Đã áp dụng mã giảm giá "${voucher.code}" thành công!`);
+    toast.success(`Voucher "${voucher.code}" applied successfully!`);
     return true;
   };
 
   const handleApplyVoucher = () => {
     const trimmed = voucherCode.trim().toUpperCase();
     if (!trimmed) {
-      setVoucherError("Vui lòng nhập mã giảm giá trước khi nhấn áp dụng.");
+      setVoucherError("Please enter a voucher code before applying.");
       return;
     }
 
@@ -155,7 +155,7 @@ const CheckoutPage = () => {
     );
 
     if (!matched) {
-      setVoucherError(`Mã giảm giá "${trimmed}" không tồn tại trên hệ thống.`);
+      setVoucherError(`Voucher code "${trimmed}" does not exist.`);
       return;
     }
 
@@ -172,7 +172,7 @@ const CheckoutPage = () => {
     setDiscount(0);
     setVoucherCode("");
     setVoucherError("");
-    toast.info("Đã gỡ mã giảm giá khỏi đơn hàng.");
+    toast.info("Voucher removed from order.");
   };
 
   useEffect(() => {
@@ -181,7 +181,7 @@ const CheckoutPage = () => {
         setAppliedVoucher(null);
         setDiscount(0);
         setVoucherError(
-          `Mã "${appliedVoucher.code}" đã bị hủy vì giá trị đơn hàng (${formatCurrency(totalPrice)}) không còn đạt mức tối thiểu ${formatCurrency(appliedVoucher.minOrderValue)}.`
+          `Voucher "${appliedVoucher.code}" removed because order total (${formatCurrency(totalPrice)}) is below minimum spend ${formatCurrency(appliedVoucher.minOrderValue)}.`
         );
       } else {
         const recalculated = calculateDiscount(totalPrice, appliedVoucher);
@@ -197,32 +197,32 @@ const CheckoutPage = () => {
     const newFieldErrors = {};
 
     if (!shippingInfo.name.trim() || !shippingInfo.phone.trim() || !shippingInfo.address.trim()) {
-      if (!shippingInfo.name.trim()) newFieldErrors.name = "Vui lòng nhập họ và tên người nhận.";
-      if (!shippingInfo.phone.trim()) newFieldErrors.phone = "Vui lòng nhập số điện thoại người nhận.";
-      if (!shippingInfo.address.trim()) newFieldErrors.address = "Vui lòng nhập địa chỉ nhận hàng.";
+      if (!shippingInfo.name.trim()) newFieldErrors.name = "Please enter recipient full name.";
+      if (!shippingInfo.phone.trim()) newFieldErrors.phone = "Please enter recipient phone number.";
+      if (!shippingInfo.address.trim()) newFieldErrors.address = "Please enter shipping address.";
       setFieldErrors(newFieldErrors);
-      setShippingError("Vui lòng điền đầy đủ tất cả thông tin nhận hàng.");
+      setShippingError("Please fill in all shipping details.");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     if (!isValidFullName(shippingInfo.name)) {
-      newFieldErrors.name = "Họ và tên phải có ít nhất 2 từ và chỉ bao gồm chữ cái.";
+      newFieldErrors.name = "Full name must contain at least 2 words and only letters.";
       setFieldErrors(newFieldErrors);
-      setShippingError("Họ và tên người nhận hàng chưa hợp lệ.");
+      setShippingError("Recipient name is invalid.");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     if (!isValidPhone(shippingInfo.phone)) {
-      newFieldErrors.phone = "Số điện thoại không hợp lệ (cần đúng 10 chữ số, VD: 0912345678).";
+      newFieldErrors.phone = "Invalid phone number (must be 10 digits, e.g. 0912345678).";
       setFieldErrors(newFieldErrors);
-      setShippingError("Số điện thoại nhận hàng không hợp lệ (cần 10 chữ số).");
+      setShippingError("Recipient phone number is invalid (10 digits required).");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     if (!isValidAddress(shippingInfo.address)) {
-      newFieldErrors.address = "Địa chỉ nhận hàng phải có ít nhất 2 từ chi tiết.";
+      newFieldErrors.address = "Shipping address must contain at least 2 words.";
       setFieldErrors(newFieldErrors);
-      setShippingError("Địa chỉ nhận hàng chưa hợp lệ (phải có ít nhất 2 từ).");
+      setShippingError("Shipping address is invalid (must have at least 2 words).");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
@@ -237,28 +237,28 @@ const CheckoutPage = () => {
       for (const item of items) {
         const bookOnServer = currentBooks.find((b) => String(b.id) === String(item.bookId));
         if (!bookOnServer || bookOnServer.isDeleted || bookOnServer.status === "Inactive") {
-          const msg = `Cuốn sách "${item.title}" hiện đã ngừng kinh doanh. Vui lòng quay lại giỏ hàng để cập nhật.`;
+          const msg = `"${item.title}" is discontinued. Please return to cart to update.`;
           setError(msg);
           window.scrollTo({ top: 0, behavior: "smooth" });
           setLoading(false);
           return;
         }
         if (bookOnServer.stock <= 0 || bookOnServer.status === "Out of Stock") {
-          const msg = `Cuốn sách "${item.title}" hiện đã hết hàng. Vui lòng quay lại giỏ hàng để bỏ sản phẩm này trước khi thanh toán.`;
+          const msg = `"${item.title}" is out of stock. Please return to cart to remove it before checkout.`;
           setError(msg);
           window.scrollTo({ top: 0, behavior: "smooth" });
           setLoading(false);
           return;
         }
         if (Number(bookOnServer.price) !== Number(item.price)) {
-          const msg = `Giá cuốn "${item.title}" vừa cập nhật từ ${formatCurrency(item.price)} sang ${formatCurrency(bookOnServer.price)}. Vui lòng xem lại giỏ hàng.`;
+          const msg = `Price for "${item.title}" was updated from ${formatCurrency(item.price)} to ${formatCurrency(bookOnServer.price)}. Please review your cart.`;
           setError(msg);
           window.scrollTo({ top: 0, behavior: "smooth" });
           setLoading(false);
           return;
         }
         if (item.quantity > bookOnServer.stock) {
-          const msg = `Sách "${item.title}" chỉ còn ${bookOnServer.stock} cuốn trong kho. Vui lòng giảm số lượng đặt mua trong giỏ.`;
+          const msg = `Only ${bookOnServer.stock} copies of "${item.title}" in stock. Please adjust cart quantity.`;
           setError(msg);
           window.scrollTo({ top: 0, behavior: "smooth" });
           setLoading(false);
@@ -271,7 +271,7 @@ const CheckoutPage = () => {
           const vFreshRes = await voucherApi.getAll();
           const vFresh = (vFreshRes.data || []).find((v) => String(v.id) === String(appliedVoucher.id));
           if (!vFresh || !isVoucherValid(vFresh)) {
-            const msg = `Mã giảm giá "${appliedVoucher.code}" vừa hết hạn hoặc không còn hiệu lực. Vui lòng kiểm tra lại.`;
+            const msg = `Voucher "${appliedVoucher.code}" has expired or is no longer valid. Please check again.`;
             setError(msg);
             setAppliedVoucher(null);
             setDiscount(0);
@@ -313,15 +313,15 @@ const CheckoutPage = () => {
         if (user?.id) {
           await dispatch(syncCartToApi({ userId: user.id, items: [] }));
         }
-        toast.success("Đặt hàng thành công! Cảm ơn bạn đã mua sắm tại Infinia Store.");
+        toast.success("Order placed successfully! Thank you for shopping with Infinia Store.");
         navigate(`/orders/${resultAction.payload.id}`);
       } else {
-        const msg = resultAction.payload || "Đặt hàng chưa thành công. Vui lòng thử lại sau.";
+        const msg = resultAction.payload || "Order placement failed. Please try again later.";
         setError(msg);
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } catch (err) {
-      const msg = "Đã xảy ra lỗi trong quá trình xử lý đơn hàng. Vui lòng thử lại sau.";
+      const msg = "An error occurred while processing your order. Please try again later.";
       setError(msg);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -332,7 +332,7 @@ const CheckoutPage = () => {
   return (
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2 className="fw-bold mb-0 text-dark">Đặt hàng & Thanh toán</h2>
+        <h2 className="fw-bold mb-0 text-dark">Checkout & Payment</h2>
         <Button
           as={Link}
           to="/cart"
@@ -341,7 +341,7 @@ const CheckoutPage = () => {
           className="btn-back d-inline-flex align-items-center"
         >
           <FaArrowLeft className="me-2 flex-shrink-0" />
-          <span>Quay lại giỏ hàng</span>
+          <span>Back to Cart</span>
         </Button>
       </div>
 
@@ -362,7 +362,7 @@ const CheckoutPage = () => {
             <Card.Body className="p-4">
               <div className="d-flex align-items-center mb-3">
                 <FaTruck className="text-primary me-2 fs-5" />
-                <h5 className="fw-bold mb-0 text-dark">Thông tin người nhận hàng</h5>
+                <h5 className="fw-bold mb-0 text-dark">Shipping Information</h5>
               </div>
 
               {shippingError && (
@@ -384,14 +384,14 @@ const CheckoutPage = () => {
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label className="fw-semibold text-dark">
-                        Họ và tên người nhận <span className="text-danger">*</span>
+                        Recipient Full Name <span className="text-danger">*</span>
                       </Form.Label>
                       <Form.Control
                         type="text"
                         name="name"
                         value={shippingInfo.name}
                         onChange={handleShippingChange}
-                        placeholder="Nguyễn Văn A"
+                        placeholder="John Doe"
                         isInvalid={Boolean(fieldErrors.name)}
                         required
                       />
@@ -403,7 +403,7 @@ const CheckoutPage = () => {
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label className="fw-semibold text-dark">
-                        Số điện thoại <span className="text-danger">*</span>
+                        Phone Number <span className="text-danger">*</span>
                       </Form.Label>
                       <Form.Control
                         type="tel"
@@ -422,7 +422,7 @@ const CheckoutPage = () => {
                 </Row>
                 <Form.Group className="mb-0">
                   <Form.Label className="fw-semibold text-dark">
-                    Địa chỉ giao hàng <span className="text-danger">*</span>
+                    Shipping Address <span className="text-danger">*</span>
                   </Form.Label>
                   <Form.Control
                     as="textarea"
@@ -430,7 +430,7 @@ const CheckoutPage = () => {
                     name="address"
                     value={shippingInfo.address}
                     onChange={handleShippingChange}
-                    placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành..."
+                    placeholder="Street address, ward/commune, district, city/province..."
                     isInvalid={Boolean(fieldErrors.address)}
                     required
                     style={{ resize: "vertical" }}
@@ -448,7 +448,7 @@ const CheckoutPage = () => {
             <Card.Body className="p-4">
               <div className="d-flex align-items-center mb-3">
                 <FaTag className="text-primary me-2 fs-5" />
-                <h5 className="fw-bold mb-0 text-dark">Mã giảm giá</h5>
+                <h5 className="fw-bold mb-0 text-dark">Vouchers & Promo Codes</h5>
               </div>
 
               {voucherError && (
@@ -468,7 +468,7 @@ const CheckoutPage = () => {
               <div className="d-flex gap-2 mb-3 align-items-center w-100">
                 <Form.Control
                   type="text"
-                  placeholder="Nhập mã giảm giá"
+                  placeholder="Enter voucher code"
                   value={voucherCode}
                   onChange={(e) => {
                     setVoucherCode(e.target.value.toUpperCase());
@@ -490,7 +490,7 @@ const CheckoutPage = () => {
                     onClick={handleRemoveVoucher}
                     className="text-nowrap px-4"
                   >
-                    Gỡ mã
+                    Remove
                   </Button>
                 ) : (
                   <Button
@@ -499,7 +499,7 @@ const CheckoutPage = () => {
                     onClick={handleApplyVoucher}
                     className="text-nowrap px-4"
                   >
-                    Áp dụng
+                    Apply
                   </Button>
                 )}
               </div>
@@ -507,14 +507,14 @@ const CheckoutPage = () => {
               {appliedVoucher && (
                 <Alert variant="success" className="py-2 d-flex align-items-center mb-3">
                   <FaCheckCircle className="me-2 text-success flex-shrink-0" />
-                  <strong className="text-dark">Đã áp dụng mã: {appliedVoucher.code}</strong>
+                  <strong className="text-dark">Voucher applied: {appliedVoucher.code}</strong>
                   <span className="ms-2 text-success fw-bold">(-{formatCurrency(discount)})</span>
                 </Alert>
               )}
 
               {!appliedVoucher && availableVouchers.length > 0 && (
                 <>
-                  <h6 className="fw-bold mt-3 mb-2 text-dark">Mã giảm giá khả dụng</h6>
+                  <h6 className="fw-bold mt-3 mb-2 text-dark">Available Vouchers</h6>
                   <ListGroup>
                     {availableVouchers.map((voucher) => {
                       const meetsMinOrder = totalPrice >= Number(voucher.minOrderValue || 0);
@@ -535,10 +535,10 @@ const CheckoutPage = () => {
                             </div>
                             <small className="text-muted">
                               {voucher.type === "percentage"
-                                ? `Giảm ${voucher.value}%`
-                                : `Giảm ${formatCurrency(voucher.value)}`}
-                              {" · "}Đơn tối thiểu: {formatCurrency(voucher.minOrderValue || 0)}
-                              {voucher.expirationDate ? ` · Hạn dùng: ${voucher.expirationDate}` : " · Vô thời hạn"}
+                                ? `${voucher.value}% OFF`
+                                : `${formatCurrency(voucher.value)} OFF`}
+                              {" · "}Min Spend: {formatCurrency(voucher.minOrderValue || 0)}
+                              {voucher.expirationDate ? ` · Expires: ${voucher.expirationDate}` : " · No expiration"}
                             </small>
                           </div>
                           <div>
@@ -548,15 +548,15 @@ const CheckoutPage = () => {
                                 size="sm"
                                 variant="outline-success"
                                 onClick={(e) => {
-                                  e.stopPropagation();
+                                   e.stopPropagation();
                                   handleSelectVoucher(voucher);
                                 }}
                               >
-                                Áp dụng
+                                Apply
                               </Button>
                             ) : (
                               <Badge bg="secondary">
-                                Tối thiểu {formatCurrency(voucher.minOrderValue)}
+                                Min Spend {formatCurrency(voucher.minOrderValue)}
                               </Badge>
                             )}
                           </div>
@@ -575,7 +575,7 @@ const CheckoutPage = () => {
           <div className="sticky-top" style={{ top: "85px", zIndex: 10 }}>
             <Card className="shadow-sm border-0 bg-white">
               <Card.Body className="p-4">
-                <h5 className="fw-bold mb-3 text-dark">Tóm tắt đơn hàng</h5>
+                <h5 className="fw-bold mb-3 text-dark">Order Summary</h5>
                 <div className="mb-3" style={{ maxHeight: "280px", overflowY: "auto" }}>
                   {items.map((item) => (
                     <div key={item.bookId} className="d-flex justify-content-between mb-2">
@@ -591,18 +591,18 @@ const CheckoutPage = () => {
                 <div>
                   <hr className="my-2" />
                   <div className="d-flex justify-content-between mb-2">
-                    <span className="text-muted">Tạm tính</span>
+                    <span className="text-muted">Subtotal</span>
                     <span className="fw-semibold text-dark">{formatCurrency(totalPrice)}</span>
                   </div>
                   {discount > 0 && (
                     <div className="d-flex justify-content-between mb-2 text-success">
-                      <span>Mã giảm giá ({appliedVoucher?.code})</span>
+                      <span>Discount ({appliedVoucher?.code})</span>
                       <span>-{formatCurrency(discount)}</span>
                     </div>
                   )}
                   <hr className="my-2" />
                   <div className="d-flex justify-content-between mb-3">
-                    <strong className="fs-5 text-dark">Tổng thanh toán</strong>
+                    <strong className="fs-5 text-dark">Total</strong>
                     <strong className="text-primary fs-5">
                       {formatCurrency(finalPrice)}
                     </strong>
@@ -614,7 +614,7 @@ const CheckoutPage = () => {
                     onClick={handlePlaceOrder}
                     disabled={loading}
                   >
-                    {loading ? "Đang xử lý đặt hàng..." : "Xác nhận đặt hàng"}
+                    {loading ? "Processing Order..." : "Place Order"}
                   </Button>
                 </div>
               </Card.Body>

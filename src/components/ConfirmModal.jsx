@@ -5,10 +5,10 @@ const ConfirmModal = ({
   show,
   onClose,
   onConfirm,
-  title = "Xác nhận",
-  message = "Bạn có chắc chắn muốn thực hiện thao tác này không?",
-  confirmText = "Xác nhận",
-  cancelText = "Hủy",
+  title = "Confirmation",
+  message = "Are you sure you want to proceed?",
+  confirmText = "Confirm",
+  cancelText = "Cancel",
   confirmVariant = "danger",
   loading = false,
 }) => {
@@ -23,7 +23,7 @@ const ConfirmModal = ({
           {cancelText}
         </Button>
         <Button variant={confirmVariant} onClick={onConfirm} disabled={loading}>
-          {loading ? "Đang xử lý..." : confirmText}
+          {loading ? "Processing..." : confirmText}
         </Button>
       </Modal.Footer>
     </Modal>

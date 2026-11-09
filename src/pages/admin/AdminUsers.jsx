@@ -7,8 +7,8 @@ import Pagination from "../../components/Pagination";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ConfirmModal from "../../components/ConfirmModal";
 import { toast } from "react-toastify";
-import { FaBan, FaCheck, FaPlus, FaEdit, FaEye, FaEyeSlash } from "react-icons/fa";
-import { USER_ROLES, matchesSearch, isValidEmail } from "../../utils/helpers";
+import { FaBan, FaCheck, FaEdit } from "react-icons/fa";
+import { USER_ROLES, matchesSearch } from "../../utils/helpers";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -19,34 +19,34 @@ const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterRole, setFilterRole] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const [showCreateStaffModal, setShowCreateStaffModal] = useState(false);
-  const [showStaffPassword, setShowStaffPassword] = useState(false);
-  const [staffForm, setStaffForm] = useState({ name: "", email: "", password: "", phone: "", address: "" });
-  const [staffError, setStaffError] = useState("");
-
-  const [showRoleModal, setShowRoleModal] = useState(false);
-  const [roleUser, setRoleUser] = useState(null);
-  const [newRole, setNewRole] = useState("");
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [editForm, setEditForm] = useState({ name: "", phone: "", address: "" });
 
   const fetchUsers = async () => {
     try {
       const res = await userApi.getAll();
+      // Chỉ hiển thị các tài khoản khách hàng (không bao gồm chính admin)
       setUsers((res.data || []).filter((u) => u.role !== USER_ROLES.ADMIN));
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
     setLoading(false);
   };
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleOpenConfirm = (user) => {
     if (String(user.id) === String(currentUser?.id)) {
-      toast.warning("Bạn không thể tự khóa tài khoản của chính mình!");
+      toast.warning("You cannot lock your own account!");
       return;
     }
     setSelectedUser(user);
@@ -56,7 +56,7 @@ const AdminUsers = () => {
   const handleConfirmToggle = async () => {
     if (!selectedUser) return;
     if (String(selectedUser.id) === String(currentUser?.id)) {
-      toast.error("Bạn không thể tự khóa tài khoản của chính mình!");
+      toast.error("You cannot lock your own account!");
       setShowConfirmModal(false);
       setSelectedUser(null);
       return;
@@ -64,142 +64,110 @@ const AdminUsers = () => {
     const newStatus = selectedUser.status === "active" ? "blocked" : "active";
     try {
       await userApi.updateStatus(selectedUser.id, newStatus);
-      toast.success(`Đã ${newStatus === "active" ? "mở khóa" : "khóa"} tài khoản "${selectedUser.name}" thành công!`);
+      toast.success(
+        `Successfully ${newStatus === "active" ? "unlocked" : "locked"} account "${selectedUser.name}"!`
+      );
       fetchUsers();
-    } catch (err) { toast.error("Cập nhật trạng thái tài khoản chưa thành công."); }
+    } catch (err) {
+      toast.error("Failed to update account status.");
+    }
     setShowConfirmModal(false);
     setSelectedUser(null);
   };
 
-  const handleCreateStaff = async (e) => {
-    e.preventDefault();
-    setStaffError("");
-
+  const handleOpenEditModal = (user) => {
     if (!isAdmin) {
-      toast.error("Chỉ Quản trị viên (Admin) mới có quyền tạo tài khoản nhân viên.");
-      return;
-    }
-
-    if (!staffForm.name?.trim()) {
-      setStaffError("Vui lòng nhập họ và tên nhân viên.");
-      return;
-    }
-    if (!staffForm.email?.trim()) {
-      setStaffError("Vui lòng nhập địa chỉ email.");
-      return;
-    }
-    if (!isValidEmail(staffForm.email)) {
-      setStaffError("Định dạng email không hợp lệ (VD: staff@example.com).");
-      return;
-    }
-    if (!staffForm.password) {
-      setStaffError("Vui lòng nhập mật khẩu ban đầu.");
-      return;
-    }
-    if (staffForm.password.length < 6 || staffForm.password.length > 18) {
-      setStaffError("Mật khẩu ban đầu phải có độ dài từ 6 đến 18 ký tự.");
-      return;
-    }
-
-    try {
-      const normalizedEmail = staffForm.email.trim().toLowerCase();
-      const res = await userApi.getAll();
-      const exists = (res.data || []).find(
-        (u) => (u.email || "").toLowerCase() === normalizedEmail
-      );
-      if (exists) {
-        setStaffError("Địa chỉ email này đã tồn tại trong hệ thống.");
-        return;
-      }
-      await userApi.create({
-        ...staffForm,
-        email: normalizedEmail,
-        role: USER_ROLES.STAFF,
-        status: "active",
-      });
-      toast.success("Tạo tài khoản nhân viên thành công!");
-      setShowCreateStaffModal(false);
-      setStaffForm({ name: "", email: "", password: "", phone: "", address: "" });
-      fetchUsers();
-    } catch (err) {
-      toast.error("Tạo tài khoản nhân viên chưa thành công. Vui lòng thử lại.");
-    }
-  };
-
-  const handleOpenRoleModal = (user) => {
-    if (!isAdmin) {
-      toast.error("Chỉ Quản trị viên (Admin) mới có quyền thay đổi vai trò người dùng.");
+      toast.error("Only Administrators have permission to edit user information.");
       return;
     }
     if (String(user.id) === String(currentUser?.id)) {
-      toast.error("Bạn không thể tự thay đổi vai trò của chính mình!");
+      toast.error("To edit your own profile, please visit the Profile page.");
       return;
     }
-    setRoleUser(user);
-    setNewRole(user.role);
-    setShowRoleModal(true);
+    setEditingUser(user);
+    setEditForm({
+      name: user.name || "",
+      phone: user.phone || "",
+      address: user.address || "",
+    });
+    setShowEditModal(true);
   };
 
-  const handleUpdateRole = async () => {
-    if (!roleUser || !newRole) return;
+  const handleUpdateUser = async () => {
+    if (!editingUser) return;
     if (!isAdmin) {
-      toast.error("Chỉ Quản trị viên (Admin) mới có quyền thay đổi vai trò người dùng.");
+      toast.error("Only Administrators have permission to edit user information.");
       return;
     }
-    if (String(roleUser.id) === String(currentUser?.id)) {
-      toast.error("Bạn không thể tự thay đổi vai trò của chính mình!");
+    if (!editForm.name?.trim()) {
+      toast.error("Full name cannot be empty.");
       return;
     }
     try {
-      await userApi.update(roleUser.id, { role: newRole });
-      const roleDisplayName = newRole === "staff" ? "Nhân viên" : "Khách hàng";
-      toast.success(`Cập nhật vai trò "${roleDisplayName}" cho ${roleUser.name} thành công!`);
-      setShowRoleModal(false);
+      await userApi.update(editingUser.id, {
+        name: editForm.name.trim(),
+        phone: (editForm.phone || "").trim(),
+        address: (editForm.address || "").trim(),
+      });
+      toast.success(`Successfully updated information for "${editForm.name.trim()}"!`);
+      setShowEditModal(false);
       fetchUsers();
-    } catch (err) { toast.error("Cập nhật vai trò chưa thành công."); }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update information. Please try again.");
+    }
   };
 
   let filtered = users.filter(
     (u) =>
       matchesSearch(u.name, searchQuery) ||
       matchesSearch(u.email, searchQuery) ||
-      matchesSearch(u.phone, searchQuery)
+      matchesSearch(u.phone, searchQuery) ||
+      matchesSearch(u.address, searchQuery)
   );
-  if (filterRole !== "all") {
-    filtered = filtered.filter((u) => {
-      if (filterRole === "customer") return u.role === "customer" || u.role === "user";
-      return u.role === filterRole;
-    });
+
+  if (filterStatus !== "all") {
+    filtered = filtered.filter((u) => u.status === filterStatus);
   }
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-  const paginated = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  const paginated = filtered.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   if (loading) return <LoadingSpinner />;
 
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold text-dark mb-0">Quản lý người dùng</h2>
-        {isAdmin && (
-          <Button variant="primary" onClick={() => setShowCreateStaffModal(true)} className="d-inline-flex align-items-center">
-            <FaPlus className="me-2 flex-shrink-0" /> Thêm nhân viên
-          </Button>
-        )}
+        <div>
+          <h2 className="fw-bold text-dark mb-1">User Management</h2>
+          <p className="text-muted small mb-0">Manage customer accounts, update details, and manage account status.</p>
+        </div>
       </div>
 
       <Row className="mb-3 g-2">
-        <Col md={5}>
-          <SearchBar onSearch={(q) => { setSearchQuery(q); setCurrentPage(1); }} placeholder="Tìm kiếm người dùng theo tên, email hoặc số điện thoại..." />
+        <Col md={6}>
+          <SearchBar
+            onSearch={(q) => {
+              setSearchQuery(q);
+              setCurrentPage(1);
+            }}
+            placeholder="Search by name, email, phone number, or address..."
+          />
         </Col>
         <Col md={3}>
           <Form.Select
-            value={filterRole}
-            onChange={(e) => { setFilterRole(e.target.value); setCurrentPage(1); }}
+            value={filterStatus}
+            onChange={(e) => {
+              setFilterStatus(e.target.value);
+              setCurrentPage(1);
+            }}
           >
-            <option value="all">Tất cả vai trò</option>
-            <option value="customer">Khách hàng</option>
-            <option value="staff">Nhân viên</option>
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
           </Form.Select>
         </Col>
       </Row>
@@ -207,49 +175,44 @@ const AdminUsers = () => {
       <Table striped bordered hover responsive className="bg-white shadow-sm align-middle">
         <thead className="table-dark">
           <tr>
-            <th style={{ width: "60px" }}>ID</th>
-            <th style={{ minWidth: "180px" }}>Họ và tên</th>
-            <th style={{ minWidth: "220px" }}>Email</th>
-            <th style={{ width: "135px" }}>Số điện thoại</th>
-            <th style={{ width: "115px" }}>Vai trò</th>
-            <th style={{ width: "110px" }}>Trạng thái</th>
-            <th className="col-actions text-nowrap">Thao tác</th>
+            <th style={{ width: "65px" }}>#</th>
+            <th style={{ minWidth: "180px" }}>Full Name</th>
+            <th style={{ minWidth: "200px" }}>Email</th>
+            <th style={{ width: "135px" }}>Phone</th>
+            <th style={{ minWidth: "200px" }}>Address</th>
+            <th style={{ width: "130px" }}>Status</th>
+            <th className="col-actions text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {paginated.map((user) => (
+          {paginated.map((user, index) => (
             <tr key={user.id}>
-              <td>{user.id}</td>
+              <td><strong>{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</strong></td>
               <td className="fw-semibold text-dark">{user.name}</td>
               <td>{user.email}</td>
-              <td>{user.phone || "Chưa cập nhật"}</td>
-              <td>
-                <Badge bg={user.role === "staff" ? "primary" : "secondary"}>
-                  {user.role === "staff" ? "Nhân viên" : user.role === "admin" ? "Quản trị viên" : "Khách hàng"}
-                </Badge>
-              </td>
+              <td>{user.phone || <span className="text-muted">Not updated</span>}</td>
+              <td>{user.address || <span className="text-muted">Not updated</span>}</td>
               <td>
                 <Badge bg={user.status === "active" ? "success" : "danger"}>
-                  {user.status === "active" ? "Hoạt động" : "Bị khóa"}
+                  {user.status === "active" ? "Active" : "Blocked"}
                 </Badge>
               </td>
               <td className="col-actions text-nowrap">
                 <div className="d-inline-flex gap-1 align-items-center">
-                  {/* Chỉ Admin mới có quyền cập nhật vai trò và không được tự sửa vai trò của chính mình */}
                   {isAdmin && String(user.id) !== String(currentUser?.id) && (
                     <Button
                       size="sm"
                       variant="outline-primary"
                       className="btn-action-icon"
-                      onClick={() => handleOpenRoleModal(user)}
-                      title="Cập nhật vai trò"
+                      onClick={() => handleOpenEditModal(user)}
+                      title="Edit customer information"
                     >
                       <FaEdit />
                     </Button>
                   )}
                   {String(user.id) === String(currentUser?.id) ? (
                     <Badge bg="light" text="secondary" className="border px-2 py-1">
-                      Tài khoản của bạn
+                      Your account
                     </Badge>
                   ) : (
                     <Button
@@ -259,9 +222,15 @@ const AdminUsers = () => {
                       className="d-inline-flex align-items-center"
                     >
                       {user.status === "active" ? (
-                        <><FaBan className="me-2 flex-shrink-0" /><span>Khóa</span></>
+                        <>
+                          <FaBan className="me-1 flex-shrink-0" />
+                          <span>Lock</span>
+                        </>
                       ) : (
-                        <><FaCheck className="me-2 flex-shrink-0" /><span>Mở khóa</span></>
+                        <>
+                          <FaCheck className="me-1 flex-shrink-0" />
+                          <span>Unlock</span>
+                        </>
                       )}
                     </Button>
                   )}
@@ -270,128 +239,87 @@ const AdminUsers = () => {
             </tr>
           ))}
           {paginated.length === 0 && (
-            <tr><td colSpan={7} className="text-center text-muted py-3">Không tìm thấy người dùng nào.</td></tr>
+            <tr>
+              <td colSpan={7} className="text-center text-muted py-4">
+                No matching users found.
+              </td>
+            </tr>
           )}
         </tbody>
       </Table>
 
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
 
       <ConfirmModal
         show={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
         onConfirm={handleConfirmToggle}
-        title={selectedUser?.status === "active" ? "Khóa tài khoản người dùng" : "Mở khóa tài khoản"}
-        message={`Bạn có chắc chắn muốn ${
-          selectedUser?.status === "active" ? "khóa" : "mở khóa"
-        } tài khoản "${selectedUser?.name}" (${selectedUser?.email}) không?`}
-        confirmText={selectedUser?.status === "active" ? "Khóa tài khoản" : "Mở khóa"}
+        title={selectedUser?.status === "active" ? "Lock User Account" : "Unlock User Account"}
+        message={`Are you sure you want to ${
+          selectedUser?.status === "active" ? "lock" : "unlock"
+        } account "${selectedUser?.name}" (${selectedUser?.email})?`}
+        confirmText={selectedUser?.status === "active" ? "Lock Account" : "Unlock"}
         confirmVariant={selectedUser?.status === "active" ? "danger" : "success"}
       />
 
-      <Modal show={showCreateStaffModal} onHide={() => setShowCreateStaffModal(false)}>
+      {/* Modal Chỉnh sửa thông tin người dùng */}
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title className="fw-bold text-dark">Thêm tài khoản nhân viên</Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={handleCreateStaff} noValidate>
-          <Modal.Body>
-            {staffError && <div className="alert alert-danger py-2">{staffError}</div>}
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold">Họ và tên <span className="text-danger">*</span></Form.Label>
-              <Form.Control
-                value={staffForm.name}
-                onChange={(e) => setStaffForm({ ...staffForm, name: e.target.value })}
-                placeholder="Nhập họ và tên nhân viên"
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold">Địa chỉ Email <span className="text-danger">*</span></Form.Label>
-              <Form.Control
-                type="email"
-                value={staffForm.email}
-                onChange={(e) => setStaffForm({ ...staffForm, email: e.target.value })}
-                placeholder="VD: nhanvien@gmail.com"
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold">Mật khẩu ban đầu <span className="text-danger">*</span></Form.Label>
-              <div className="position-relative">
-                <Form.Control
-                  type={showStaffPassword ? "text" : "password"}
-                  value={staffForm.password}
-                  onChange={(e) => setStaffForm({ ...staffForm, password: e.target.value })}
-                  placeholder="Tối thiểu 6 ký tự"
-                  className="pe-5"
-                  required minLength={6}
-                />
-                <button
-                  type="button"
-                  className="btn position-absolute top-50 end-0 translate-middle-y text-secondary border-0 bg-transparent shadow-none d-flex align-items-center justify-content-center p-2 me-2"
-                  style={{ zIndex: 10, cursor: "pointer", width: "36px", height: "36px" }}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setShowStaffPassword((prev) => !prev);
-                  }}
-                  title={showStaffPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                  aria-label={showStaffPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                  tabIndex={-1}
-                >
-                  {showStaffPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                </button>
-              </div>
-            </Form.Group>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">Số điện thoại</Form.Label>
-                  <Form.Control
-                    value={staffForm.phone}
-                    onChange={(e) => setStaffForm({ ...staffForm, phone: e.target.value })}
-                    placeholder="VD: 0912345678"
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">Địa chỉ</Form.Label>
-                  <Form.Control
-                    value={staffForm.address}
-                    onChange={(e) => setStaffForm({ ...staffForm, address: e.target.value })}
-                    placeholder="Tỉnh/Thành phố hoặc địa chỉ chi tiết"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowCreateStaffModal(false)}>Hủy bỏ</Button>
-            <Button type="submit" variant="primary">Tạo tài khoản</Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-
-      <Modal show={showRoleModal} onHide={() => setShowRoleModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title className="fw-bold text-dark">Cập nhật vai trò người dùng</Modal.Title>
+          <Modal.Title className="fw-bold text-dark">Edit Customer Information</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className="text-muted mb-3">
-            Đang thay đổi vai trò cho: <strong className="text-dark">{roleUser?.name}</strong> ({roleUser?.email})
-          </p>
-          <Form.Group>
-            <Form.Label className="fw-semibold">Vai trò mới</Form.Label>
-            <Form.Select value={newRole} onChange={(e) => setNewRole(e.target.value)}>
-              <option value="customer">Khách hàng</option>
-              <option value="staff">Nhân viên</option>
-            </Form.Select>
+          <Form.Group className="mb-3">
+            <Form.Label className="fw-semibold">
+              Full Name <span className="text-danger">*</span>
+            </Form.Label>
+            <Form.Control
+              value={editForm.name}
+              onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+              placeholder="Enter full name"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="fw-semibold">Email Address</Form.Label>
+            <Form.Control
+              value={editingUser?.email || ""}
+              disabled
+              readOnly
+              className="bg-light text-muted"
+            />
+            <Form.Text className="text-muted small">
+              Email is the unique account identifier and cannot be changed.
+            </Form.Text>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="fw-semibold">Phone Number</Form.Label>
+            <Form.Control
+              value={editForm.phone}
+              onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+              placeholder="Enter phone number (e.g., 0912345678)"
+            />
+          </Form.Group>
+          <Form.Group className="mb-2">
+            <Form.Label className="fw-semibold">Address</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              value={editForm.address}
+              onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
+              placeholder="Enter shipping address"
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowRoleModal(false)}>Hủy bỏ</Button>
-          <Button variant="primary" onClick={handleUpdateRole}>Lưu thay đổi</Button>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleUpdateUser}>
+            Save Changes
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>

@@ -98,29 +98,29 @@ const AdminVouchers = () => {
     e.preventDefault();
 
     if (!formData.code?.trim()) {
-      toast.error("Vui lòng nhập mã voucher.");
+      toast.error("Please enter a voucher code.");
       return;
     }
     if (!formData.title?.trim()) {
-      toast.error("Vui lòng nhập tên chương trình giảm giá.");
+      toast.error("Please enter a voucher title.");
       return;
     }
 
     if (editing && editing.isDeleted) {
-      toast.error("Mã giảm giá đã ngừng áp dụng (xóa mềm). Vui lòng khôi phục mã trước khi chỉnh sửa.");
+      toast.error("This voucher is inactive. Please restore the voucher before editing.");
       return;
     }
 
     if (formData.type === "percentage" && (Number(formData.value) <= 0 || Number(formData.value) > 100)) {
-      toast.error("Mức giảm giá theo phần trăm phải từ 1% đến 100%.");
+      toast.error("Percentage discount must be between 1% and 100%.");
       return;
     }
     if (formData.type === "fixed" && Number(formData.value) <= 0) {
-      toast.error("Số tiền giảm cố định phải lớn hơn 0đ.");
+      toast.error("Fixed discount amount must be greater than $0.");
       return;
     }
     if (formData.usageLimit && Number(formData.usageLimit) <= 0) {
-      toast.error("Số lượt sử dụng tối đa phải từ 1 trở lên hoặc để trống nếu vô hạn.");
+      toast.error("Usage limit must be 1 or greater, or left blank for unlimited.");
       return;
     }
 
@@ -133,7 +133,7 @@ const AdminVouchers = () => {
           (v.code || "").trim().toUpperCase() === upperCode
       );
       if (isDuplicate) {
-        toast.error(`Mã giảm giá "${upperCode}" đã tồn tại! Vui lòng chọn mã khác.`);
+        toast.error(`Voucher code "${upperCode}" already exists! Please choose another code.`);
         return;
       }
 
@@ -163,20 +163,26 @@ const AdminVouchers = () => {
           ...payload,
           used: usedCount,
         });
-        toast.success("Cập nhật mã giảm giá thành công!");
+        toast.success("Voucher updated successfully!");
       } else {
+        const numericIds = vouchers
+          .map((v) => Number(v.id))
+          .filter((n) => !isNaN(n) && Number.isInteger(n));
+        const nextId = numericIds.length > 0 ? Math.max(...numericIds) + 1 : vouchers.length + 1;
+
         await voucherApi.create({
+          id: String(nextId),
           ...payload,
           used: 0,
           status: finalStatus,
           isDeleted: false,
         });
-        toast.success("Tạo mã giảm giá mới thành công!");
+        toast.success("New voucher created successfully!");
       }
       setShowModal(false);
       fetchVouchers();
     } catch (err) {
-      toast.error("Thao tác chưa thành công. Vui lòng thử lại sau.");
+      toast.error("Operation failed. Please try again later.");
     }
   };
 
@@ -198,11 +204,11 @@ const AdminVouchers = () => {
   const handleDelete = async () => {
     try {
       await voucherApi.update(deleteId, { isDeleted: true, status: VOUCHER_STATUS.INACTIVE });
-      toast.success("Đã ngừng áp dụng mã giảm giá thành công!");
+      toast.success("Voucher deactivated successfully!");
       setShowDeleteModal(false);
       fetchVouchers();
     } catch (err) {
-      toast.error("Xóa mã giảm giá chưa thành công.");
+      toast.error("Failed to deactivate voucher.");
     }
   };
 
@@ -218,10 +224,10 @@ const AdminVouchers = () => {
         }
       }
       await voucherApi.update(voucherId, { isDeleted: false, status: restoreStatus });
-      toast.success("Khôi phục mã giảm giá thành công!");
+      toast.success("Voucher restored successfully!");
       fetchVouchers();
     } catch (err) {
-      toast.error("Khôi phục mã giảm giá chưa thành công.");
+      toast.error("Failed to restore voucher.");
     }
   };
 
@@ -252,9 +258,9 @@ const AdminVouchers = () => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold text-dark mb-0">Quản lý mã giảm giá</h2>
+        <h2 className="fw-bold text-dark mb-0">Voucher Management</h2>
         <Button variant="primary" onClick={handleAdd} className="d-inline-flex align-items-center">
-          <FaPlus className="me-2 flex-shrink-0" /> Thêm mã giảm giá
+          <FaPlus className="me-2 flex-shrink-0" /> Add Voucher
         </Button>
       </div>
 
@@ -262,7 +268,7 @@ const AdminVouchers = () => {
         <Col md={5}>
           <SearchBar
             onSearch={(q) => { setSearchTerm(q); setCurrentPage(1); }}
-            placeholder="Tìm theo mã voucher hoặc tên chương trình..."
+            placeholder="Search by voucher code or title..."
           />
         </Col>
         <Col md={3}>
@@ -270,10 +276,10 @@ const AdminVouchers = () => {
             value={filterStatus}
             onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
           >
-            <option value="all">Tất cả trạng thái</option>
-            <option value={VOUCHER_STATUS.ACTIVE}>Đang áp dụng</option>
-            <option value={VOUCHER_STATUS.EXPIRED}>Hết hạn</option>
-            <option value={VOUCHER_STATUS.INACTIVE}>Ngừng áp dụng</option>
+            <option value="all">All Statuses</option>
+            <option value={VOUCHER_STATUS.ACTIVE}>Active</option>
+            <option value={VOUCHER_STATUS.EXPIRED}>Expired</option>
+            <option value={VOUCHER_STATUS.INACTIVE}>Inactive</option>
           </Form.Select>
         </Col>
       </Row>
@@ -281,15 +287,15 @@ const AdminVouchers = () => {
       <Table striped bordered hover responsive className="bg-white shadow-sm align-middle">
         <thead className="table-dark">
           <tr>
-            <th style={{ width: "120px" }}>Mã voucher</th>
-            <th style={{ minWidth: "220px" }}>Tên chương trình</th>
-            <th style={{ width: "105px" }}>Loại giảm</th>
-            <th style={{ width: "105px" }}>Mức giảm</th>
-            <th style={{ width: "120px" }}>Đơn tối thiểu</th>
-            <th style={{ width: "125px" }}>Ngày hết hạn</th>
-            <th style={{ width: "95px" }}>Lượt dùng</th>
-            <th style={{ width: "130px" }}>Trạng thái</th>
-            <th className="col-actions text-nowrap">Thao tác</th>
+            <th style={{ width: "120px" }}>Voucher Code</th>
+            <th style={{ minWidth: "220px" }}>Title</th>
+            <th style={{ width: "105px" }}>Discount Type</th>
+            <th style={{ width: "105px" }}>Discount</th>
+            <th style={{ width: "120px" }}>Min Spend</th>
+            <th style={{ width: "125px" }}>Expiration Date</th>
+            <th style={{ width: "95px" }}>Usage</th>
+            <th style={{ width: "130px" }}>Status</th>
+            <th className="col-actions text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -301,18 +307,18 @@ const AdminVouchers = () => {
                 <td className="fw-semibold text-dark">{v.title}</td>
                 <td>
                   <Badge bg={v.type === "percentage" ? "info" : "success"}>
-                    {v.type === "percentage" ? "Phần trăm" : "Cố định"}
+                    {v.type === "percentage" ? "Percentage" : "Fixed Amount"}
                   </Badge>
                 </td>
                 <td className="fw-bold">
                   {v.type === "percentage" ? `${v.value}%` : formatCurrency(v.value)}
                 </td>
                 <td>{formatCurrency(v.minOrderValue)}</td>
-                <td>{v.expirationDate || "Vô thời hạn"}</td>
+                <td>{v.expirationDate || "Never"}</td>
                 <td>{v.used || 0}/{v.usageLimit ? v.usageLimit : "∞"}</td>
                 <td>
                   <Badge bg={status === VOUCHER_STATUS.ACTIVE ? "success" : status === VOUCHER_STATUS.EXPIRED ? "warning" : "secondary"}>
-                    {status === VOUCHER_STATUS.ACTIVE ? "Đang áp dụng" : status === VOUCHER_STATUS.EXPIRED ? "Hết hạn" : "Ngừng áp dụng"}
+                    {status === VOUCHER_STATUS.ACTIVE ? "Active" : status === VOUCHER_STATUS.EXPIRED ? "Expired" : "Inactive"}
                   </Badge>
                 </td>
                 <td className="col-actions text-nowrap">
@@ -322,7 +328,7 @@ const AdminVouchers = () => {
                       variant="outline-primary"
                       className="btn-action-icon"
                       onClick={() => handleEdit(v)}
-                      title={v.isDeleted ? "Mã đã ngừng áp dụng, vui lòng khôi phục trước khi chỉnh sửa" : "Chỉnh sửa"}
+                      title={v.isDeleted ? "Voucher is inactive, please restore before editing" : "Edit"}
                       disabled={Boolean(v.isDeleted)}
                     >
                       <FaEdit />
@@ -333,7 +339,7 @@ const AdminVouchers = () => {
                         variant="outline-success"
                         className="btn-action-icon"
                         onClick={() => handleRestore(v.id)}
-                        title="Khôi phục mã"
+                        title="Restore Voucher"
                       >
                         <FaUndo />
                       </Button>
@@ -343,7 +349,7 @@ const AdminVouchers = () => {
                         variant="outline-danger"
                         className="btn-action-icon"
                         onClick={() => { setDeleteId(v.id); setShowDeleteModal(true); }}
-                        title="Dừng áp dụng / Xóa"
+                        title="Deactivate / Delete"
                       >
                         <FaTrash />
                       </Button>
@@ -354,17 +360,17 @@ const AdminVouchers = () => {
             );
           })}
           {paginated.length === 0 && (
-            <tr><td colSpan={9} className="text-center text-muted py-3">Không tìm thấy mã giảm giá nào.</td></tr>
+            <tr><td colSpan={9} className="text-center text-muted py-3">No vouchers found.</td></tr>
           )}
         </tbody>
       </Table>
 
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title className="fw-bold text-dark">
-            {editing ? "Chỉnh sửa mã giảm giá" : "Thêm mã giảm giá mới"}
+            {editing ? "Edit Voucher" : "Add New Voucher"}
           </Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleSubmit} noValidate>
@@ -373,13 +379,13 @@ const AdminVouchers = () => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold">
-                    Mã voucher <span className="text-danger">*</span>
+                    Voucher Code <span className="text-danger">*</span>
                   </Form.Label>
                   <Form.Control
                     name="code"
                     value={formData.code}
                     onChange={handleChange}
-                    placeholder="VD: GIAM20"
+                    placeholder="e.g. SAVE20"
                     required
                   />
                 </Form.Group>
@@ -387,13 +393,13 @@ const AdminVouchers = () => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold">
-                    Tên chương trình <span className="text-danger">*</span>
+                    Title <span className="text-danger">*</span>
                   </Form.Label>
                   <Form.Control
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    placeholder="VD: Giảm 20% cho mọi đơn hàng"
+                    placeholder="e.g. 20% off all orders"
                     required
                   />
                 </Form.Group>
@@ -403,17 +409,17 @@ const AdminVouchers = () => {
             <Row>
               <Col md={4}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">Loại giảm giá</Form.Label>
+                  <Form.Label className="fw-semibold">Discount Type</Form.Label>
                   <Form.Select name="type" value={formData.type} onChange={handleChange}>
-                    <option value="percentage">Phần trăm (%)</option>
-                    <option value="fixed">Số tiền cố định ($)</option>
+                    <option value="percentage">Percentage (%)</option>
+                    <option value="fixed">Fixed Amount ($)</option>
                   </Form.Select>
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold">
-                    Mức giảm giá <span className="text-danger">*</span>
+                    Discount Value <span className="text-danger">*</span>
                   </Form.Label>
                   <Form.Control
                     type="number"
@@ -422,21 +428,21 @@ const AdminVouchers = () => {
                     onChange={handleChange}
                     min={1}
                     max={formData.type === "percentage" ? 100 : undefined}
-                    placeholder={formData.type === "percentage" ? "VD: 20" : "VD: 50"}
+                    placeholder={formData.type === "percentage" ? "e.g. 20" : "e.g. 50"}
                     required
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">Đơn hàng tối thiểu ($)</Form.Label>
+                  <Form.Label className="fw-semibold">Minimum Spend ($)</Form.Label>
                   <Form.Control
                     type="number"
                     name="minOrderValue"
                     value={formData.minOrderValue}
                     onChange={handleChange}
                     min={0}
-                    placeholder="VD: 100"
+                    placeholder="e.g. 100"
                   />
                 </Form.Group>
               </Col>
@@ -446,7 +452,7 @@ const AdminVouchers = () => {
               <Col md={4}>
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold">
-                    Ngày hết hạn <small className="text-muted fw-normal">(để trống nếu vô hạn)</small>
+                    Expiration Date <small className="text-muted fw-normal">(leave blank for unlimited)</small>
                   </Form.Label>
                   <Form.Control
                     type="date"
@@ -459,7 +465,7 @@ const AdminVouchers = () => {
               <Col md={4}>
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold">
-                    Lượt sử dụng tối đa <small className="text-muted fw-normal">(để trống nếu vô hạn)</small>
+                    Usage Limit <small className="text-muted fw-normal">(leave blank for unlimited)</small>
                   </Form.Label>
                   <Form.Control
                     type="number"
@@ -467,30 +473,30 @@ const AdminVouchers = () => {
                     value={formData.usageLimit}
                     onChange={handleChange}
                     min={1}
-                    placeholder="VD: 50 (hoặc để trống)"
+                    placeholder="e.g. 50 (or leave blank)"
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">Trạng thái</Form.Label>
+                  <Form.Label className="fw-semibold">Status</Form.Label>
                   <Form.Select
                     name="status"
                     value={formData.status}
                     onChange={handleChange}
                     disabled={Boolean(editing?.isDeleted)}
                   >
-                    <option value={VOUCHER_STATUS.ACTIVE}>Đang áp dụng</option>
-                    <option value={VOUCHER_STATUS.EXPIRED}>Hết hạn</option>
-                    <option value={VOUCHER_STATUS.INACTIVE}>Ngừng áp dụng</option>
+                    <option value={VOUCHER_STATUS.ACTIVE}>Active</option>
+                    <option value={VOUCHER_STATUS.EXPIRED}>Expired</option>
+                    <option value={VOUCHER_STATUS.INACTIVE}>Inactive</option>
                   </Form.Select>
                 </Form.Group>
               </Col>
             </Row>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>Hủy bỏ</Button>
-            <Button type="submit" variant="primary">{editing ? "Cập nhật" : "Tạo mới"}</Button>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+            <Button type="submit" variant="primary">{editing ? "Update" : "Create"}</Button>
           </Modal.Footer>
         </Form>
       </Modal>
@@ -499,10 +505,10 @@ const AdminVouchers = () => {
         show={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}
-        title="Xác nhận dừng áp dụng mã giảm giá"
-        message="Bạn có chắc chắn muốn xóa mã giảm giá này không? Mã sẽ không thể áp dụng cho các đơn hàng mới."
-        confirmText="Xác nhận xóa"
-        cancelText="Hủy bỏ"
+        title="Confirm Voucher Deactivation"
+        message="Are you sure you want to deactivate this voucher? It will no longer be applicable to new orders."
+        confirmText="Deactivate"
+        cancelText="Cancel"
       />
     </div>
   );
