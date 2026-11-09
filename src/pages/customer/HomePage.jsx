@@ -131,13 +131,13 @@ const HomePage = () => {
             <Row className="align-items-center g-4 w-100">
               <Col lg={7} md={6}>
                 <span className="badge bg-light text-dark px-3 py-2 fw-medium mb-3 rounded-1">
-                  Bộ sưu tập chọn lọc 2026
+                  Curated Collection 2026
                 </span>
                 <h1 className="display-5 fw-bold text-white mb-3 lh-sm">
-                  Những cuốn sách gối đầu giường cho Lập trình viên & Nhà quản lý
+                  Essential Books for Developers & Leaders
                 </h1>
                 <p className="lead text-white-50 mb-4" style={{ maxWidth: "560px" }}>
-                  Tuyển chọn các tựa sách kinh điển về kỹ nghệ phần mềm, kiến trúc hệ thống và phát triển bản thân với ấn bản chuẩn mực.
+                  Curated classic titles on software engineering, system architecture, and personal development.
                 </p>
                 <div className="d-flex flex-wrap gap-3">
                   <Button
@@ -146,7 +146,7 @@ const HomePage = () => {
                     variant="light"
                     className="btn-clean px-4 py-2 text-dark fw-semibold"
                   >
-                    Khám phá tất cả sách <FaArrowRight className="ms-2" />
+                    Explore All Books <FaArrowRight className="ms-2" />
                   </Button>
                   <Button
                     as={Link}
@@ -154,7 +154,7 @@ const HomePage = () => {
                     variant="outline-light"
                     className="btn-clean px-4 py-2"
                   >
-                    Sách kỹ thuật & Lập trình
+                    Engineering & Programming
                   </Button>
                 </div>
               </Col>
@@ -196,13 +196,13 @@ const HomePage = () => {
             <Row className="align-items-center g-4 w-100">
               <Col lg={7} md={6}>
                 <span className="badge bg-light text-dark px-3 py-2 fw-medium mb-3 rounded-1">
-                  Kiến trúc & Công nghệ
+                  Architecture & Technology
                 </span>
                 <h1 className="display-5 fw-bold text-white mb-3 lh-sm">
-                  Xây dựng hệ thống Clean, Bền vững & Mở rộng
+                  Build Clean, Resilient & Scalable Systems
                 </h1>
                 <p className="lead text-white-50 mb-4" style={{ maxWidth: "560px" }}>
-                  Các đầu sách kinh điển về tư duy lập trình thực chiến, tối ưu mã nguồn và thiết kế kiến trúc từ các tác giả uy tín thế giới.
+                  Classic titles on pragmatic coding, software craftsmanship, and architecture design from world-renowned authors.
                 </p>
                 <div className="d-flex flex-wrap gap-3">
                   <Button
@@ -211,7 +211,7 @@ const HomePage = () => {
                     variant="light"
                     className="btn-clean px-4 py-2 text-dark fw-semibold"
                   >
-                    Xem sách lập trình <FaArrowRight className="ms-2" />
+                    View Programming Books <FaArrowRight className="ms-2" />
                   </Button>
                 </div>
               </Col>
@@ -263,13 +263,13 @@ const HomePage = () => {
             <Row className="align-items-center g-4 w-100">
               <Col lg={7} md={6}>
                 <span className="badge bg-light text-dark px-3 py-2 fw-medium mb-3 rounded-1">
-                  Mã ưu đãi đang áp dụng
+                  Active Offers & Promo Codes
                 </span>
                 <h1 className="display-5 fw-bold text-white mb-3 lh-sm">
-                  Nhận ngay ưu đãi khi mua sắm tại Infinia
+                  Exclusive Savings When Shopping at Infinia
                 </h1>
                 <p className="lead text-white-50 mb-4" style={{ maxWidth: "560px" }}>
-                  Nhập mã <code className="bg-white text-dark fw-bold px-2 py-1 rounded">SALE10</code> để được giảm 10% cho đơn từ $50, hoặc <code className="bg-white text-dark fw-bold px-2 py-1 rounded">NEWUSER5</code> giảm $5 cho đơn hàng đầu tiên.
+                  Use code <code className="bg-white text-dark fw-bold px-2 py-1 rounded">SALE10</code> for 10% off orders over $50, or <code className="bg-white text-dark fw-bold px-2 py-1 rounded">NEWUSER5</code> for $5 off your first order.
                 </p>
                 <div className="d-flex flex-wrap gap-3">
                   <Button
@@ -278,7 +278,7 @@ const HomePage = () => {
                     variant="light"
                     className="btn-clean px-4 py-2 text-dark fw-semibold"
                   >
-                    Mua sắm ngay <FaArrowRight className="ms-2" />
+                    Shop Now <FaArrowRight className="ms-2" />
                   </Button>
                 </div>
               </Col>
@@ -289,20 +289,20 @@ const HomePage = () => {
                     style={{ maxWidth: "320px", border: "1px solid #e2e8f0" }}
                   >
                     <div className="d-flex justify-content-between align-items-center mb-1">
-                      <span className="badge bg-dark">GIẢM 10%</span>
+                      <span className="badge bg-dark">10% OFF</span>
                       <span className="fw-bold text-dark fs-5">SALE10</span>
                     </div>
-                    <div className="text-secondary small">Đơn từ $50.00 • Toàn bộ danh mục</div>
+                    <div className="text-secondary small">Orders over $50.00 • All Categories</div>
                   </div>
                   <div
                     className="bg-white text-dark p-3 rounded-2 shadow-sm w-100"
                     style={{ maxWidth: "320px", border: "1px solid #e2e8f0" }}
                   >
                     <div className="d-flex justify-content-between align-items-center mb-1">
-                      <span className="badge bg-secondary">GIẢM $5</span>
+                      <span className="badge bg-secondary">$5 OFF</span>
                       <span className="fw-bold text-dark fs-5">NEWUSER5</span>
                     </div>
-                    <div className="text-secondary small">Đơn từ $20.00 • Khách hàng mới</div>
+                    <div className="text-secondary small">Orders over $20.00 • New Customers</div>
                   </div>
                 </div>
               </Col>
@@ -318,8 +318,8 @@ const HomePage = () => {
             <div className="border rounded-2 p-3 bg-white h-100 d-flex align-items-center gap-3">
               <FaShippingFast className="text-secondary fs-4 flex-shrink-0" />
               <div>
-                <div className="fw-semibold text-dark small">Giao hàng nhanh chóng</div>
-                <div className="text-secondary small">Đóng gói cẩn thận, toàn quốc</div>
+                <div className="fw-semibold text-dark small">Fast Delivery</div>
+                <div className="text-secondary small">Carefully packaged, nationwide</div>
               </div>
             </div>
           </Col>
@@ -327,8 +327,8 @@ const HomePage = () => {
             <div className="border rounded-2 p-3 bg-white h-100 d-flex align-items-center gap-3">
               <FaShieldAlt className="text-secondary fs-4 flex-shrink-0" />
               <div>
-                <div className="fw-semibold text-dark small">100% Sách chính hãng</div>
-                <div className="text-secondary small">Bản quyền từ NXB uy tín</div>
+                <div className="fw-semibold text-dark small">100% Authentic Books</div>
+                <div className="text-secondary small">Licensed by top publishers</div>
               </div>
             </div>
           </Col>
@@ -336,8 +336,8 @@ const HomePage = () => {
             <div className="border rounded-2 p-3 bg-white h-100 d-flex align-items-center gap-3">
               <FaUndoAlt className="text-secondary fs-4 flex-shrink-0" />
               <div>
-                <div className="fw-semibold text-dark small">Đổi trả trong 7 ngày</div>
-                <div className="text-secondary small">Hỗ trợ nếu sách có lỗi in ấn</div>
+                <div className="fw-semibold text-dark small">7-Day Easy Returns</div>
+                <div className="text-secondary small">Support for print or defective copies</div>
               </div>
             </div>
           </Col>
@@ -345,8 +345,8 @@ const HomePage = () => {
             <div className="border rounded-2 p-3 bg-white h-100 d-flex align-items-center gap-3">
               <FaHeadset className="text-secondary fs-4 flex-shrink-0" />
               <div>
-                <div className="fw-semibold text-dark small">Hỗ trợ tận tâm</div>
-                <div className="text-secondary small">Sẵn sàng giải đáp 24/7</div>
+                <div className="fw-semibold text-dark small">Dedicated Support</div>
+                <div className="text-secondary small">Ready to assist 24/7</div>
               </div>
             </div>
           </Col>
@@ -362,14 +362,14 @@ const HomePage = () => {
                 setSearchQuery(query);
                 setSearchPage(1);
               }}
-              placeholder="Tìm kiếm sách theo tên hoặc tác giả..."
+              placeholder="Search books by title or author..."
             />
           </Col>
         </Row>
 
         {/* Categories */}
         <div className="mb-5">
-          <h3 className="fw-bold mb-3 text-dark">Danh mục nổi bật</h3>
+          <h3 className="fw-bold mb-3 text-dark">Featured Categories</h3>
           <div className="d-flex flex-wrap gap-2">
             {(categories || []).map((cat) => (
               <Link key={cat.id} to={`/books?category=${cat.id}`} className="text-decoration-none">
@@ -385,7 +385,7 @@ const HomePage = () => {
         {searchQuery.trim() ? (
           <>
             <h3 className="fw-bold mb-3 text-dark">
-              Kết quả tìm kiếm cho "{searchQuery.trim()}"
+              Search results for "{searchQuery.trim()}"
             </h3>
             <BookGrid books={paginatedSearchBooks} reviewCounts={reviewCounts} />
             <Pagination
@@ -397,9 +397,9 @@ const HomePage = () => {
         ) : (
           <>
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h3 className="fw-bold mb-0 text-dark">Sách đọc nhiều & Nổi bật</h3>
+              <h3 className="fw-bold mb-0 text-dark">Popular & Featured Books</h3>
               <Link to="/books" className="text-decoration-none fw-semibold">
-                Xem tất cả <FaArrowRight />
+                View All <FaArrowRight />
               </Link>
             </div>
             <BookGrid books={paginatedFeaturedBooks} reviewCounts={reviewCounts} />

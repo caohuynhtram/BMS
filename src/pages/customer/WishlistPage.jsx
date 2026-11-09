@@ -31,7 +31,7 @@ const WishlistPage = () => {
         userId: user?.id,
       })
     );
-    toast.info("Đã xóa khỏi danh sách yêu thích", { toastId: `wishlist-${targetBookId}` });
+    toast.info("Removed from wishlist", { toastId: `wishlist-${targetBookId}` });
   };
 
   const handleAddToCart = (item) => {
@@ -42,13 +42,13 @@ const WishlistPage = () => {
       item.status === "Inactive" ||
       item.status === "Out of Stock"
     ) {
-      toast.error("Sách này hiện đã tạm hết hàng.", { toastId: `stock-${targetBookId}` });
+      toast.error("This book is currently out of stock.", { toastId: `stock-${targetBookId}` });
       return;
     }
 
     const currentCartItem = cart.items.find((i) => String(i.bookId) === targetBookId);
     if (currentCartItem && currentCartItem.quantity >= item.stock) {
-      toast.warning(`Bạn đã chọn tối đa số lượng có sẵn trong kho (${item.stock} cuốn).`, {
+      toast.warning(`You have selected the maximum available quantity (${item.stock} books).`, {
         toastId: `max-${targetBookId}`,
       });
       return;
@@ -61,7 +61,7 @@ const WishlistPage = () => {
         bookId: targetBookId,
       })
     );
-    toast.success(`Đã thêm "${item.title}" vào giỏ hàng`, { toastId: `cart-${targetBookId}` });
+    toast.success(`Added "${item.title}" to cart`, { toastId: `cart-${targetBookId}` });
 
     if (user?.id) {
       const updatedItems = cart.items.map((i) => ({
@@ -78,11 +78,11 @@ const WishlistPage = () => {
   if (!items || items.length === 0) {
     return (
       <Container className="py-5 text-center">
-        <h3 className="mb-3 fw-bold text-dark">Danh sách yêu thích đang trống</h3>
-        <p className="text-muted">Hãy khám phá thêm các cuốn sách hay và lưu lại cuốn bạn yêu thích nhé!</p>
+        <h3 className="mb-3 fw-bold text-dark">Your Wishlist is Empty</h3>
+        <p className="text-muted">Explore our collection and save your favorite books!</p>
         <Button as={Link} to="/books" variant="primary">
           <FaArrowLeft className="me-2" />
-          Khám phá sách hay
+          Explore Books
         </Button>
       </Container>
     );
@@ -91,7 +91,7 @@ const WishlistPage = () => {
   return (
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2 className="fw-bold mb-0 text-dark">Danh sách yêu thích ({items.length})</h2>
+        <h2 className="fw-bold mb-0 text-dark">Wishlist ({items.length})</h2>
         <Button
           as={Link}
           to="/books"
@@ -100,7 +100,7 @@ const WishlistPage = () => {
           className="btn-back d-inline-flex align-items-center"
         >
           <FaArrowLeft className="me-2 flex-shrink-0" />
-          <span>Quay lại danh mục sách</span>
+          <span>Back to Books</span>
         </Button>
       </div>
       <Row className="g-3">
@@ -132,9 +132,9 @@ const WishlistPage = () => {
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <span className="fw-bold text-primary">{formatCurrency(item.price)}</span>
                     {isOutOfStock ? (
-                      <Badge bg="danger">Tạm hết hàng</Badge>
+                      <Badge bg="danger">Out of Stock</Badge>
                     ) : (
-                      <Badge bg="success">Còn {item.stock} cuốn</Badge>
+                      <Badge bg="success">{item.stock} in stock</Badge>
                     )}
                   </div>
                   <div className="mt-auto d-flex gap-2">
@@ -146,13 +146,13 @@ const WishlistPage = () => {
                       onClick={() => handleAddToCart(item)}
                     >
                       <FaCartPlus className="me-2 flex-shrink-0" />
-                      <span>{isOutOfStock ? "Tạm hết hàng" : "Thêm vào giỏ"}</span>
+                      <span>{isOutOfStock ? "Out of Stock" : "Add to Cart"}</span>
                     </Button>
                     <Button
                       size="sm"
                       variant="outline-danger"
                       onClick={() => handleRemove(item)}
-                      title="Xóa khỏi danh sách yêu thích"
+                      title="Remove from wishlist"
                       className="d-inline-flex align-items-center justify-content-center"
                     >
                       <FaTrash />

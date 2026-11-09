@@ -42,8 +42,8 @@ const Header = () => {
           <Nav className="me-auto">
             {!isAdmin && (
               <>
-                <Nav.Link as={Link} to="/home">Trang chủ</Nav.Link>
-                <Nav.Link as={Link} to="/books">Tủ sách</Nav.Link>
+                <Nav.Link as={Link} to="/home">Home</Nav.Link>
+                <Nav.Link as={Link} to="/books">Books</Nav.Link>
               </>
             )}
           </Nav>
@@ -61,7 +61,7 @@ const Header = () => {
                           </span>
                         )}
                       </span>
-                      <span>Yêu thích</span>
+                      <span>Wishlist</span>
                     </Nav.Link>
                     <Nav.Link as={Link} to="/cart" className="d-inline-flex align-items-center me-2">
                       <span className="header-nav-icon-wrapper">
@@ -72,7 +72,7 @@ const Header = () => {
                           </span>
                         )}
                       </span>
-                      <span>Giỏ hàng</span>
+                      <span>Cart</span>
                     </Nav.Link>
                   </>
                 )}
@@ -87,28 +87,28 @@ const Header = () => {
                   align="end"
                 >
                   <NavDropdown.Item as={Link} to="/profile">
-                    Tài khoản của tôi
+                    My Account
                   </NavDropdown.Item>
                   {!isAdmin && (
                     <NavDropdown.Item as={Link} to="/profile?tab=orders">
-                      Đơn hàng của tôi
+                      My Orders
                     </NavDropdown.Item>
                   )}
                   {isAdmin && (
                     <NavDropdown.Item as={Link} to="/admin">
-                      Bảng điều khiển
+                      Admin Dashboard
                     </NavDropdown.Item>
                   )}
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handleLogout}>
-                    Đăng xuất
+                    Logout
                   </NavDropdown.Item>
                 </NavDropdown>
               </>
             ) : (
               <>
-                <Nav.Link as={Link} to="/login">Đăng nhập</Nav.Link>
-                <Nav.Link as={Link} to="/register">Đăng ký</Nav.Link>
+                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                <Nav.Link as={Link} to="/register">Register</Nav.Link>
               </>
             )}
           </Nav>

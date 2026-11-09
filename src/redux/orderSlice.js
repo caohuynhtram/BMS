@@ -12,7 +12,7 @@ export const fetchOrders = createAsyncThunk(
       const res = await orderApi.getByUser(userId);
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Không thể tải danh sách đơn hàng");
+      return rejectWithValue(err.response?.data || "Unable to load orders list");
     }
   }
 );
@@ -28,7 +28,7 @@ export const fetchOrderDetail = createAsyncThunk(
       ]);
       return { ...orderRes.data, items: itemsRes.data };
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Không thể tải thông tin đơn hàng");
+      return rejectWithValue(err.response?.data || "Unable to load order details");
     }
   }
 );
@@ -120,7 +120,7 @@ export const createOrder = createAsyncThunk(
 
       return orderRes.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Đặt hàng không thành công. Vui lòng thử lại sau.");
+      return rejectWithValue(err.response?.data || "Order placement failed. Please try again later.");
     }
   }
 );
@@ -132,7 +132,7 @@ export const cancelOrder = createAsyncThunk(
     try {
       const orderRes = await axiosClient.get(`/orders/${orderId}`);
       if (orderRes.data?.status !== "Pending") {
-        return rejectWithValue("Đơn hàng đã được xác nhận hoặc đang được xử lý, không thể hủy.");
+        return rejectWithValue("The order has been confirmed or is being processed and cannot be cancelled.");
       }
       const voucherId = orderRes.data?.voucherId;
 
@@ -181,7 +181,7 @@ export const cancelOrder = createAsyncThunk(
 
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Không thể hủy đơn hàng lúc này.");
+      return rejectWithValue(err.response?.data || "Unable to cancel order at this time.");
     }
   }
 );
@@ -196,7 +196,7 @@ export const confirmReceipt = createAsyncThunk(
       });
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Xác nhận nhận hàng chưa thành công.");
+      return rejectWithValue(err.response?.data || "Failed to confirm delivery receipt.");
     }
   }
 );
@@ -208,7 +208,7 @@ export const returnOrder = createAsyncThunk(
     try {
       const currentOrderRes = await axiosClient.get(`/orders/${orderId}`);
       if (currentOrderRes.data?.status !== "Delivered") {
-        return rejectWithValue("Chỉ đơn hàng đã giao thành công mới có thể gửi yêu cầu trả hàng.");
+        return rejectWithValue("Only successfully delivered orders can request a return.");
       }
 
       const res = await axiosClient.patch(`/orders/${orderId}`, {
@@ -217,7 +217,7 @@ export const returnOrder = createAsyncThunk(
 
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Gửi yêu cầu trả hàng chưa thành công.");
+      return rejectWithValue(err.response?.data || "Failed to submit return request.");
     }
   }
 );
@@ -231,7 +231,7 @@ export const updateOrderStatus = createAsyncThunk(
       const prevStatus = currentOrderRes.data?.status;
 
       if (prevStatus === "Delivered" && status === "Returned") {
-        return rejectWithValue("Không thể chuyển sang trạng thái Đã trả hàng trực tiếp. Khách hàng cần gửi yêu cầu trước.");
+        return rejectWithValue("Cannot change directly to Returned status. Customer must submit a return request first.");
       }
 
       const res = await axiosClient.patch(`/orders/${orderId}`, { status });
@@ -295,7 +295,7 @@ export const updateOrderStatus = createAsyncThunk(
       return res.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data || "Cập nhật trạng thái đơn hàng chưa thành công."
+        err.response?.data || "Failed to update order status."
       );
     }
   }

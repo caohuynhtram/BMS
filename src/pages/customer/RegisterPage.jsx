@@ -40,51 +40,51 @@ const RegisterPage = () => {
     setError("");
 
     if (!formData.name.trim()) {
-      setError("Vui lòng nhập đầy đủ cả họ và tên.");
+      setError("Please enter your full name.");
       return;
     }
     if (!isValidFullName(formData.name)) {
-      setError("Họ và tên phải có ít nhất 2 từ và chỉ bao gồm chữ cái.");
+      setError("Full name must contain at least 2 words and only letters.");
       return;
     }
     if (!formData.email.trim()) {
-      setError("Vui lòng nhập địa chỉ email.");
+      setError("Please enter your email address.");
       return;
     }
     if (!isValidEmail(formData.email)) {
-      setError("Định dạng email chưa đúng (VD: user@example.com).");
+      setError("Invalid email format (e.g. user@example.com).");
       return;
     }
     if (!formData.phone.trim()) {
-      setError("Vui lòng nhập số điện thoại.");
+      setError("Please enter your phone number.");
       return;
     }
     if (!isValidPhone(formData.phone)) {
-      setError("Số điện thoại không hợp lệ. Vui lòng nhập số gồm 10 chữ số (VD: 0912345678).");
+      setError("Invalid phone number. Please enter a 10-digit number (e.g. 0912345678).");
       return;
     }
     if (!formData.address.trim()) {
-      setError("Vui lòng nhập địa chỉ nhận hàng.");
+      setError("Please enter your shipping address.");
       return;
     }
     if (!isValidAddress(formData.address)) {
-      setError("Vui lòng nhập địa chỉ nhận hàng chi tiết hơn (ít nhất 2 từ).");
+      setError("Please enter a more detailed shipping address (at least 2 words).");
       return;
     }
     if (!formData.password) {
-      setError("Vui lòng nhập mật khẩu.");
+      setError("Please enter a password.");
       return;
     }
     if (!isValidPassword(formData.password)) {
-      setError("Mật khẩu phải có độ dài từ 6 đến 18 ký tự.");
+      setError("Password must be between 6 and 18 characters.");
       return;
     }
     if (!formData.confirmPassword) {
-      setError("Vui lòng nhập lại mật khẩu để xác nhận.");
+      setError("Please re-enter password to confirm.");
       return;
     }
     if (formData.password !== formData.confirmPassword) {
-      setError("Mật khẩu xác nhận không trùng khớp.");
+      setError("Passwords do not match.");
       return;
     }
 
@@ -96,7 +96,7 @@ const RegisterPage = () => {
         (u) => (u.email || "").toLowerCase() === normalizedEmail
       );
       if (emailExists) {
-        setError("Email này đã được đăng ký. Vui lòng sử dụng email khác hoặc đăng nhập.");
+        setError("This email is already registered. Please use another email or log in.");
         setLoading(false);
         return;
       }
@@ -126,11 +126,11 @@ const RegisterPage = () => {
       });
 
       // Theo chuẩn nghiệp vụ TMĐT: Đăng ký thành công -> Báo thành công -> Chuyển hướng sang trang Đăng nhập
-      toast.success("Đăng ký tài khoản thành công! Vui lòng đăng nhập để tiếp tục.");
+      toast.success("Account registered successfully! Please log in to continue.");
       navigate("/login", { state: { email: normalizedEmail } });
     } catch (err) {
       console.error("Register Error:", err);
-      setError("Đăng ký chưa thành công do lỗi hệ thống. Vui lòng thử lại sau.");
+      setError("Registration failed due to a system error. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -149,9 +149,9 @@ const RegisterPage = () => {
                 >
                   <FaUserPlus className="text-primary fs-3" />
                 </div>
-                <h2 className="fw-bold text-dark mb-1">Đăng ký tài khoản</h2>
+                <h2 className="fw-bold text-dark mb-1">Create an Account</h2>
                 <p className="text-muted small">
-                  Tạo tài khoản INFINIA STORE để nhận nhiều ưu đãi và quản lý tủ sách của bạn
+                  Create an INFINIA STORE account to receive exclusive offers and manage your bookshelf
                 </p>
               </div>
 
@@ -164,56 +164,56 @@ const RegisterPage = () => {
               <Form onSubmit={handleSubmit} noValidate>
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold text-dark">
-                    Họ và tên <span className="text-danger">*</span>
+                    Full Name <span className="text-danger">*</span>
                   </Form.Label>
                   <Form.Control
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Nhập đầy đủ họ và tên"
+                    placeholder="Enter your full name"
                     required
                   />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold text-dark">
-                    Địa chỉ Email <span className="text-danger">*</span>
+                    Email Address <span className="text-danger">*</span>
                   </Form.Label>
                   <Form.Control
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="VD: user@example.com"
+                    placeholder="e.g. user@example.com"
                     required
                   />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold text-dark">
-                    Số điện thoại <span className="text-danger">*</span>
+                    Phone Number <span className="text-danger">*</span>
                   </Form.Label>
                   <Form.Control
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="VD: 0912345678"
+                    placeholder="e.g. 0912345678"
                     required
                   />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold text-dark">
-                    Địa chỉ nhận hàng mặc định <span className="text-danger">*</span>
+                    Default Shipping Address <span className="text-danger">*</span>
                   </Form.Label>
                   <Form.Control
                     type="text"
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
-                    placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành"
+                    placeholder="Street address, ward, district, city/province"
                     required
                   />
                 </Form.Group>
@@ -222,7 +222,7 @@ const RegisterPage = () => {
 
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold text-dark">
-                    Mật khẩu <span className="text-danger">*</span>
+                    Password <span className="text-danger">*</span>
                   </Form.Label>
                   <div className="position-relative">
                     <Form.Control
@@ -230,7 +230,7 @@ const RegisterPage = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
-                      placeholder="Từ 6 đến 18 ký tự"
+                      placeholder="6 to 18 characters"
                       required
                       minLength={6}
                       maxLength={18}
@@ -245,8 +245,8 @@ const RegisterPage = () => {
                         e.preventDefault();
                         setShowPassword((prev) => !prev);
                       }}
-                      title={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                      aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                      title={showPassword ? "Hide password" : "Show password"}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                       tabIndex={-1}
                     >
                       {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
@@ -256,7 +256,7 @@ const RegisterPage = () => {
 
                 <Form.Group className="mb-4">
                   <Form.Label className="fw-semibold text-dark">
-                    Xác nhận mật khẩu <span className="text-danger">*</span>
+                    Confirm Password <span className="text-danger">*</span>
                   </Form.Label>
                   <div className="position-relative">
                     <Form.Control
@@ -264,7 +264,7 @@ const RegisterPage = () => {
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      placeholder="Nhập lại mật khẩu để xác nhận"
+                      placeholder="Re-enter password to confirm"
                       required
                       minLength={6}
                       maxLength={18}
@@ -279,8 +279,8 @@ const RegisterPage = () => {
                         e.preventDefault();
                         setShowConfirmPassword((prev) => !prev);
                       }}
-                      title={showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                      aria-label={showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                      title={showConfirmPassword ? "Hide password" : "Show password"}
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                       tabIndex={-1}
                     >
                       {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
@@ -297,19 +297,19 @@ const RegisterPage = () => {
                   {loading ? (
                     <>
                       <Spinner size="sm" animation="border" className="me-2" />
-                      <span>Đang khởi tạo tài khoản...</span>
+                      <span>Creating account...</span>
                     </>
                   ) : (
-                    <span>Đăng ký tài khoản</span>
+                    <span>Create Account</span>
                   )}
                 </Button>
               </Form>
 
               <div className="text-center mt-4">
                 <p className="text-muted small mb-0">
-                  Đã có tài khoản?{" "}
+                  Already have an account?{" "}
                   <Link to="/login" className="text-decoration-none fw-bold text-primary">
-                    Đăng nhập ngay
+                    Log in now
                   </Link>
                 </p>
               </div>

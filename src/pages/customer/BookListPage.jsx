@@ -103,12 +103,12 @@ const BookListPage = () => {
 
   return (
     <Container className="py-4">
-      <h2 className="fw-bold mb-4 text-dark">Tủ sách Infinia</h2>
+      <h2 className="fw-bold mb-4 text-dark">Infinia Bookshelf</h2>
       <Row className="mb-4 g-3">
         <Col md={4}>
           <SearchBar
             onSearch={setSearchQuery}
-            placeholder="Tìm kiếm theo tên sách hoặc tác giả..."
+            placeholder="Search by book title or author..."
           />
         </Col>
         <Col md={4}>
@@ -118,13 +118,13 @@ const BookListPage = () => {
             className="shadow-sm border"
             style={{ borderRadius: "0.5rem" }}
           >
-            <option value="">Tất cả danh mục</option>
+            <option value="">All Categories</option>
             {(categories || []).map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
               </option>
             ))}
-            <option value="uncategorized">Chưa phân loại</option>
+            <option value="uncategorized">Uncategorized</option>
           </Form.Select>
         </Col>
         <Col md={4}>
@@ -134,16 +134,16 @@ const BookListPage = () => {
             className="shadow-sm border"
             style={{ borderRadius: "0.5rem" }}
           >
-            <option value="">Sắp xếp theo</option>
-            <option value="price-asc">Giá: Thấp đến cao</option>
-            <option value="price-desc">Giá: Cao đến thấp</option>
-            <option value="rating">Đánh giá cao nhất</option>
+            <option value="">Sort by</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
           </Form.Select>
         </Col>
       </Row>
 
       <p className="text-muted mb-3">
-        Hiển thị {paginatedBooks.length} trên tổng số {filtered.length} cuốn sách
+        Showing {paginatedBooks.length} of {filtered.length} books
       </p>
 
       <BookGrid books={paginatedBooks} reviewCounts={reviewCounts} />

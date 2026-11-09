@@ -58,20 +58,20 @@ export const sendOtpEmail = async ({ toEmail, toName, otpCode, type = "register"
 
   if (!serviceId || !templateId || !publicKey) {
     throw new Error(
-      "Thiếu thông tin cấu hình EmailJS trong file .env (VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, VITE_EMAILJS_PUBLIC_KEY)."
+      "Missing EmailJS configuration in .env (VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, VITE_EMAILJS_PUBLIC_KEY)."
     );
   }
 
   if (!isEmailJsConfigured()) {
     throw new Error(
-      "Vui lòng cập nhật thông tin EmailJS thật (Service ID, Template ID, Public Key) vào file .env để gửi email về Gmail của bạn."
+      "Please update valid EmailJS credentials (Service ID, Template ID, Public Key) in .env to send emails."
     );
   }
 
   const subject =
     type === "register"
-      ? "Xác thực tài khoản INFINIA STORE"
-      : "Mã xác thực đặt lại mật khẩu - INFINIA STORE";
+      ? "Verify your INFINIA STORE account"
+      : "Reset Password Verification - INFINIA STORE";
 
   const templateParams = {
     to_email: toEmail.trim(),
@@ -86,7 +86,7 @@ export const sendOtpEmail = async ({ toEmail, toName, otpCode, type = "register"
     code: otpCode,
     subject: subject,
     title: subject,
-    expiry_time: "5 phút",
+    expiry_time: "5 minutes",
     brand_name: "INFINIA STORE",
     company_name: "INFINIA STORE",
     support_email: "support@infiniastore.vn",
@@ -101,7 +101,7 @@ export const sendOtpEmail = async ({ toEmail, toName, otpCode, type = "register"
     const errorMsg =
       error?.text ||
       error?.message ||
-      "Không thể gửi email qua EmailJS. Vui lòng kiểm tra kết nối mạng hoặc thông số cấu hình.";
+      "Could not send email via EmailJS. Please check your network connection or configuration.";
     throw new Error(errorMsg, { cause: error });
   }
 };

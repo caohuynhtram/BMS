@@ -35,17 +35,17 @@ const BookCard = ({ book, reviewCount }) => {
     if (isSubmitting) return;
 
     if (!isAuthenticated) {
-      toast.warning("Vui lòng đăng nhập để thêm sách vào giỏ hàng", { toastId: "auth-cart" });
+      toast.warning("Please log in to add books to your cart", { toastId: "auth-cart" });
       return;
     }
     if (isOutOfStock) {
-      toast.error("Sách này hiện đã tạm hết hàng.", { toastId: `stock-${bookIdStr}` });
+      toast.error("This book is currently out of stock.", { toastId: `stock-${bookIdStr}` });
       return;
     }
 
     const currentCartItem = cartItems.find((i) => String(i.bookId) === bookIdStr);
     if (currentCartItem && currentCartItem.quantity >= book.stock) {
-      toast.warning(`Bạn đã chọn tối đa số lượng có sẵn trong kho (${book.stock} cuốn).`, {
+      toast.warning(`You have selected the maximum available quantity (${book.stock} books).`, {
         toastId: `max-${bookIdStr}`,
       });
       return;
@@ -54,7 +54,7 @@ const BookCard = ({ book, reviewCount }) => {
     setIsSubmitting(true);
     try {
       dispatch(addToCart(book));
-      toast.success(`Đã thêm "${book.title}" vào giỏ hàng`, { toastId: `cart-${bookIdStr}` });
+      toast.success(`Added "${book.title}" to cart`, { toastId: `cart-${bookIdStr}` });
 
       if (user?.id) {
         const updatedItems = cartItems.map((i) => ({
@@ -77,7 +77,7 @@ const BookCard = ({ book, reviewCount }) => {
     if (isSubmitting) return;
 
     if (!isAuthenticated) {
-      toast.warning("Vui lòng đăng nhập để lưu vào danh sách yêu thích", {
+      toast.warning("Please log in to save to your wishlist", {
         toastId: "auth-wishlist",
       });
       return;
@@ -97,10 +97,10 @@ const BookCard = ({ book, reviewCount }) => {
             userId: user?.id,
           })
         );
-        toast.info("Đã xóa khỏi danh sách yêu thích", { toastId: `wishlist-${bookIdStr}` });
+        toast.info("Removed from wishlist", { toastId: `wishlist-${bookIdStr}` });
       } else {
         await dispatch(addWishlistItem({ userId: user.id, book }));
-        toast.success("Đã thêm vào danh sách yêu thích", { toastId: `wishlist-${bookIdStr}` });
+        toast.success("Added to wishlist", { toastId: `wishlist-${bookIdStr}` });
       }
     } finally {
       setTimeout(() => setIsSubmitting(false), 300);
@@ -131,7 +131,7 @@ const BookCard = ({ book, reviewCount }) => {
           className="position-absolute top-0 end-0 m-2 p-1"
           onClick={handleWishlist}
           disabled={isSubmitting}
-          aria-label={isInWishlist ? "Bỏ yêu thích" : "Thêm vào yêu thích"}
+          aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
           style={{ fontSize: "1.2rem", zIndex: 10 }}
         >
           {isInWishlist ? (
@@ -160,7 +160,7 @@ const BookCard = ({ book, reviewCount }) => {
             className="d-inline-flex align-items-center justify-content-center"
           >
             <FaCartPlus className="me-1 flex-shrink-0" />
-            <span>{isOutOfStock ? "Hết hàng" : "Thêm"}</span>
+            <span>{isOutOfStock ? "Out of Stock" : "Add"}</span>
           </Button>
         </div>
       </Card.Body>

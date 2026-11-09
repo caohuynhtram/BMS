@@ -58,16 +58,16 @@ const OrderDetailPage = () => {
   const handleConfirmCancel = () => {
     setConfirmModal({
       show: true,
-      title: "Xác nhận hủy đơn hàng",
-      message: "Bạn có chắc chắn muốn hủy đơn hàng này không? Số lượng sách sẽ được tự động hoàn lại vào kho.",
-      confirmText: "Hủy đơn hàng",
-      cancelText: "Đóng",
+      title: "Cancel Order Confirmation",
+      message: "Are you sure you want to cancel this order? Book quantities will be automatically restored to stock.",
+      confirmText: "Cancel Order",
+      cancelText: "Close",
       onConfirm: async () => {
         try {
           await dispatch(cancelOrder(id)).unwrap();
-          toast.success("Đã hủy đơn hàng thành công.");
+          toast.success("Order cancelled successfully.");
         } catch (err) {
-          toast.error(typeof err === "string" ? err : "Không thể hủy đơn hàng lúc này. Vui lòng thử lại sau.");
+          toast.error(typeof err === "string" ? err : "Unable to cancel order at this time. Please try again later.");
         }
         setConfirmModal((prev) => ({ ...prev, show: false }));
       },
@@ -77,17 +77,17 @@ const OrderDetailPage = () => {
   const handleConfirmReceipt = () => {
     setConfirmModal({
       show: true,
-      title: "Xác nhận đã nhận hàng",
-      message: "Bạn xác nhận đã nhận đầy đủ các sản phẩm trong đơn hàng này đúng không?",
-      confirmText: "Đã nhận hàng",
-      cancelText: "Chưa nhận",
+      title: "Confirm Delivery Receipt",
+      message: "Do you confirm that you have received all items in this order?",
+      confirmText: "Received",
+      cancelText: "Not Yet",
       confirmVariant: "success",
       onConfirm: async () => {
         try {
           await dispatch(confirmReceipt(id)).unwrap();
-          toast.success("Cảm ơn bạn đã xác nhận nhận hàng!");
+          toast.success("Thank you for confirming receipt!");
         } catch (err) {
-          toast.error("Xác nhận nhận hàng chưa thành công. Vui lòng thử lại sau.");
+          toast.error("Failed to confirm delivery receipt. Please try again later.");
         }
         setConfirmModal((prev) => ({ ...prev, show: false }));
       },
@@ -97,16 +97,16 @@ const OrderDetailPage = () => {
   const handleReturn = () => {
     setConfirmModal({
       show: true,
-      title: "Yêu cầu trả hàng / hoàn tiền",
-      message: "Bạn có chắc chắn muốn gửi yêu cầu trả hàng cho đơn này không?",
-      confirmText: "Gửi yêu cầu",
-      cancelText: "Hủy bỏ",
+      title: "Return / Refund Request",
+      message: "Are you sure you want to submit a return request for this order?",
+      confirmText: "Submit Request",
+      cancelText: "Cancel",
       onConfirm: async () => {
         try {
           await dispatch(returnOrder(id)).unwrap();
-          toast.success("Đã gửi yêu cầu trả hàng thành công. Bộ phận hỗ trợ sẽ liên hệ với bạn sớm!");
+          toast.success("Return request submitted successfully. Support will contact you soon!");
         } catch (err) {
-          toast.error("Gửi yêu cầu trả hàng chưa thành công. Vui lòng thử lại sau.");
+          toast.error("Failed to submit return request. Please try again later.");
         }
         setConfirmModal((prev) => ({ ...prev, show: false }));
       },
@@ -118,10 +118,10 @@ const OrderDetailPage = () => {
   if (!currentOrder) {
     return (
       <Container className="py-5 text-center">
-        <h3 className="fw-bold text-dark mb-3">Không tìm thấy đơn hàng</h3>
-        <p className="text-muted mb-4">Đơn hàng bạn đang tìm kiếm không tồn tại hoặc mã đơn không chính xác.</p>
+        <h3 className="fw-bold text-dark mb-3">Order Not Found</h3>
+        <p className="text-muted mb-4">The order you are looking for does not exist or the order code is incorrect.</p>
         <Button as={Link} to="/profile?tab=orders" variant="primary">
-          <FaArrowLeft className="me-2" /> Quay lại danh sách đơn hàng
+          <FaArrowLeft className="me-2" /> Back to Orders
         </Button>
       </Container>
     );
@@ -134,12 +134,12 @@ const OrderDetailPage = () => {
       <Container className="py-5 text-center">
         <div className="py-5">
           <FaLock className="text-danger mb-3" style={{ fontSize: "3.5rem" }} />
-          <h3 className="fw-bold text-dark mb-2">Không có quyền truy cập</h3>
+          <h3 className="fw-bold text-dark mb-2">Access Denied</h3>
           <p className="text-muted mb-4">
-            Bạn không có quyền xem thông tin chi tiết đơn hàng của người dùng khác.
+            You do not have permission to view details of another user's order.
           </p>
           <Button as={Link} to="/profile?tab=orders" variant="primary">
-            <FaArrowLeft className="me-2" /> Quay lại đơn hàng của tôi
+            <FaArrowLeft className="me-2" /> Back to My Orders
           </Button>
         </div>
       </Container>
@@ -163,21 +163,21 @@ const OrderDetailPage = () => {
           <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <div>
               <h3 className="fw-bold text-dark mb-1">
-                Đơn hàng #{String(currentOrder.orderCode || currentOrder.id).replace(/^#/, "")}
+                Order #{String(currentOrder.orderCode || currentOrder.id).replace(/^#/, "")}
               </h3>
               <small className="text-muted">
-                Ngày đặt: {formatDate(currentOrder.createdAt) || currentOrder.createdAt}
+                Order Date: {formatDate(currentOrder.createdAt) || currentOrder.createdAt}
               </small>
             </div>
             <div className="d-flex align-items-center gap-2">
               <span className={`badge ${statusBadgeClasses[currentOrder.status] || "bg-light text-secondary border"} fs-6 px-3 py-2`}>
-                {currentOrder.status === "Pending" ? "Chờ xử lý" :
-                 currentOrder.status === "Confirmed" ? "Đã xác nhận" :
-                 currentOrder.status === "Shipping" ? "Đang giao" :
-                 currentOrder.status === "Delivered" ? "Đã giao" :
-                 currentOrder.status === "Cancelled" ? "Đã hủy" :
-                 currentOrder.status === "Return Requested" ? "Đang yêu cầu trả hàng" :
-                 currentOrder.status === "Returned" ? "Đã trả hàng" : currentOrder.status}
+                {currentOrder.status === "Pending" ? "Pending" :
+                 currentOrder.status === "Confirmed" ? "Confirmed" :
+                 currentOrder.status === "Shipping" ? "Shipping" :
+                 currentOrder.status === "Delivered" ? "Delivered" :
+                 currentOrder.status === "Cancelled" ? "Cancelled" :
+                 currentOrder.status === "Return Requested" ? "Return Requested" :
+                 currentOrder.status === "Returned" ? "Returned" : currentOrder.status}
               </span>
               <Button
                 as={Link}
@@ -187,7 +187,7 @@ const OrderDetailPage = () => {
                 className="btn-back d-inline-flex align-items-center"
               >
                 <FaArrowLeft className="me-2 flex-shrink-0" />
-                <span>Quay lại đơn hàng của tôi</span>
+                <span>Back to My Orders</span>
               </Button>
             </div>
           </div>
@@ -195,33 +195,33 @@ const OrderDetailPage = () => {
           {/* Snapshot thông tin người nhận lúc đặt hàng */}
           <Card className="bg-light border-0 mb-4">
             <Card.Body>
-              <h6 className="fw-bold text-dark mb-3">Thông tin nhận hàng</h6>
+              <h6 className="fw-bold text-dark mb-3">Shipping Details</h6>
               <div className="row g-2">
                 <div className="col-md-4">
-                  <span className="text-muted d-block small"><FaUser className="me-1" /> Người nhận:</span>
+                  <span className="text-muted d-block small"><FaUser className="me-1" /> Recipient:</span>
                   <strong className="text-dark">{currentOrder.recipientName || user?.name || "N/A"}</strong>
                 </div>
                 <div className="col-md-4">
-                  <span className="text-muted d-block small"><FaPhone className="me-1" /> Điện thoại:</span>
+                  <span className="text-muted d-block small"><FaPhone className="me-1" /> Phone:</span>
                   <strong className="text-dark">{currentOrder.phone || user?.phone || "N/A"}</strong>
                 </div>
                 <div className="col-md-4">
-                  <span className="text-muted d-block small"><FaMapMarkerAlt className="me-1" /> Địa chỉ giao hàng:</span>
+                  <span className="text-muted d-block small"><FaMapMarkerAlt className="me-1" /> Shipping Address:</span>
                   <strong className="text-dark">{currentOrder.shippingAddress || user?.address || "N/A"}</strong>
                 </div>
               </div>
             </Card.Body>
           </Card>
 
-          <h5 className="fw-bold text-dark mb-3">Danh sách sản phẩm</h5>
+          <h5 className="fw-bold text-dark mb-3">Order Items</h5>
           <Table responsive hover className="align-middle">
             <thead className="table-light">
               <tr>
-                <th style={{ width: "80px" }}>Hình ảnh</th>
-                <th>Tên sách</th>
-                <th>Đơn giá</th>
-                <th>Số lượng</th>
-                <th className="text-end">Thành tiền</th>
+                <th style={{ width: "80px" }}>Image</th>
+                <th>Book Title</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th className="text-end">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -275,18 +275,18 @@ const OrderDetailPage = () => {
             <div className="row justify-content-end">
               <div className="col-md-5">
                 <div className="d-flex justify-content-between mb-2">
-                  <span className="text-muted">Tạm tính:</span>
+                  <span className="text-muted">Subtotal:</span>
                   <span className="fw-semibold text-dark">{formatCurrency(subtotal)}</span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="d-flex justify-content-between mb-2 text-success">
-                    <span>Mã giảm giá:</span>
+                    <span>Discount:</span>
                     <span className="fw-semibold">-{formatCurrency(discountAmount)}</span>
                   </div>
                 )}
                 <hr />
                 <div className="d-flex justify-content-between mb-3">
-                  <strong className="fs-5 text-dark">Tổng tiền:</strong>
+                  <strong className="fs-5 text-dark">Grand Total:</strong>
                   <strong className="fs-5 text-primary">
                     {formatCurrency(currentOrder.totalPrice)}
                   </strong>
@@ -301,19 +301,19 @@ const OrderDetailPage = () => {
               {currentOrder.status === "Pending" && (
                 <Button variant="outline-danger" size="sm" onClick={handleConfirmCancel} className="d-inline-flex align-items-center">
                   <FaTimesCircle className="me-2 flex-shrink-0" />
-                  <span>Hủy đơn hàng</span>
+                  <span>Cancel Order</span>
                 </Button>
               )}
               {currentOrder.status === "Shipping" && (
                 <Button variant="success" size="sm" onClick={handleConfirmReceipt} className="d-inline-flex align-items-center">
                   <FaCheckCircle className="me-2 flex-shrink-0" />
-                  <span>Đã nhận được hàng</span>
+                  <span>Confirm Received</span>
                 </Button>
               )}
               {currentOrder.status === "Delivered" && (
                 <Button variant="outline-secondary" size="sm" onClick={handleReturn} className="d-inline-flex align-items-center">
                   <FaUndo className="me-2 flex-shrink-0" />
-                  <span>Yêu cầu trả hàng</span>
+                  <span>Request Return</span>
                 </Button>
               )}
             </div>

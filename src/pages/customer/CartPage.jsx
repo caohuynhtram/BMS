@@ -65,12 +65,12 @@ const CartItemRow = ({ item, onUpdateQuantity, onRemove }) => {
         <h6 className="mb-1 fw-bold text-dark">{item.title}</h6>
         <small className="text-muted d-block">{item.author}</small>
         {isInactive ? (
-          <Badge bg="danger" className="mt-1">Ngừng kinh doanh</Badge>
+          <Badge bg="danger" className="mt-1">Discontinued</Badge>
         ) : isOutOfStock ? (
-          <Badge bg="warning" text="dark" className="mt-1">Hết hàng</Badge>
+          <Badge bg="warning" text="dark" className="mt-1">Out of Stock</Badge>
         ) : (
           <small className="text-muted">
-            Kho: <Badge bg="light" text="dark" className="border">Còn {item.stock} cuốn</Badge>
+            Stock: <Badge bg="light" text="dark" className="border">{item.stock} in stock</Badge>
           </small>
         )}
       </Col>
@@ -116,7 +116,7 @@ const CartItemRow = ({ item, onUpdateQuantity, onRemove }) => {
           variant="outline-danger"
           size="sm"
           onClick={() => onRemove(item.bookId)}
-          title="Xóa khỏi giỏ hàng"
+          title="Remove from cart"
         >
           <FaTrash />
         </Button>
@@ -156,15 +156,15 @@ const CartPage = () => {
             (b) => String(b.id) === String(item.bookId) || (item.title && b.title === item.title)
           );
           if (!fresh || fresh.isDeleted || fresh.status === "Inactive") {
-            warnings.push(`"${item.title}" đã ngừng kinh doanh. Vui lòng xóa khỏi giỏ hàng.`);
+            warnings.push(`"${item.title}" has been discontinued. Please remove it from your cart.`);
           } else {
             if (Number(fresh.price) !== Number(item.price)) {
-              warnings.push(`Giá cuốn "${item.title}" đã cập nhật từ ${formatCurrency(item.price)} sang ${formatCurrency(fresh.price)}.`);
+              warnings.push(`Price for "${item.title}" updated from ${formatCurrency(item.price)} to ${formatCurrency(fresh.price)}.`);
             }
             if (fresh.stock <= 0 || fresh.status === "Out of Stock") {
-              warnings.push(`"${item.title}" hiện đã hết hàng. Vui lòng bỏ sản phẩm này để tiếp tục thanh toán.`);
+              warnings.push(`"${item.title}" is currently out of stock. Please remove this item to proceed with checkout.`);
             } else if (item.quantity > fresh.stock) {
-              warnings.push(`"${item.title}" trong kho chỉ còn ${fresh.stock} cuốn (bạn đang chọn ${item.quantity}). Vui lòng giảm số lượng để tiếp tục thanh toán.`);
+              warnings.push(`Only ${fresh.stock} copies of "${item.title}" left in stock (you have ${item.quantity} in cart). Please reduce quantity to proceed.`);
             }
           }
         });
@@ -193,13 +193,13 @@ const CartPage = () => {
       const isItemOverStock = !isItemInactive && !isItemOutOfStock && item.stock != null && item.quantity > item.stock;
 
       if (isItemInactive) {
-        const msg = `"${item.title}" đã ngừng kinh doanh. Vui lòng xóa khỏi giỏ hàng.`;
+        const msg = `"${item.title}" has been discontinued. Please remove it from your cart.`;
         if (!list.includes(msg)) list.push(msg);
       } else if (isItemOutOfStock) {
-        const msg = `"${item.title}" hiện đã hết hàng. Vui lòng bỏ sản phẩm này để tiếp tục thanh toán.`;
+        const msg = `"${item.title}" is currently out of stock. Please remove this item to proceed with checkout.`;
         if (!list.includes(msg)) list.push(msg);
       } else if (isItemOverStock) {
-        const msg = `"${item.title}" trong kho chỉ còn ${item.stock} cuốn (bạn đang chọn ${item.quantity}). Vui lòng giảm số lượng để tiếp tục thanh toán.`;
+        const msg = `Only ${item.stock} copies of "${item.title}" left in stock (you have ${item.quantity} in cart). Please reduce quantity to proceed.`;
         if (!list.includes(msg)) list.push(msg);
       }
     });
@@ -222,7 +222,7 @@ const CartPage = () => {
     if (validQty < 1) return;
 
     if (item && item.stock != null && validQty > item.stock) {
-      toast.warning(`Chỉ còn ${item.stock} cuốn trong kho.`);
+      toast.warning(`Only ${item.stock} books left in stock.`);
       validQty = item.stock;
     }
 
@@ -235,14 +235,14 @@ const CartPage = () => {
 
   const handleRemove = (bookId) => {
     dispatch(removeFromCart(bookId));
-    toast.info("Đã xóa sản phẩm khỏi giỏ hàng.");
+    toast.info("Item removed from cart.");
     const updatedItems = items.filter((i) => String(i.bookId) !== String(bookId));
     syncCart(updatedItems);
   };
 
   const handleConfirmClearCart = () => {
     dispatch(clearCart());
-    toast.info("Đã làm trống giỏ hàng.");
+    toast.info("Cart cleared.");
     syncCart([]);
     setShowClearModal(false);
   };
@@ -260,7 +260,7 @@ const CartPage = () => {
 
   const handleProceedToCheckout = () => {
     if (hasInvalidItem) {
-      toast.error("Vui lòng xóa sản phẩm hết hàng hoặc ngừng bán trước khi đặt hàng!");
+      toast.error("Please remove out of stock or discontinued items before checking out!");
       return;
     }
     navigate("/checkout");
@@ -269,11 +269,11 @@ const CartPage = () => {
   if (items.length === 0) {
     return (
       <Container className="py-5 text-center">
-        <h3 className="mb-3 fw-bold text-dark">Giỏ hàng của bạn đang trống</h3>
-        <p className="text-muted">Hãy khám phá thêm các cuốn sách hay và thêm vào giỏ nhé!</p>
+        <h3 className="mb-3 fw-bold text-dark">Your cart is empty</h3>
+        <p className="text-muted">Explore our great books and add them to your cart!</p>
         <Button as={Link} to="/books" variant="primary">
           <FaArrowLeft className="me-2" />
-          Tiếp tục mua sách
+          Continue Shopping
         </Button>
       </Container>
     );
@@ -282,7 +282,7 @@ const CartPage = () => {
   return (
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2 className="fw-bold mb-0 text-dark">Giỏ hàng của bạn</h2>
+        <h2 className="fw-bold mb-0 text-dark">Your Shopping Cart</h2>
         <div className="d-flex align-items-center gap-2">
           <Button
             as={Link}
@@ -292,7 +292,7 @@ const CartPage = () => {
             className="btn-back d-inline-flex align-items-center"
           >
             <FaArrowLeft className="me-2 flex-shrink-0" />
-            <span>Tiếp tục xem sách</span>
+            <span>Continue Shopping</span>
           </Button>
           <Button
             variant="outline-danger"
@@ -301,7 +301,7 @@ const CartPage = () => {
             className="d-inline-flex align-items-center"
           >
             <FaTrashAlt className="me-2 flex-shrink-0" />
-            <span>Làm trống giỏ</span>
+            <span>Clear Cart</span>
           </Button>
         </div>
       </div>
@@ -309,7 +309,7 @@ const CartPage = () => {
       {combinedWarnings.length > 0 && (
         <Alert variant="warning" className="mb-4">
           <FaExclamationTriangle className="me-2" />
-          <strong>Thông báo giỏ hàng:</strong>
+          <strong>Cart Notice:</strong>
           <ul className="mb-0 mt-1 ps-3">
             {combinedWarnings.map((msg, idx) => (
               <li key={`${idx}-${msg}`}>{msg}</li>
@@ -321,11 +321,11 @@ const CartPage = () => {
       <Row className="g-4">
         <Col lg={8}>
           <Row className="text-muted small fw-bold pb-2 border-bottom d-none d-md-flex">
-            <Col xs={2}>Hình ảnh</Col>
-            <Col xs={4}>Sản phẩm</Col>
-            <Col xs={2} className="text-center">Đơn giá</Col>
-            <Col xs={2}>Số lượng</Col>
-            <Col xs={1} className="text-center">Thành tiền</Col>
+            <Col xs={2}>Image</Col>
+            <Col xs={4}>Product</Col>
+            <Col xs={2} className="text-center">Price</Col>
+            <Col xs={2}>Quantity</Col>
+            <Col xs={1} className="text-center">Total</Col>
             <Col xs={1}></Col>
           </Row>
           {items.map((item) => (
@@ -353,10 +353,10 @@ const CartPage = () => {
         show={showClearModal}
         onClose={() => setShowClearModal(false)}
         onConfirm={handleConfirmClearCart}
-        title="Làm trống giỏ hàng"
-        message="Bạn có chắc chắn muốn xóa toàn bộ sản phẩm đang có trong giỏ hàng không?"
-        confirmText="Xóa tất cả"
-        cancelText="Giữ lại"
+        title="Clear Cart"
+        message="Are you sure you want to remove all items from your cart?"
+        confirmText="Clear All"
+        cancelText="Keep Items"
       />
     </Container>
   );

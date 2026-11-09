@@ -46,7 +46,7 @@ const AdminUsers = () => {
 
   const handleOpenConfirm = (user) => {
     if (String(user.id) === String(currentUser?.id)) {
-      toast.warning("Bạn không thể tự khóa tài khoản của chính mình!");
+      toast.warning("You cannot lock your own account!");
       return;
     }
     setSelectedUser(user);
@@ -56,7 +56,7 @@ const AdminUsers = () => {
   const handleConfirmToggle = async () => {
     if (!selectedUser) return;
     if (String(selectedUser.id) === String(currentUser?.id)) {
-      toast.error("Bạn không thể tự khóa tài khoản của chính mình!");
+      toast.error("You cannot lock your own account!");
       setShowConfirmModal(false);
       setSelectedUser(null);
       return;
@@ -65,11 +65,11 @@ const AdminUsers = () => {
     try {
       await userApi.updateStatus(selectedUser.id, newStatus);
       toast.success(
-        `Đã ${newStatus === "active" ? "mở khóa" : "khóa"} tài khoản "${selectedUser.name}" thành công!`
+        `Successfully ${newStatus === "active" ? "unlocked" : "locked"} account "${selectedUser.name}"!`
       );
       fetchUsers();
     } catch (err) {
-      toast.error("Cập nhật trạng thái tài khoản chưa thành công.");
+      toast.error("Failed to update account status.");
     }
     setShowConfirmModal(false);
     setSelectedUser(null);
@@ -77,11 +77,11 @@ const AdminUsers = () => {
 
   const handleOpenEditModal = (user) => {
     if (!isAdmin) {
-      toast.error("Chỉ Quản trị viên (Admin) mới có quyền chỉnh sửa thông tin người dùng.");
+      toast.error("Only Administrators have permission to edit user information.");
       return;
     }
     if (String(user.id) === String(currentUser?.id)) {
-      toast.error("Để sửa thông tin của chính mình, vui lòng vào trang Hồ sơ cá nhân (Profile).");
+      toast.error("To edit your own profile, please visit the Profile page.");
       return;
     }
     setEditingUser(user);
@@ -96,11 +96,11 @@ const AdminUsers = () => {
   const handleUpdateUser = async () => {
     if (!editingUser) return;
     if (!isAdmin) {
-      toast.error("Chỉ Quản trị viên (Admin) mới có quyền chỉnh sửa thông tin người dùng.");
+      toast.error("Only Administrators have permission to edit user information.");
       return;
     }
     if (!editForm.name?.trim()) {
-      toast.error("Họ và tên không được để trống.");
+      toast.error("Full name cannot be empty.");
       return;
     }
     try {
@@ -109,12 +109,12 @@ const AdminUsers = () => {
         phone: (editForm.phone || "").trim(),
         address: (editForm.address || "").trim(),
       });
-      toast.success(`Cập nhật thông tin cho "${editForm.name.trim()}" thành công!`);
+      toast.success(`Successfully updated information for "${editForm.name.trim()}"!`);
       setShowEditModal(false);
       fetchUsers();
     } catch (err) {
       console.error(err);
-      toast.error("Cập nhật thông tin chưa thành công. Vui lòng thử lại.");
+      toast.error("Failed to update information. Please try again.");
     }
   };
 
@@ -142,8 +142,8 @@ const AdminUsers = () => {
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 className="fw-bold text-dark mb-1">Quản lý người dùng</h2>
-          <p className="text-muted small mb-0">Quản lý danh sách tài khoản khách hàng, cập nhật thông tin và trạng thái tài khoản.</p>
+          <h2 className="fw-bold text-dark mb-1">User Management</h2>
+          <p className="text-muted small mb-0">Manage customer accounts, update details, and manage account status.</p>
         </div>
       </div>
 
@@ -154,7 +154,7 @@ const AdminUsers = () => {
               setSearchQuery(q);
               setCurrentPage(1);
             }}
-            placeholder="Tìm kiếm theo tên, email, số điện thoại hoặc địa chỉ..."
+            placeholder="Search by name, email, phone number, or address..."
           />
         </Col>
         <Col md={3}>
@@ -165,9 +165,9 @@ const AdminUsers = () => {
               setCurrentPage(1);
             }}
           >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="active">Đang hoạt động</option>
-            <option value="blocked">Đã bị khóa</option>
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
           </Form.Select>
         </Col>
       </Row>
@@ -175,13 +175,13 @@ const AdminUsers = () => {
       <Table striped bordered hover responsive className="bg-white shadow-sm align-middle">
         <thead className="table-dark">
           <tr>
-            <th style={{ width: "65px" }}>STT</th>
-            <th style={{ minWidth: "180px" }}>Họ và tên</th>
+            <th style={{ width: "65px" }}>#</th>
+            <th style={{ minWidth: "180px" }}>Full Name</th>
             <th style={{ minWidth: "200px" }}>Email</th>
-            <th style={{ width: "135px" }}>Số điện thoại</th>
-            <th style={{ minWidth: "200px" }}>Địa chỉ</th>
-            <th style={{ width: "130px" }}>Trạng thái</th>
-            <th className="col-actions text-nowrap">Thao tác</th>
+            <th style={{ width: "135px" }}>Phone</th>
+            <th style={{ minWidth: "200px" }}>Address</th>
+            <th style={{ width: "130px" }}>Status</th>
+            <th className="col-actions text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -190,11 +190,11 @@ const AdminUsers = () => {
               <td><strong>{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</strong></td>
               <td className="fw-semibold text-dark">{user.name}</td>
               <td>{user.email}</td>
-              <td>{user.phone || <span className="text-muted">Chưa cập nhật</span>}</td>
-              <td>{user.address || <span className="text-muted">Chưa cập nhật</span>}</td>
+              <td>{user.phone || <span className="text-muted">Not updated</span>}</td>
+              <td>{user.address || <span className="text-muted">Not updated</span>}</td>
               <td>
                 <Badge bg={user.status === "active" ? "success" : "danger"}>
-                  {user.status === "active" ? "Hoạt động" : "Bị khóa"}
+                  {user.status === "active" ? "Active" : "Blocked"}
                 </Badge>
               </td>
               <td className="col-actions text-nowrap">
@@ -205,14 +205,14 @@ const AdminUsers = () => {
                       variant="outline-primary"
                       className="btn-action-icon"
                       onClick={() => handleOpenEditModal(user)}
-                      title="Chỉnh sửa thông tin khách hàng"
+                      title="Edit customer information"
                     >
                       <FaEdit />
                     </Button>
                   )}
                   {String(user.id) === String(currentUser?.id) ? (
                     <Badge bg="light" text="secondary" className="border px-2 py-1">
-                      Tài khoản của bạn
+                      Your account
                     </Badge>
                   ) : (
                     <Button
@@ -224,12 +224,12 @@ const AdminUsers = () => {
                       {user.status === "active" ? (
                         <>
                           <FaBan className="me-1 flex-shrink-0" />
-                          <span>Khóa</span>
+                          <span>Lock</span>
                         </>
                       ) : (
                         <>
                           <FaCheck className="me-1 flex-shrink-0" />
-                          <span>Mở khóa</span>
+                          <span>Unlock</span>
                         </>
                       )}
                     </Button>
@@ -241,7 +241,7 @@ const AdminUsers = () => {
           {paginated.length === 0 && (
             <tr>
               <td colSpan={7} className="text-center text-muted py-4">
-                Không tìm thấy người dùng nào phù hợp.
+                No matching users found.
               </td>
             </tr>
           )}
@@ -258,32 +258,32 @@ const AdminUsers = () => {
         show={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
         onConfirm={handleConfirmToggle}
-        title={selectedUser?.status === "active" ? "Khóa tài khoản người dùng" : "Mở khóa tài khoản"}
-        message={`Bạn có chắc chắn muốn ${
-          selectedUser?.status === "active" ? "khóa" : "mở khóa"
-        } tài khoản "${selectedUser?.name}" (${selectedUser?.email}) không?`}
-        confirmText={selectedUser?.status === "active" ? "Khóa tài khoản" : "Mở khóa"}
+        title={selectedUser?.status === "active" ? "Lock User Account" : "Unlock User Account"}
+        message={`Are you sure you want to ${
+          selectedUser?.status === "active" ? "lock" : "unlock"
+        } account "${selectedUser?.name}" (${selectedUser?.email})?`}
+        confirmText={selectedUser?.status === "active" ? "Lock Account" : "Unlock"}
         confirmVariant={selectedUser?.status === "active" ? "danger" : "success"}
       />
 
       {/* Modal Chỉnh sửa thông tin người dùng */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title className="fw-bold text-dark">Chỉnh sửa thông tin khách hàng</Modal.Title>
+          <Modal.Title className="fw-bold text-dark">Edit Customer Information</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label className="fw-semibold">
-              Họ và tên <span className="text-danger">*</span>
+              Full Name <span className="text-danger">*</span>
             </Form.Label>
             <Form.Control
               value={editForm.name}
               onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-              placeholder="Nhập họ và tên"
+              placeholder="Enter full name"
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label className="fw-semibold">Địa chỉ Email</Form.Label>
+            <Form.Label className="fw-semibold">Email Address</Form.Label>
             <Form.Control
               value={editingUser?.email || ""}
               disabled
@@ -291,34 +291,34 @@ const AdminUsers = () => {
               className="bg-light text-muted"
             />
             <Form.Text className="text-muted small">
-              Email là tài khoản định danh đăng nhập, không thể thay đổi.
+              Email is the unique account identifier and cannot be changed.
             </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label className="fw-semibold">Số điện thoại</Form.Label>
+            <Form.Label className="fw-semibold">Phone Number</Form.Label>
             <Form.Control
               value={editForm.phone}
               onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-              placeholder="Nhập số điện thoại (VD: 0912345678)"
+              placeholder="Enter phone number (e.g., 0912345678)"
             />
           </Form.Group>
           <Form.Group className="mb-2">
-            <Form.Label className="fw-semibold">Địa chỉ</Form.Label>
+            <Form.Label className="fw-semibold">Address</Form.Label>
             <Form.Control
               as="textarea"
               rows={2}
               value={editForm.address}
               onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
-              placeholder="Nhập địa chỉ nhận hàng"
+              placeholder="Enter shipping address"
             />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-            Hủy bỏ
+            Cancel
           </Button>
           <Button variant="primary" onClick={handleUpdateUser}>
-            Lưu thay đổi
+            Save Changes
           </Button>
         </Modal.Footer>
       </Modal>

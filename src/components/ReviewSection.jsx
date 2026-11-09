@@ -10,7 +10,7 @@ export const ReviewForm = ({
   onSubmit,
   initialRating = 0,
   initialComment = "",
-  submitText = "Gửi đánh giá",
+  submitText = "Submit Review",
   onCancel = null,
 }) => {
   const [rating, setRating] = useState(initialRating);
@@ -21,11 +21,11 @@ export const ReviewForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (rating === 0) {
-      setCommentError("Vui lòng chọn số sao đánh giá (từ 1 đến 5 sao).");
+      setCommentError("Please select a star rating (from 1 to 5 stars).");
       return;
     }
     if (!comment.trim()) {
-      setCommentError("Vui lòng nhập nội dung nhận xét chi tiết của bạn.");
+      setCommentError("Please enter your review comments.");
       return;
     }
     setCommentError("");
@@ -41,7 +41,7 @@ export const ReviewForm = ({
       {commentError && <div className="alert alert-danger py-2 small mb-3">{commentError}</div>}
       <Form.Group className="mb-3">
         <Form.Label className="fw-bold">
-          Đánh giá của bạn <span className="text-danger">*</span>
+          Your Rating <span className="text-danger">*</span>
         </Form.Label>
         <div className="d-flex gap-1">
           {[1, 2, 3, 4, 5].map((star) => (
@@ -59,14 +59,14 @@ export const ReviewForm = ({
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label className="fw-bold">
-          Nội dung nhận xét <span className="text-danger">*</span>
+          Your Review <span className="text-danger">*</span>
         </Form.Label>
         <Form.Control
           as="textarea"
           rows={3}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="Chia sẻ cảm nhận chi tiết của bạn về cuốn sách này..."
+          placeholder="Share your detailed thoughts on this book..."
           required
         />
       </Form.Group>
@@ -76,7 +76,7 @@ export const ReviewForm = ({
         </Button>
         {onCancel && (
           <Button type="button" variant="outline-secondary" onClick={onCancel}>
-            Hủy
+            Cancel
           </Button>
         )}
       </div>
@@ -104,7 +104,7 @@ export const ReviewList = ({
   if (!reviews || reviews.length === 0) {
     return (
       <p className="text-muted">
-        Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ cảm nhận về sách!
+        No reviews yet. Be the first to review this book!
       </p>
     );
   }
@@ -137,7 +137,7 @@ export const ReviewList = ({
   return (
     <div>
       <div className="bg-light p-3 rounded mb-4 shadow-sm border">
-        <h6 className="fw-bold text-dark mb-3">Phân bổ xếp hạng</h6>
+        <h6 className="fw-bold text-dark mb-3">Rating Breakdown</h6>
         {[5, 4, 3, 2, 1].map((star) => {
           const count = breakdown[star] || 0;
           const percent = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
@@ -172,11 +172,11 @@ export const ReviewList = ({
           <div key={review.id} className="border-bottom py-3">
             {editingReviewId === review.id ? (
               <div className="p-3 bg-light rounded border">
-                <h6 className="fw-bold mb-3 text-dark">Chỉnh sửa đánh giá của bạn</h6>
+                <h6 className="fw-bold mb-3 text-dark">Edit Your Review</h6>
                 <ReviewForm
                   initialRating={review.rating}
                   initialComment={review.comment}
-                  submitText="Lưu thay đổi"
+                  submitText="Save Changes"
                   onSubmit={(updated) => handleSaveEdit(review.id, updated)}
                   onCancel={handleCancelEdit}
                 />
@@ -186,11 +186,11 @@ export const ReviewList = ({
                 <div className="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
                   <div className="d-flex align-items-center gap-2">
                     <strong className="text-dark">
-                      {review.userName || "Khách hàng"}
+                      {review.userName || "Customer"}
                     </strong>
                     {review.updatedAt && (
                       <span className="badge bg-secondary-subtle text-secondary small">
-                        Đã chỉnh sửa
+                        Edited
                       </span>
                     )}
                   </div>
@@ -204,9 +204,9 @@ export const ReviewList = ({
                         size="sm"
                         className="p-0 text-primary text-decoration-none ms-2"
                         onClick={() => handleStartEdit(review)}
-                        title="Chỉnh sửa đánh giá"
+                        title="Edit review"
                       >
-                        <FaEdit /> Sửa
+                        <FaEdit /> Edit
                       </Button>
                     )}
                     {canDelete && (
@@ -215,9 +215,9 @@ export const ReviewList = ({
                         size="sm"
                         className="p-0 text-danger text-decoration-none ms-2"
                         onClick={() => setDeleteModal({ show: true, reviewId: review.id })}
-                        title="Xóa đánh giá"
+                        title="Delete review"
                       >
-                        <FaTrash /> Xóa
+                        <FaTrash /> Delete
                       </Button>
                     )}
                   </div>
@@ -232,10 +232,10 @@ export const ReviewList = ({
 
       <ConfirmModal
         show={deleteModal.show}
-        title="Xác nhận xóa đánh giá"
-        message="Bạn có chắc chắn muốn xóa đánh giá này không? Điểm đánh giá trung bình của cuốn sách sẽ được tính toán lại."
-        confirmText="Xóa đánh giá"
-        cancelText="Đóng"
+        title="Confirm Delete Review"
+        message="Are you sure you want to delete this review? The book's average rating will be recalculated."
+        confirmText="Delete Review"
+        cancelText="Close"
         variant="danger"
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteModal({ show: false, reviewId: null })}

@@ -70,7 +70,7 @@ const AdminBooks = () => {
       }
       if (name === "status") {
         if (parsed === BOOK_STATUS.ACTIVE && Number(updated.stock) === 0) {
-          toast.warning("Kho hàng đang bằng 0, sách đã được chuyển sang trạng thái Hết hàng.");
+          toast.warning("Stock is 0, book status set to Out of Stock.");
           updated.status = BOOK_STATUS.OUT_OF_STOCK;
         }
       }
@@ -81,23 +81,23 @@ const AdminBooks = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title?.trim()) {
-      toast.error("Vui lòng nhập tựa đề sách.");
+      toast.error("Please enter the book title.");
       return;
     }
     if (!formData.author?.trim()) {
-      toast.error("Vui lòng nhập tên tác giả.");
+      toast.error("Please enter the author's name.");
       return;
     }
     if (!formData.categoryId) {
-      toast.error("Vui lòng chọn danh mục cho sách.");
+      toast.error("Please select a category for the book.");
       return;
     }
     if (formData.price === "" || Number(formData.price) < 0) {
-      toast.error("Giá bán phải lớn hơn hoặc bằng 0.");
+      toast.error("Price must be greater than or equal to 0.");
       return;
     }
     if (formData.stock === "" || Number(formData.stock) < 0) {
-      toast.error("Số lượng trong kho không được là số âm.");
+      toast.error("Stock quantity cannot be negative.");
       return;
     }
 
@@ -131,7 +131,7 @@ const AdminBooks = () => {
 
       if (editingBook) {
         await bookApi.update(editingBook.id, payload);
-        toast.success("Cập nhật thông tin sách thành công!");
+        toast.success("Book updated successfully!");
       } else {
         const numericIds = books
           .map((b) => Number(b.id))
@@ -140,11 +140,11 @@ const AdminBooks = () => {
         payload.id = String(nextId);
 
         await bookApi.create(payload);
-        toast.success("Thêm sách mới thành công!");
+        toast.success("New book added successfully!");
       }
       setShowModal(false);
       fetchData();
-    } catch (err) { toast.error("Thao tác không thành công. Vui lòng thử lại sau."); }
+    } catch (err) { toast.error("Action failed. Please try again later."); }
   };
 
   const handleEdit = (book) => {
@@ -161,10 +161,10 @@ const AdminBooks = () => {
   const handleDelete = async () => {
     try {
       await bookApi.update(deleteId, { isDeleted: true, status: BOOK_STATUS.INACTIVE });
-      toast.success("Đã ẩn sách khỏi cửa hàng thành công!");
+      toast.success("Book hidden from store successfully!");
       setShowDeleteModal(false);
       fetchData();
-    } catch (err) { toast.error("Không thể xóa sách lúc này. Vui lòng thử lại sau."); }
+    } catch (err) { toast.error("Unable to delete book at this time. Please try again later."); }
   };
 
   const handleRestore = async (book) => {
@@ -172,9 +172,9 @@ const AdminBooks = () => {
       const bookObj = typeof book === "object" ? book : books.find((b) => String(b.id) === String(book));
       const targetStatus = (bookObj?.stock || 0) > 0 ? BOOK_STATUS.ACTIVE : BOOK_STATUS.OUT_OF_STOCK;
       await bookApi.update(bookObj?.id || book, { isDeleted: false, status: targetStatus });
-      toast.success("Đã khôi phục và mở bán sách thành công!");
+      toast.success("Book restored successfully!");
       fetchData();
-    } catch (err) { toast.error("Khôi phục sách chưa thành công. Vui lòng thử lại sau."); }
+    } catch (err) { toast.error("Failed to restore book. Please try again later."); }
   };
 
   const handleAdd = () => {
@@ -215,12 +215,12 @@ const AdminBooks = () => {
 
   const getStatusBadge = (book) => {
     if (book.isDeleted || book.status === BOOK_STATUS.INACTIVE) {
-      return <Badge bg="danger">Ngừng bán</Badge>;
+      return <Badge bg="danger">Inactive</Badge>;
     }
     if (book.status === BOOK_STATUS.OUT_OF_STOCK || book.stock === 0) {
-      return <Badge bg="warning" text="dark">Hết hàng</Badge>;
+      return <Badge bg="warning" text="dark">Out of Stock</Badge>;
     }
-    return <Badge bg="success">Đang bán</Badge>;
+    return <Badge bg="success">Active</Badge>;
   };
 
   if (loading) return <LoadingSpinner />;
@@ -228,25 +228,25 @@ const AdminBooks = () => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold text-dark mb-0">Quản lý sách</h2>
+        <h2 className="fw-bold text-dark mb-0">Book Management</h2>
         <Button variant="primary" onClick={handleAdd} className="d-inline-flex align-items-center">
-          <FaPlus className="me-2 flex-shrink-0" /> Thêm sách mới
+          <FaPlus className="me-2 flex-shrink-0" /> Add New Book
         </Button>
       </div>
 
       <Row className="mb-3 g-2 align-items-end">
         <Col md={6}>
-          <SearchBar onSearch={(q) => { setSearchQuery(q); setCurrentPage(1); }} placeholder="Tìm theo tên sách hoặc tác giả..." />
+          <SearchBar onSearch={(q) => { setSearchQuery(q); setCurrentPage(1); }} placeholder="Search by title or author..." />
         </Col>
         <Col md={3}>
           <Form.Select
             value={filterStatus}
             onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
           >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="Active">Đang bán</option>
-            <option value="Out of Stock">Hết hàng</option>
-            <option value="Inactive">Ngừng bán / Đã xóa</option>
+            <option value="all">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Out of Stock">Out of Stock</option>
+            <option value="Inactive">Inactive / Discontinued</option>
           </Form.Select>
         </Col>
         <Col md={3}>
@@ -254,7 +254,7 @@ const AdminBooks = () => {
             value={filterCategory}
             onChange={(e) => { setFilterCategory(e.target.value); setCurrentPage(1); }}
           >
-            <option value="all">Tất cả danh mục</option>
+            <option value="all">All Categories</option>
             {categories.filter((c) => !c.isDeleted).map((c) => (
               <option key={c.id} value={String(c.id)}>{c.name}</option>
             ))}
@@ -265,14 +265,14 @@ const AdminBooks = () => {
       <Table striped bordered hover responsive className="bg-white shadow-sm align-middle">
         <thead className="table-dark">
           <tr>
-            <th style={{ width: "65px" }}>STT</th>
-            <th style={{ minWidth: "220px" }}>Tên sách</th>
-            <th style={{ minWidth: "240px" }}>Tác giả</th>
-            <th style={{ width: "135px" }}>Danh mục</th>
-            <th style={{ width: "90px" }}>Giá</th>
-            <th style={{ width: "75px" }}>Kho</th>
-            <th style={{ width: "115px" }}>Trạng thái</th>
-            <th className="col-actions text-nowrap">Thao tác</th>
+            <th style={{ width: "65px" }}>#</th>
+            <th style={{ minWidth: "220px" }}>Title</th>
+            <th style={{ minWidth: "240px" }}>Author</th>
+            <th style={{ width: "135px" }}>Category</th>
+            <th style={{ width: "90px" }}>Price</th>
+            <th style={{ width: "75px" }}>Stock</th>
+            <th style={{ width: "115px" }}>Status</th>
+            <th className="col-actions text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -299,7 +299,7 @@ const AdminBooks = () => {
                     variant="outline-primary"
                     className="btn-action-icon"
                     onClick={() => handleEdit(book)}
-                    title="Chỉnh sửa"
+                    title="Edit"
                   >
                     <FaEdit />
                   </Button>
@@ -309,7 +309,7 @@ const AdminBooks = () => {
                       variant="outline-success"
                       className="btn-action-icon"
                       onClick={() => handleRestore(book.id)}
-                      title="Khôi phục sách"
+                      title="Restore book"
                     >
                       <FaUndo />
                     </Button>
@@ -319,7 +319,7 @@ const AdminBooks = () => {
                       variant="outline-danger"
                       className="btn-action-icon"
                       onClick={() => { setDeleteId(book.id); setShowDeleteModal(true); }}
-                      title="Ẩn / Xóa sách"
+                      title="Deactivate / Delete book"
                     >
                       <FaTrash />
                     </Button>
@@ -330,7 +330,7 @@ const AdminBooks = () => {
           ))}
           {paginated.length === 0 && (
             <tr>
-              <td colSpan={8} className="text-center text-muted py-3">Không tìm thấy cuốn sách nào.</td>
+              <td colSpan={8} className="text-center text-muted py-3">No books found.</td>
             </tr>
           )}
         </tbody>
@@ -345,28 +345,28 @@ const AdminBooks = () => {
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title className="fw-bold text-dark">
-            {editingBook ? "Chỉnh sửa thông tin sách" : "Thêm sách mới"}
+            {editingBook ? "Edit Book" : "Add New Book"}
           </Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleSubmit} noValidate>
           <Modal.Body>
             <Form.Group className="mb-3">
-              <RequiredLabel>Tên sách</RequiredLabel>
-              <Form.Control name="title" value={formData.title} onChange={handleChange} placeholder="Nhập tựa đề sách" required />
+              <RequiredLabel>Book Title</RequiredLabel>
+              <Form.Control name="title" value={formData.title} onChange={handleChange} placeholder="Enter book title" required />
             </Form.Group>
             <Form.Group className="mb-3">
-              <RequiredLabel>Tác giả</RequiredLabel>
-              <Form.Control name="author" value={formData.author} onChange={handleChange} placeholder="Nhập tên tác giả" required />
+              <RequiredLabel>Author</RequiredLabel>
+              <Form.Control name="author" value={formData.author} onChange={handleChange} placeholder="Enter author name" required />
             </Form.Group>
             <Form.Group className="mb-3">
-              <RequiredLabel>Danh mục sách</RequiredLabel>
+              <RequiredLabel>Category</RequiredLabel>
               <Form.Select name="categoryId" value={formData.categoryId} onChange={handleChange} required>
-                <option value="">Chọn danh mục</option>
+                <option value="">Select Category</option>
                 {categories
                   .filter((c) => !c.isDeleted || String(c.id) === String(formData.categoryId))
                   .map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.name}{c.isDeleted ? " (Đã xóa)" : ""}
+                      {c.name}{c.isDeleted ? " (Deleted)" : ""}
                     </option>
                   ))}
               </Form.Select>
@@ -374,14 +374,14 @@ const AdminBooks = () => {
 
             <Row className="mb-3">
               <Col md={6}>
-                <RequiredLabel>Giá bán ($)</RequiredLabel>
+                <RequiredLabel>Price ($)</RequiredLabel>
                 <Form.Control
                   type="number" name="price" value={formData.price}
                   onChange={handleChange} required min={0} step="0.01"
                 />
               </Col>
               <Col md={6}>
-                <RequiredLabel>Số lượng trong kho</RequiredLabel>
+                <RequiredLabel>Stock Quantity</RequiredLabel>
                 <Form.Control
                   type="number" name="stock" value={formData.stock}
                   onChange={handleChange} required min={0}
@@ -390,26 +390,26 @@ const AdminBooks = () => {
             </Row>
 
             <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold">Trạng thái</Form.Label>
+              <Form.Label className="fw-semibold">Status</Form.Label>
               <Form.Select name="status" value={formData.status} onChange={handleChange}>
-                <option value="Active">Đang bán</option>
-                <option value="Out of Stock">Hết hàng</option>
-                <option value="Inactive">Ngừng bán</option>
+                <option value="Active">Active</option>
+                <option value="Out of Stock">Out of Stock</option>
+                <option value="Inactive">Inactive</option>
               </Form.Select>
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold">Đường dẫn hình ảnh (URL)</Form.Label>
+              <Form.Label className="fw-semibold">Image URL</Form.Label>
               <Form.Control name="image" value={formData.image} onChange={handleChange} placeholder="https://..." />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold">Mô tả nội dung</Form.Label>
-              <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} placeholder="Giới thiệu sơ lược về cuốn sách..." />
+              <Form.Label className="fw-semibold">Description</Form.Label>
+              <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} placeholder="Brief description of the book..." />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>Hủy bỏ</Button>
-            <Button type="submit" variant="primary">{editingBook ? "Cập nhật" : "Thêm mới"}</Button>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+            <Button type="submit" variant="primary">{editingBook ? "Update" : "Add"}</Button>
           </Modal.Footer>
         </Form>
       </Modal>
@@ -418,10 +418,10 @@ const AdminBooks = () => {
         show={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}
-        title="Xác nhận ẩn sách khỏi cửa hàng"
-        message="Bạn có chắc chắn muốn xóa cuốn sách này không? Sách sẽ được ẩn khỏi trang bán hàng nhưng vẫn được lưu giữ trong lịch sử các đơn hàng trước đây."
-        confirmText="Xác nhận xóa"
-        cancelText="Hủy bỏ"
+        title="Confirm Deactivate Book"
+        message="Are you sure you want to deactivate this book? It will be hidden from the store but preserved in order histories."
+        confirmText="Deactivate"
+        cancelText="Cancel"
       />
     </div>
   );

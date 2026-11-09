@@ -6,8 +6,8 @@ const BookGrid = ({ books = [], reviewCounts = {} }) => {
   if (!books || books.length === 0) {
     return (
       <div className="text-center py-5 text-muted">
-        <h5>Không tìm thấy cuốn sách nào</h5>
-        <p>Bạn thử tìm kiếm từ khóa khác hoặc chọn lại bộ lọc xem sao nhé.</p>
+        <h5>No books found</h5>
+        <p>Try searching with different keywords or adjust your filters.</p>
       </div>
     );
   }

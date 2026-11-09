@@ -13,8 +13,8 @@ const OtpVerificationForm = ({
   onVerify,
   onResend,
   onBack,
-  backLabel = "Quay lại chỉnh sửa thông tin",
-  title = "Xác thực mã OTP",
+  backLabel = "Back to edit details",
+  title = "OTP Verification",
   showLoginLink = true,
 }) => {
   const [otpDigits, setOtpDigits] = useState(Array(OTP_LENGTH).fill(""));
@@ -194,7 +194,7 @@ const OtpVerificationForm = ({
 
     const enteredOtp = digitsRef.current.join("");
     if (enteredOtp.length < OTP_LENGTH) {
-      setError(`Vui lòng nhập đủ ${OTP_LENGTH} chữ số mã xác thực OTP.`);
+      setError(`Please enter all ${OTP_LENGTH} digits of the OTP verification code.`);
       return;
     }
 
@@ -205,7 +205,7 @@ const OtpVerificationForm = ({
         setError(result.error);
       }
     } catch (err) {
-      setError(err?.message || "Đã có lỗi xảy ra khi xác thực mã OTP.");
+      setError(err?.message || "An error occurred while verifying the OTP code.");
     } finally {
       setVerifying(false);
     }
@@ -222,7 +222,7 @@ const OtpVerificationForm = ({
       updateDigits(Array(OTP_LENGTH).fill(""));
       inputRefs.current[0]?.focus();
     } catch (err) {
-      setError(err?.message || "Gửi lại mã OTP thất bại. Vui lòng thử lại sau.");
+      setError(err?.message || "Failed to resend OTP code. Please try again later.");
     } finally {
       setResending(false);
     }
@@ -239,13 +239,13 @@ const OtpVerificationForm = ({
         </div>
         <h2 className="fw-bold text-dark mb-2">{title}</h2>
         <p className="text-muted small mb-1">
-          Mã xác thực OTP gồm {OTP_LENGTH} chữ số đã được gửi đến email
+          A {OTP_LENGTH}-digit OTP verification code has been sent to
         </p>
         <p className="fw-bold text-dark fs-6 mb-2">
           {maskEmail(email)}
         </p>
         <p className="text-muted small" style={{ fontSize: "0.85rem" }}>
-          Vui lòng kiểm tra hộp thư đến (hoặc hòm thư Rác/Spam) và nhập mã có hiệu lực trong vòng <strong>5 phút</strong>.
+          Please check your inbox (or Spam/Junk folder) and enter the code valid for <strong>5 minutes</strong>.
         </p>
       </div>
 
@@ -258,7 +258,7 @@ const OtpVerificationForm = ({
       <Form onSubmit={handleSubmit} noValidate>
         <Form.Group className="mb-4">
           <Form.Label className="fw-semibold text-dark d-block text-center mb-3">
-            Nhập mã OTP (6 chữ số)
+            Enter OTP code (6 digits)
           </Form.Label>
           <div
             className="d-flex justify-content-center gap-2 mb-2 flex-nowrap"
@@ -302,12 +302,12 @@ const OtpVerificationForm = ({
           {verifying ? (
             <>
               <Spinner size="sm" animation="border" className="me-2" />
-              <span>Đang kiểm tra mã...</span>
+              <span>Verifying code...</span>
             </>
           ) : (
             <>
               <FaCheckCircle className="me-2" />
-              <span>Xác nhận mã OTP</span>
+              <span>Verify OTP Code</span>
             </>
           )}
         </Button>
@@ -315,7 +315,7 @@ const OtpVerificationForm = ({
         <div className="text-center mb-3">
           {countdown > 0 ? (
             <span className="text-muted small">
-              Chưa nhận được mã? Gửi lại sau <strong className="text-primary">{countdown}s</strong>
+              Didn't receive the code? Resend in <strong className="text-primary">{countdown}s</strong>
             </span>
           ) : (
             <Button
@@ -328,12 +328,12 @@ const OtpVerificationForm = ({
               {resending ? (
                 <>
                   <Spinner size="sm" animation="border" className="me-1" />
-                  <span>Đang gửi lại mã...</span>
+                  <span>Resending code...</span>
                 </>
               ) : (
                 <>
                   <FaRedo className="me-1" />
-                  <span>Chưa nhận được mã? Gửi lại OTP</span>
+                  <span>Didn't receive code? Resend OTP</span>
                 </>
               )}
             </Button>
@@ -356,7 +356,7 @@ const OtpVerificationForm = ({
         {showLoginLink && (
           <div className="text-center mt-3 pt-3 border-top">
             <Link to="/login" className="text-decoration-none small text-muted">
-              Đã có tài khoản? <strong className="text-primary">Đăng nhập</strong>
+              Already have an account? <strong className="text-primary">Log In</strong>
             </Link>
           </div>
         )}

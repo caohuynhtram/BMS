@@ -83,10 +83,10 @@ const AdminDashboard = () => {
   if (loading) return <LoadingSpinner />;
 
   const statCards = [
-    { title: "Tổng doanh thu", value: formatCurrency(stats.totalRevenue), icon: <FaDollarSign />, color: "success" },
-    { title: "Đơn hàng hoàn tất", value: stats.totalOrders, icon: <FaShoppingBag />, color: "primary" },
-    { title: "Tổng số khách hàng", value: stats.totalUsers, icon: <FaUsers />, color: "info" },
-    { title: "Sách đang mở bán", value: stats.totalBooks, icon: <FaBook />, color: "warning" },
+    { title: "Total Revenue", value: formatCurrency(stats.totalRevenue), icon: <FaDollarSign />, color: "success" },
+    { title: "Completed Orders", value: stats.totalOrders, icon: <FaShoppingBag />, color: "primary" },
+    { title: "Total Customers", value: stats.totalUsers, icon: <FaUsers />, color: "info" },
+    { title: "Active Books", value: stats.totalBooks, icon: <FaBook />, color: "warning" },
   ];
 
   const totalPages = Math.ceil(stats.bestSellers.length / ITEMS_PER_PAGE);
@@ -97,7 +97,7 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <h2 className="fw-bold mb-4 text-dark">Tổng quan quản trị</h2>
+      <h2 className="fw-bold mb-4 text-dark">Dashboard Overview</h2>
       <Row className="g-4 mb-4">
         {statCards.map((card) => (
           <Col sm={6} lg={3} key={card.title}>
@@ -121,16 +121,16 @@ const AdminDashboard = () => {
       <Card className="shadow-sm border-0 bg-white">
         <Card.Body>
           <h5 className="fw-bold mb-3 text-dark">
-            Top sách bán chạy nhất
+            Top Best Selling Books
           </h5>
           {stats.bestSellers.length > 0 ? (
             <>
               <Table striped bordered hover responsive className="mb-0 align-middle">
                 <thead className="table-dark">
                   <tr>
-                    <th style={{ width: "80px" }}>STT</th>
-                    <th>Tên sách</th>
-                    <th className="text-end" style={{ width: "180px" }}>Số lượng đã bán</th>
+                    <th style={{ width: "80px" }}>#</th>
+                    <th>Book Title</th>
+                    <th className="text-end" style={{ width: "180px" }}>Units Sold</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -150,7 +150,7 @@ const AdminDashboard = () => {
               />
             </>
           ) : (
-            <p className="text-muted mb-0">Chưa có dữ liệu bán hàng.</p>
+            <p className="text-muted mb-0">No sales data available.</p>
           )}
         </Card.Body>
       </Card>

@@ -16,13 +16,13 @@ import { FaEye, FaMapMarkerAlt, FaPhone, FaUser } from "react-icons/fa";
 const ITEMS_PER_PAGE = 10;
 
 const statusLabels = {
-  Pending: "Chờ xử lý",
-  Confirmed: "Đã xác nhận",
-  Shipping: "Đang giao",
-  Delivered: "Đã giao",
-  Cancelled: "Đã hủy",
-  "Return Requested": "Yêu cầu trả hàng",
-  Returned: "Đã trả hàng",
+  Pending: "Pending",
+  Confirmed: "Confirmed",
+  Shipping: "Shipping",
+  Delivered: "Delivered",
+  Cancelled: "Cancelled",
+  "Return Requested": "Return Requested",
+  Returned: "Returned",
 };
 
 const statusStyleMap = {
@@ -134,18 +134,18 @@ const AdminOrders = () => {
       const resultAction = await dispatch(updateOrderStatus({ orderId, status: newStatus }));
       if (updateOrderStatus.fulfilled.match(resultAction)) {
         toast.success(
-          `Cập nhật đơn hàng #${orderId} sang trạng thái "${statusLabels[newStatus] || newStatus}" thành công!`
+          `Successfully updated order #${orderId} to status "${statusLabels[newStatus] || newStatus}"!`
         );
         if (selectedOrder && String(selectedOrder.id) === String(orderId)) {
           setSelectedOrder((prev) => ({ ...prev, status: newStatus }));
         }
         fetchData();
       } else {
-        toast.error(resultAction.payload || "Cập nhật trạng thái đơn hàng chưa thành công.");
+        toast.error(resultAction.payload || "Failed to update order status.");
       }
     } catch (err) {
       console.error(err);
-      toast.error("Cập nhật trạng thái đơn hàng chưa thành công. Vui lòng thử lại sau.");
+      toast.error("Failed to update order status. Please try again later.");
     }
   };
 
@@ -207,13 +207,13 @@ const AdminOrders = () => {
 
   return (
     <div>
-      <h2 className="fw-bold mb-4 text-dark">Quản lý đơn hàng</h2>
+      <h2 className="fw-bold mb-4 text-dark">Order Management</h2>
 
       <Row className="mb-3 g-2">
         <Col md={5}>
           <SearchBar
             onSearch={(q) => { setSearchTerm(q); setCurrentPage(1); }}
-            placeholder="Tìm kiếm theo mã đơn, tên khách hàng hoặc người nhận..."
+            placeholder="Search by order ID, customer name, or recipient..."
           />
         </Col>
         <Col md={3}>
@@ -221,7 +221,7 @@ const AdminOrders = () => {
             value={filterStatus}
             onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
           >
-            <option value="all">Tất cả trạng thái</option>
+            <option value="all">All Statuses</option>
             {Object.values(ORDER_STATUS).map((st) => (
               <option
                 key={st}
@@ -239,13 +239,13 @@ const AdminOrders = () => {
       <Table striped bordered hover responsive className="bg-white shadow-sm align-middle">
         <thead className="table-dark">
           <tr>
-            <th style={{ width: "150px", minWidth: "140px", whiteSpace: "nowrap" }} className="text-nowrap">Mã đơn</th>
-            <th style={{ minWidth: "160px" }}>Khách hàng</th>
-            <th style={{ minWidth: "180px" }}>Người nhận</th>
-            <th style={{ width: "135px" }}>Ngày đặt</th>
-            <th style={{ width: "115px" }}>Tổng tiền</th>
-            <th style={{ width: "195px" }}>Trạng thái</th>
-            <th className="col-actions text-nowrap">Thao tác</th>
+            <th style={{ width: "150px", minWidth: "140px", whiteSpace: "nowrap" }} className="text-nowrap">Order ID</th>
+            <th style={{ minWidth: "160px" }}>Customer</th>
+            <th style={{ minWidth: "180px" }}>Recipient</th>
+            <th style={{ width: "135px" }}>Date</th>
+            <th style={{ width: "115px" }}>Total</th>
+            <th style={{ width: "195px" }}>Status</th>
+            <th className="col-actions text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -289,7 +289,7 @@ const AdminOrders = () => {
                           fontWeight: "700",
                         }}
                       >
-                        {statusLabels[order.status] || order.status} (Hiện tại)
+                        {statusLabels[order.status] || order.status} (Current)
                       </option>
                       {transitions.map((nextStatus) => (
                         <option
@@ -302,7 +302,7 @@ const AdminOrders = () => {
                             fontWeight: "600",
                           }}
                         >
-                          Chuyển sang: {statusLabels[nextStatus] || nextStatus}
+                          Change to: {statusLabels[nextStatus] || nextStatus}
                         </option>
                       ))}
                     </Form.Select>
@@ -328,14 +328,14 @@ const AdminOrders = () => {
                     onClick={() => handleViewDetail(order)}
                     className="d-inline-flex align-items-center"
                   >
-                    <FaEye className="me-2 flex-shrink-0" /> <span>Chi tiết</span>
+                    <FaEye className="me-2 flex-shrink-0" /> <span>Details</span>
                   </Button>
                 </td>
               </tr>
             );
           })}
           {paginatedOrders.length === 0 && (
-            <tr><td colSpan={7} className="text-center text-muted py-3">Không tìm thấy đơn hàng nào.</td></tr>
+            <tr><td colSpan={7} className="text-center text-muted py-3">No orders found.</td></tr>
           )}
         </tbody>
       </Table>
@@ -346,7 +346,7 @@ const AdminOrders = () => {
       <Modal show={showDetail} onHide={() => setShowDetail(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title className="fw-bold text-dark">
-            Chi tiết đơn hàng #{String(selectedOrder?.orderCode || selectedOrder?.id || "").replace(/^#/, "")}
+            Order Details #{String(selectedOrder?.orderCode || selectedOrder?.id || "").replace(/^#/, "")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -357,32 +357,32 @@ const AdminOrders = () => {
               <div className="row g-3 mb-4 bg-light p-3 rounded">
                 <div className="col-md-6">
                   <p className="mb-1">
-                    <strong className="text-dark">Tài khoản đặt:</strong>{" "}
+                    <strong className="text-dark">Account:</strong>{" "}
                     {getUserName(selectedOrder?.userId)}
                   </p>
                   <p className="mb-1">
-                    <strong className="text-dark">Ngày đặt hàng:</strong>{" "}
+                    <strong className="text-dark">Order Date:</strong>{" "}
                     {formatDate(selectedOrder?.createdAt) || selectedOrder?.createdAt}
                   </p>
                 </div>
                 <div className="col-md-6">
                   <p className="mb-1">
-                    <strong className="text-dark"><FaUser className="me-2 flex-shrink-0" /> Người nhận:</strong>{" "}
+                    <strong className="text-dark"><FaUser className="me-2 flex-shrink-0" /> Recipient:</strong>{" "}
                     {selectedOrder?.recipientName || "N/A"}
                   </p>
                   <p className="mb-1">
-                    <strong className="text-dark"><FaPhone className="me-2 flex-shrink-0" /> Điện thoại:</strong>{" "}
+                    <strong className="text-dark"><FaPhone className="me-2 flex-shrink-0" /> Phone:</strong>{" "}
                     {selectedOrder?.phone || "N/A"}
                   </p>
                   <p className="mb-0">
-                    <strong className="text-dark"><FaMapMarkerAlt className="me-2 flex-shrink-0" /> Địa chỉ giao:</strong>{" "}
+                    <strong className="text-dark"><FaMapMarkerAlt className="me-2 flex-shrink-0" /> Shipping Address:</strong>{" "}
                     {selectedOrder?.shippingAddress || "N/A"}
                   </p>
                 </div>
               </div>
 
               <div className="d-flex align-items-center gap-3 mb-4 p-3 border rounded">
-                <strong className="text-dark">Trạng thái hiện tại:</strong>
+                <strong className="text-dark">Current Status:</strong>
                 <span
                   className="d-inline-flex align-items-center justify-content-center px-3 py-1 rounded-2 fw-semibold"
                   style={{
@@ -397,7 +397,7 @@ const AdminOrders = () => {
 
                 {getAvailableTransitions(selectedOrder?.status).length > 0 && (
                   <div className="ms-auto d-flex align-items-center gap-2">
-                    <span className="small text-muted">Chuyển sang:</span>
+                    <span className="small text-muted">Change to:</span>
                     <Form.Select
                       size="sm"
                       style={{ width: "190px" }}
@@ -409,7 +409,7 @@ const AdminOrders = () => {
                         }
                       }}
                     >
-                      <option value="" style={{ color: "#64748b" }}>Chọn trạng thái...</option>
+                      <option value="" style={{ color: "#64748b" }}>Select status...</option>
                       {getAvailableTransitions(selectedOrder?.status).map((st) => (
                         <option
                           key={st}
@@ -428,15 +428,15 @@ const AdminOrders = () => {
                 )}
               </div>
 
-              <h6 className="fw-bold mb-3 text-dark">Danh sách sản phẩm</h6>
+              <h6 className="fw-bold mb-3 text-dark">Order Items</h6>
               <Table striped bordered hover responsive size="sm" className="bg-white align-middle">
                 <thead>
                   <tr>
-                    <th style={{ width: "60px" }}>Hình ảnh</th>
-                    <th>Tên sách</th>
-                    <th>Đơn giá</th>
-                    <th>Số lượng</th>
-                    <th className="text-end">Thành tiền</th>
+                    <th style={{ width: "60px" }}>Image</th>
+                    <th>Book Title</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th className="text-end">Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -482,16 +482,16 @@ const AdminOrders = () => {
               <div className="text-end mt-3 border-top pt-3">
                 {selectedOrder?.subtotal != null && (
                   <div className="mb-1 text-muted">
-                    Tạm tính: <strong>{formatCurrency(selectedOrder.subtotal)}</strong>
+                    Subtotal: <strong>{formatCurrency(selectedOrder.subtotal)}</strong>
                   </div>
                 )}
                 {Number(selectedOrder?.discountAmount) > 0 && (
                   <div className="mb-1 text-success">
-                    Mã giảm giá: <strong>-{formatCurrency(selectedOrder.discountAmount)}</strong>
+                    Discount: <strong>-{formatCurrency(selectedOrder.discountAmount)}</strong>
                   </div>
                 )}
                 <h5 className="fw-bold text-primary mt-2">
-                  Tổng thanh toán: {formatCurrency(selectedOrder?.totalPrice)}
+                  Total: {formatCurrency(selectedOrder?.totalPrice)}
                 </h5>
               </div>
             </>
@@ -499,7 +499,7 @@ const AdminOrders = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDetail(false)}>
-            Đóng
+            Close
           </Button>
         </Modal.Footer>
       </Modal>
@@ -508,10 +508,10 @@ const AdminOrders = () => {
         show={confirmModal.show}
         onClose={() => setConfirmModal((prev) => ({ ...prev, show: false }))}
         onConfirm={confirmModal.onConfirm}
-        title="Xác nhận đổi trạng thái đơn hàng"
-        message={`Bạn có chắc chắn muốn chuyển đơn hàng #${confirmModal.orderId} sang trạng thái "${statusLabels[confirmModal.newStatus] || confirmModal.newStatus}" không?`}
-        confirmText="Xác nhận đổi"
-        cancelText="Hủy bỏ"
+        title="Confirm Order Status Change"
+        message={`Are you sure you want to change order #${confirmModal.orderId} status to "${statusLabels[confirmModal.newStatus] || confirmModal.newStatus}"?`}
+        confirmText="Confirm Change"
+        cancelText="Cancel"
       />
     </div>
   );

@@ -11,9 +11,9 @@ const NotFoundPage = () => {
     <Container className="py-5 text-center my-auto">
       <div className="py-5">
         <FaExclamationTriangle className="text-warning mb-4" style={{ fontSize: "4rem" }} />
-        <h1 className="display-4 fw-bold text-dark mb-2">404 - Không tìm thấy trang</h1>
+        <h1 className="display-4 fw-bold text-dark mb-2">404 - Page Not Found</h1>
         <p className="lead text-muted mb-4">
-          Trang bạn đang truy cập không tồn tại hoặc đã được chuyển sang địa chỉ khác.
+          The page you are looking for does not exist or has been moved.
         </p>
         <Button
           as={Link}
@@ -23,7 +23,7 @@ const NotFoundPage = () => {
           className="px-4 d-inline-flex align-items-center"
         >
           <FaHome className="me-2" />
-          <span>{isAdmin ? "Quay về Trang quản trị" : "Quay về Trang chủ"}</span>
+          <span>{isAdmin ? "Back to Admin Dashboard" : "Back to Home"}</span>
         </Button>
       </div>
     </Container>
